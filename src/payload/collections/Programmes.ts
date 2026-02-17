@@ -1,0 +1,154 @@
+import type { CollectionConfig } from 'payload'
+
+export const Programmes: CollectionConfig = {
+  slug: 'programmes',
+  admin: {
+    useAsTitle: 'title',
+    defaultColumns: ['title', 'status', 'order'],
+    description: 'Programs and initiatives',
+  },
+  access: {
+    read: () => true,
+  },
+  fields: [
+    {
+      name: 'title',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'slug',
+      type: 'text',
+      required: true,
+      unique: true,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'featuredImage',
+      type: 'upload',
+      relationTo: 'media',
+      required: true,
+    },
+    {
+      name: 'icon',
+      type: 'text',
+      admin: {
+        description: 'Lucide icon name (e.g., "users", "heart", "globe")',
+      },
+    },
+    {
+      name: 'shortDescription',
+      type: 'textarea',
+      required: true,
+      maxLength: 200,
+    },
+    {
+      name: 'content',
+      type: 'richText',
+      required: true,
+    },
+    {
+      name: 'objectives',
+      type: 'array',
+      label: 'Key Objectives',
+      fields: [
+        {
+          name: 'objective',
+          type: 'text',
+          required: true,
+        },
+      ],
+    },
+    {
+      name: 'achievements',
+      type: 'array',
+      label: 'Achievements',
+      fields: [
+        {
+          name: 'title',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'description',
+          type: 'textarea',
+        },
+        {
+          name: 'metric',
+          type: 'text',
+          admin: {
+            description: 'e.g., "5000+ youth trained"',
+          },
+        },
+      ],
+    },
+    {
+      name: 'gallery',
+      type: 'array',
+      label: 'Photo Gallery',
+      fields: [
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          required: true,
+        },
+        {
+          name: 'caption',
+          type: 'text',
+        },
+      ],
+    },
+    {
+      name: 'status',
+      type: 'select',
+      options: [
+        { label: 'Active', value: 'active' },
+        { label: 'Completed', value: 'completed' },
+        { label: 'Upcoming', value: 'upcoming' },
+      ],
+      defaultValue: 'active',
+      required: true,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'order',
+      type: 'number',
+      defaultValue: 0,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'isFeatured',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'seo',
+      type: 'group',
+      label: 'SEO',
+      fields: [
+        {
+          name: 'metaTitle',
+          type: 'text',
+          label: 'Meta Title',
+          maxLength: 60,
+        },
+        {
+          name: 'metaDescription',
+          type: 'textarea',
+          label: 'Meta Description',
+          maxLength: 160,
+        },
+      ],
+    },
+  ],
+}
