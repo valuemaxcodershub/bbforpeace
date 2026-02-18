@@ -5,7 +5,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react'
 
-const heroSlides = [
+// Default fallback data
+const defaultSlides = [
   {
     image: '/images/_VEE6792.jpg',
     description: 'Bridging grassroots action, policy advocacy, and regional networking for sustainable peace.',
@@ -28,8 +29,7 @@ const heroSlides = [
   },
 ]
 
-// Typewriter phrases - "We [action]"
-const typewriterPhrases = [
+const defaultTypewriterPhrases = [
   'build peaceful communities.',
   'empower youth for change.',
   'prevent violent conflicts.',
@@ -37,13 +37,34 @@ const typewriterPhrases = [
   'champion policy reforms.',
 ]
 
-function TypewriterText() {
+// Types for CMS data
+interface HeroSlide {
+  image?: { url?: string } | string
+  description: string
+}
+
+interface HeroCta {
+  primaryText?: string
+  primaryLink?: string
+  secondaryText?: string
+  secondaryLink?: string
+}
+
+export interface HeroSectionProps {
+  slogan?: string
+  mainTitle?: string
+  slides?: HeroSlide[]
+  typewriterPhrases?: { phrase: string }[]
+  cta?: HeroCta
+}
+
+function TypewriterText({ phrases }: { phrases: string[] }) {
   const [currentPhrase, setCurrentPhrase] = useState(0)
   const [displayText, setDisplayText] = useState('')
   const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
-    const phrase = typewriterPhrases[currentPhrase]
+    const phrase = phrases[currentPhrase]
     const typeSpeed = isDeleting ? 30 : 80
     const pauseDuration = 2000
 
@@ -54,7 +75,7 @@ function TypewriterText() {
 
     if (isDeleting && displayText === '') {
       setIsDeleting(false)
-      setCurrentPhrase((prev) => (prev + 1) % typewriterPhrases.length)
+      setCurrentPhrase((prev) => (prev + 1) % phrases.length)
       return
     }
 
@@ -67,7 +88,7 @@ function TypewriterText() {
     }, typeSpeed)
 
     return () => clearTimeout(timeout)
-  }, [displayText, isDeleting, currentPhrase])
+  }, [displayText, isDeleting, currentPhrase, phrases])
 
   return (
     <span className="relative inline-flex items-center">
@@ -79,7 +100,32 @@ function TypewriterText() {
   )
 }
 
-export function HeroSection() {
+export function HeroSection({
+  slogan = 'Empowering Communities for Peace',
+  mainTitle = 'Building Blocks for Peace',
+  slides,
+  typewriterPhrases,
+  cta,
+}: HeroSectionProps) {
+  // Process slides - use CMS data or fallback to defaults
+  const heroSlides = slides?.length 
+    ? slides.map(slide => ({
+        image: typeof slide.image === 'string' ? slide.image : slide.image?.url || defaultSlides[0].image,
+        description: slide.description,
+      }))
+    : defaultSlides
+  
+  // Process typewriter phrases
+  const phrases = typewriterPhrases?.length 
+    ? typewriterPhrases.map(p => p.phrase)
+    : defaultTypewriterPhrases
+
+  // CTA buttons
+  const primaryCtaText = cta?.primaryText || 'Explore Our Work'
+  const primaryCtaLink = cta?.primaryLink || '/programmes'
+  const secondaryCtaText = cta?.secondaryText || 'Get Involved'
+  const secondaryCtaLink = cta?.secondaryLink || '/contact'
+
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
@@ -136,19 +182,19 @@ export function HeroSection() {
           <div className="inline-flex items-center gap-3 mb-4">
             <span className="w-10 h-[2px] bg-accent-gold" />
             <span className="text-accent-gold text-xs sm:text-sm font-semibold uppercase tracking-widest">
-              Empowering Communities for Peace
+              {slogan}
             </span>
           </div>
 
           {/* Line 2: Big Caption */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-none mb-4 whitespace-nowrap">
-            Building Blocks for Peace
+            {mainTitle}
           </h1>
 
           {/* Line 3: Typewriter Effect */}
           <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-medium text-white/90 mb-6 h-[1.5em] overflow-hidden">
             <span className="text-gray-300">We </span>
-            <TypewriterText />
+            <TypewriterText phrases={phrases} />
           </div>
 
           {/* Line 4: One-line Description */}
@@ -159,17 +205,17 @@ export function HeroSection() {
           {/* CTA Buttons */}
           <div className="flex flex-wrap gap-4">
             <Link
-              href="/about"
+              href={primaryCtaLink}
               className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-lg font-semibold bg-accent-gold text-primary-950 hover:bg-yellow-400 transition-all"
             >
-              Learn About Us
+              {primaryCtaText}
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
-              href="/programmes"
+              href={secondaryCtaLink}
               className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg font-semibold text-white border-2 border-white/30 hover:bg-white/10 transition-all"
             >
-              Our Programmes
+              {secondaryCtaText}
             </Link>
           </div>
         </div>

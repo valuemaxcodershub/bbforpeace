@@ -5,21 +5,69 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight, Target, Eye, CheckCircle, Play } from 'lucide-react'
 
-const highlights = [
+// Default fallback data
+const defaultHighlights = [
   'Youth, Women, Peace and Security',
   'Conflict Prevention & Governance',
   'Peace Education & Empowerment',
   'Climate & Environmental Security',
 ]
 
-// West Africa Peace and Security Dialogue video
-const aboutVideo = {
+const defaultVideo = {
   id: 'xvQ_AXIQbPM',
   title: 'West Africa Peace and Security Dialogue',
 }
 
-export function AboutPreview() {
+// Types for CMS data
+interface AboutVideo {
+  youtubeId?: string
+  title?: string
+}
+
+interface AboutImages {
+  mainImage?: { url?: string } | string
+  secondaryImage?: { url?: string } | string
+}
+
+export interface AboutPreviewProps {
+  title?: string
+  highlights?: { text: string }[]
+  video?: AboutVideo
+  images?: AboutImages
+  yearsOfImpact?: string
+  mission?: string
+  vision?: string
+}
+
+export function AboutPreview({
+  title = 'Why BB4Peace?',
+  highlights,
+  video,
+  images,
+  yearsOfImpact = '8+',
+  mission = 'To equip youth, women and men as peacebuilders to prevent violent conflict and promote sustainable peace.',
+  vision = 'A peaceful, just and inclusive Africa where youth, women and men lead resilient communities.',
+}: AboutPreviewProps) {
   const [isPlaying, setIsPlaying] = useState(false)
+
+  // Process highlights
+  const displayHighlights = highlights?.length 
+    ? highlights.map(h => h.text)
+    : defaultHighlights
+
+  // Process video
+  const aboutVideo = {
+    id: video?.youtubeId || defaultVideo.id,
+    title: video?.title || defaultVideo.title,
+  }
+
+  // Process images
+  const mainImage = typeof images?.mainImage === 'string' 
+    ? images.mainImage 
+    : images?.mainImage?.url || '/images/_VEE7009 (1).jpg'
+  const secondaryImage = typeof images?.secondaryImage === 'string'
+    ? images.secondaryImage
+    : images?.secondaryImage?.url || '/images/_VEE7153 (6).jpg'
 
   return (
     <section className="py-20 bg-gray-50">
@@ -40,7 +88,7 @@ export function AboutPreview() {
                 <>
                   {/* Main Image as Thumbnail */}
                   <Image
-                    src="/images/_VEE7009 (1).jpg"
+                    src={mainImage}
                     alt="BB4Peace team at work"
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -69,7 +117,7 @@ export function AboutPreview() {
             {/* Secondary Image */}
             <div className="absolute -bottom-8 -right-8 w-48 h-36 rounded-xl overflow-hidden shadow-lg border-4 border-white hidden md:block">
               <Image
-                src="/images/_VEE7153 (6).jpg"
+                src={secondaryImage}
                 alt="Community engagement"
                 fill
                 className="object-cover"
@@ -80,7 +128,7 @@ export function AboutPreview() {
             <div className="absolute -bottom-6 -left-6 bg-white rounded-xl p-5 shadow-lg border border-gray-100 hidden md:block">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-xl bg-primary-900 flex items-center justify-center">
-                  <span className="text-xl font-bold text-white">8+</span>
+                  <span className="text-xl font-bold text-white">{yearsOfImpact}</span>
                 </div>
                 <div>
                   <div className="text-sm font-semibold text-gray-900">Years of</div>
@@ -97,7 +145,7 @@ export function AboutPreview() {
             </span>
             
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-              Why BB4Peace?
+              {title}
             </h2>
             
             <p className="text-gray-600 text-lg leading-relaxed mb-6">
@@ -110,7 +158,7 @@ export function AboutPreview() {
 
             {/* Highlights */}
             <div className="grid sm:grid-cols-2 gap-3 mb-8">
-              {highlights.map((item, idx) => (
+              {displayHighlights.map((item, idx) => (
                 <div key={idx} className="flex items-center gap-3">
                   <CheckCircle className="w-5 h-5 text-primary-900 flex-shrink-0" />
                   <span className="text-gray-700">{item}</span>
@@ -125,14 +173,14 @@ export function AboutPreview() {
                   <Target className="w-5 h-5 text-white" />
                 </div>
                 <h4 className="font-semibold text-gray-900 mb-1">Our Mission</h4>
-                <p className="text-gray-600 text-sm">To equip youth, women and men as peacebuilders to prevent violent conflict and promote sustainable peace.</p>
+                <p className="text-gray-600 text-sm">{mission}</p>
               </div>
               <div className="p-5 rounded-xl bg-white border border-gray-200 shadow-sm">
                 <div className="w-10 h-10 rounded-lg bg-accent-gold flex items-center justify-center mb-3">
                   <Eye className="w-5 h-5 text-primary-900" />
                 </div>
                 <h4 className="font-semibold text-gray-900 mb-1">Our Vision</h4>
-                <p className="text-gray-600 text-sm">A peaceful, just and inclusive Africa where youth, women and men lead resilient communities.</p>
+                <p className="text-gray-600 text-sm">{vision}</p>
               </div>
             </div>
 

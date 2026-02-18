@@ -43,6 +43,117 @@ export const SiteSettings: GlobalConfig = {
           ],
         },
         {
+          label: 'Hero Section',
+          description: 'Configure the homepage hero slider and typewriter text',
+          fields: [
+            {
+              name: 'heroSlogan',
+              type: 'text',
+              label: 'Hero Slogan',
+              defaultValue: 'Empowering Communities for Peace',
+              admin: {
+                description: 'Small text shown above the main title',
+              },
+            },
+            {
+              name: 'heroMainTitle',
+              type: 'text',
+              label: 'Main Title',
+              defaultValue: 'Building Blocks for Peace',
+              admin: {
+                description: 'The large headline text',
+              },
+            },
+            {
+              name: 'heroSlides',
+              type: 'array',
+              label: 'Hero Slides',
+              minRows: 1,
+              maxRows: 10,
+              admin: {
+                description: 'Add background images and descriptions for the hero slider',
+              },
+              fields: [
+                {
+                  name: 'image',
+                  type: 'upload',
+                  relationTo: 'media',
+                  required: true,
+                },
+                {
+                  name: 'description',
+                  type: 'textarea',
+                  required: true,
+                  maxLength: 200,
+                  admin: {
+                    description: 'Brief description shown on this slide',
+                  },
+                },
+              ],
+              defaultValue: [
+                { description: 'Bridging grassroots action, policy advocacy, and regional networking for sustainable peace.' },
+                { description: 'Equipping young people as active agents through capacity building and mentorship.' },
+                { description: 'Connecting peacebuilders across West Africa through regional platforms.' },
+                { description: 'Training over 5,000 youth as peace champions in dialogue and engagement.' },
+                { description: 'Recognized for outstanding contributions to youth empowerment.' },
+              ],
+            },
+            {
+              name: 'typewriterPhrases',
+              type: 'array',
+              label: 'Typewriter Phrases',
+              minRows: 1,
+              admin: {
+                description: 'Phrases that appear with typewriter effect: "We [phrase]"',
+              },
+              fields: [
+                {
+                  name: 'phrase',
+                  type: 'text',
+                  required: true,
+                  admin: {
+                    placeholder: 'e.g., build peaceful communities.',
+                  },
+                },
+              ],
+              defaultValue: [
+                { phrase: 'build peaceful communities.' },
+                { phrase: 'empower youth for change.' },
+                { phrase: 'prevent violent conflicts.' },
+                { phrase: 'foster dialogue & healing.' },
+                { phrase: 'champion policy reforms.' },
+              ],
+            },
+            {
+              name: 'heroCta',
+              type: 'group',
+              label: 'Call to Action Buttons',
+              fields: [
+                {
+                  name: 'primaryText',
+                  type: 'text',
+                  defaultValue: 'Explore Our Work',
+                },
+                {
+                  name: 'primaryLink',
+                  type: 'text',
+                  defaultValue: '/programmes',
+                },
+                {
+                  name: 'secondaryText',
+                  type: 'text',
+                  defaultValue: 'Get Involved',
+                },
+                {
+                  name: 'secondaryLink',
+                  type: 'text',
+                  defaultValue: '/contact',
+                },
+              ],
+            },
+          ],
+        },
+        {
           label: 'Contact',
           fields: [
             {
@@ -105,21 +216,15 @@ export const SiteSettings: GlobalConfig = {
         },
         {
           label: 'Homepage',
+          description: 'Configure homepage content sections',
           fields: [
-            {
-              name: 'heroTitle',
-              type: 'text',
-              defaultValue: 'Building Blocks for Peace',
-            },
-            {
-              name: 'heroSubtitle',
-              type: 'textarea',
-              defaultValue: 'Empowering Nigerian youth to drive peacebuilding and advocate for meaningful youth engagement in the peace process.',
-            },
             {
               name: 'impactStats',
               type: 'array',
               label: 'Impact Statistics',
+              admin: {
+                description: 'Statistics displayed on the homepage',
+              },
               fields: [
                 {
                   name: 'label',
@@ -146,23 +251,132 @@ export const SiteSettings: GlobalConfig = {
                 { label: 'Publications', value: '30', suffix: '+' },
               ],
             },
+            {
+              name: 'featuredVideo',
+              type: 'group',
+              label: 'Featured Video',
+              admin: {
+                description: 'YouTube video displayed on homepage',
+              },
+              fields: [
+                {
+                  name: 'youtubeId',
+                  type: 'text',
+                  label: 'YouTube Video ID',
+                  admin: {
+                    description: 'The ID from the YouTube URL (e.g., xvQ_AXIQbPM)',
+                  },
+                  defaultValue: 'xvQ_AXIQbPM',
+                },
+                {
+                  name: 'title',
+                  type: 'text',
+                  defaultValue: 'West Africa Peace and Security Dialogue',
+                },
+                {
+                  name: 'thumbnail',
+                  type: 'upload',
+                  relationTo: 'media',
+                  label: 'Custom Thumbnail (optional)',
+                },
+              ],
+            },
           ],
         },
         {
           label: 'About',
+          description: 'About page and preview content',
           fields: [
             {
-              name: 'aboutShort',
+              name: 'aboutTitle',
+              type: 'text',
+              label: 'About Section Title',
+              defaultValue: 'Why BB4Peace?',
+            },
+            {
+              name: 'aboutDescription',
               type: 'richText',
-              label: 'Short About (for homepage)',
+              label: 'About Description',
+              admin: {
+                description: 'Main about section content',
+              },
+            },
+            {
+              name: 'aboutHighlights',
+              type: 'array',
+              label: 'About Highlights',
+              admin: {
+                description: 'Key focus areas shown as bullet points',
+              },
+              fields: [
+                {
+                  name: 'text',
+                  type: 'text',
+                  required: true,
+                },
+              ],
+              defaultValue: [
+                { text: 'Youth, Women, Peace and Security' },
+                { text: 'Conflict Prevention & Governance' },
+                { text: 'Peace Education & Empowerment' },
+                { text: 'Climate & Environmental Security' },
+              ],
+            },
+            {
+              name: 'aboutVideo',
+              type: 'group',
+              label: 'About Video',
+              fields: [
+                {
+                  name: 'youtubeId',
+                  type: 'text',
+                  label: 'YouTube Video ID',
+                  defaultValue: 'xvQ_AXIQbPM',
+                },
+                {
+                  name: 'title',
+                  type: 'text',
+                  defaultValue: 'West Africa Peace and Security Dialogue',
+                },
+              ],
+            },
+            {
+              name: 'aboutImages',
+              type: 'group',
+              label: 'About Section Images',
+              fields: [
+                {
+                  name: 'mainImage',
+                  type: 'upload',
+                  relationTo: 'media',
+                  label: 'Main Image',
+                },
+                {
+                  name: 'secondaryImage',
+                  type: 'upload',
+                  relationTo: 'media',
+                  label: 'Secondary Image (small overlay)',
+                },
+              ],
+            },
+            {
+              name: 'yearsOfImpact',
+              type: 'text',
+              label: 'Years of Impact',
+              defaultValue: '8+',
+              admin: {
+                description: 'Displayed in the stats card',
+              },
             },
             {
               name: 'mission',
               type: 'textarea',
+              defaultValue: 'To equip youth, women and men as peacebuilders to prevent violent conflict and promote sustainable peace.',
             },
             {
               name: 'vision',
               type: 'textarea',
+              defaultValue: 'A peaceful, just and inclusive Africa where youth, women and men lead resilient communities.',
             },
             {
               name: 'coreValues',

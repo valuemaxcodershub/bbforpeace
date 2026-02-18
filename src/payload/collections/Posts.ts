@@ -43,6 +43,58 @@ export const Posts: CollectionConfig = {
       required: true,
     },
     {
+      name: 'mediaGallery',
+      type: 'array',
+      label: 'Media Gallery',
+      admin: {
+        description: 'Add images or YouTube videos to this post',
+      },
+      fields: [
+        {
+          name: 'type',
+          type: 'select',
+          options: [
+            { label: 'Image', value: 'image' },
+            { label: 'YouTube Video', value: 'youtube' },
+          ],
+          defaultValue: 'image',
+          required: true,
+        },
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          admin: {
+            condition: (data, siblingData) => siblingData?.type === 'image',
+          },
+        },
+        {
+          name: 'youtubeId',
+          type: 'text',
+          label: 'YouTube Video ID',
+          admin: {
+            description: 'The ID from the YouTube URL (e.g., dQw4w9WgXcQ)',
+            condition: (data, siblingData) => siblingData?.type === 'youtube',
+          },
+        },
+        {
+          name: 'youtubeTitle',
+          type: 'text',
+          label: 'Video Title',
+          admin: {
+            condition: (data, siblingData) => siblingData?.type === 'youtube',
+          },
+        },
+        {
+          name: 'caption',
+          type: 'text',
+          admin: {
+            description: 'Optional caption for this media item',
+          },
+        },
+      ],
+    },
+    {
       name: 'category',
       type: 'relationship',
       relationTo: 'categories',
