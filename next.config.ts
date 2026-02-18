@@ -36,17 +36,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Disable Turbopack for now to avoid module resolution issues
-  experimental: {
-    turbo: {
-      rules: {
-        '*.md': {
-          loaders: [],
-          as: '*.js',
-        },
-      },
-    },
-  },
 };
 
 export default nextConfig;

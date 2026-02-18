@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { PageHero } from '@/components/layout'
 import Image from 'next/image'
@@ -12,7 +12,7 @@ const galleryImages = [
   { id: '3', src: '/images/_VEE6765.jpg', title: 'Regional Peace Summit', category: 'Events' },
   { id: '4', src: '/images/_VEE6792.jpg', title: 'Youth Leadership Training', category: 'Training' },
   { id: '5', src: '/images/_VEE6887 (20).jpg', title: 'Peace Champions Network', category: 'Community' },
-  { id: '6', src: '/images/_VEE7009 (1).jpg', title: 'Stakeholder Engagement', category: 'Events' },
+  { id: '6', src: '/images/_VEE7009 (1).jpg', title: 'Regional Peace Summit', category: 'Events' },
   { id: '7', src: '/images/_VEE7017 (19) (1).jpg', title: 'Youth Empowerment Program', category: 'Training' },
   { id: '8', src: '/images/_VEE7037 (1).jpg', title: 'Peace Education Session', category: 'Education' },
   { id: '9', src: '/images/_VEE7124 (1).jpg', title: 'Community Outreach', category: 'Community' },
@@ -38,7 +38,7 @@ const galleryVideos = [
 const photoCategories = ['All', 'Events', 'Training', 'Community', 'Education', 'Advocacy', 'Awards']
 const videoCategories = ['All', 'Impact', 'Programs', 'Community']
 
-export default function GalleryPage() {
+function GalleryContent() {
   const searchParams = useSearchParams()
   const [activeTab, setActiveTab] = useState<'photo' | 'video'>('photo')
   const [selectedPhotoCategory, setSelectedPhotoCategory] = useState('All')
@@ -296,5 +296,17 @@ export default function GalleryPage() {
         </div>
       )}
     </>
+  )
+}
+
+export default function GalleryPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
+      </div>
+    }>
+      <GalleryContent />
+    </Suspense>
   )
 }
