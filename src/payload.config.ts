@@ -56,7 +56,7 @@ export default buildConfig({
 
   db: sqliteAdapter({
     client: {
-      url: process.env.DATABASE_URI || 'file:./bb4peace.db',
+      url: process.env.DATABASE_URI || 'file:./db/payload.db',
     },
   }),
 
@@ -70,5 +70,39 @@ export default buildConfig({
     limits: {
       fileSize: 10000000, // 10MB
     },
+  },
+
+  // Auto-create super admin on first run if configured via environment variables
+  onInit: async (payload) => {
+    // Check if we should auto-seed super admin
+    const superAdminEmail = process.env.SUPER_ADMIN_EMAIL
+    const superAdminPassword = process.env.SUPER_ADMIN_PASSWORD
+    
+    if (superAdminEmail && superAdminPassword) {
+      try {
+        // Check if any users exist
+        const existingUsers = await payload.find({
+          collection: 'users',
+          limit: 1,
+        })
+        
+        if (existingUsers.docs.length === 0) {
+          // Create super admin
+          await payload.create({
+            collection: 'users',
+            data: {
+              email: superAdminEmail,
+              password: superAdminPassword,
+              name: process.env.SUPER_ADMIN_NAME || 'Super Administrator',
+              role: 'super-admin',
+              isActive: true,
+            },
+          })
+          console.log('✅ Super admin created automatically via environment variables')
+        }
+      } catch (error) {
+        console.error('Error auto-creating super admin:', error)
+      }
+    }
   },
 })

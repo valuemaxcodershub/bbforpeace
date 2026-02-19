@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect, Suspense, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { PageHero } from '@/components/layout'
 import Image from 'next/image'
@@ -44,7 +44,7 @@ function GalleryContent() {
   const [selectedPhotoCategory, setSelectedPhotoCategory] = useState('All')
   const [selectedVideoCategory, setSelectedVideoCategory] = useState('All')
   const [lightboxImage, setLightboxImage] = useState<number | null>(null)
-  const [playingVideoId, setPlayingVideoId] = useState<string | null>(null)
+  const [videoModal, setVideoModal] = useState<{ id: string; title: string } | null>(null)
 
   // Read tab from URL on mount
   useEffect(() => {
@@ -63,9 +63,32 @@ function GalleryContent() {
     : galleryVideos.filter(vid => vid.category === selectedVideoCategory)
 
   const openLightbox = (index: number) => setLightboxImage(index)
-  const closeLightbox = () => setLightboxImage(null)
+  const closeLightbox = useCallback(() => setLightboxImage(null), [])
+  const closeVideoModal = useCallback(() => setVideoModal(null), [])
   const nextImage = () => setLightboxImage(prev => prev !== null ? (prev + 1) % filteredImages.length : null)
   const prevImage = () => setLightboxImage(prev => prev !== null ? (prev - 1 + filteredImages.length) % filteredImages.length : null)
+
+  // Handle escape key and prevent body scroll when modal is open
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeLightbox()
+        closeVideoModal()
+      }
+    }
+    
+    if (lightboxImage !== null || videoModal !== null) {
+      document.body.style.overflow = 'hidden'
+      document.addEventListener('keydown', handleEscape)
+    } else {
+      document.body.style.overflow = ''
+    }
+    
+    return () => {
+      document.body.style.overflow = ''
+      document.removeEventListener('keydown', handleEscape)
+    }
+  }, [lightboxImage, videoModal, closeLightbox, closeVideoModal])
 
   return (
     <>
@@ -194,46 +217,31 @@ function GalleryContent() {
               <div className="max-w-5xl mx-auto">
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredVideos.map((video, idx) => (
-                  <div
+                  <button
                     key={video.id}
-                    className="group relative aspect-video overflow-hidden rounded-2xl shadow-xl bg-gray-900"
+                    onClick={() => setVideoModal(video)}
+                    className="group relative aspect-video overflow-hidden rounded-2xl shadow-xl bg-gray-900 text-left"
                     data-scroll="scale"
                     data-delay={idx * 100}
                   >
-                    {playingVideoId === video.id ? (
-                      <iframe
-                        src={`https://www.youtube.com/embed/${video.id}?autoplay=1&rel=0`}
-                        title={video.title}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        className="absolute inset-0 w-full h-full"
-                      />
-                    ) : (
-                      <>
-                        <img
-                          src={`https://img.youtube.com/vi/${video.id}/maxresdefault.jpg`}
-                          alt={video.title}
-                          className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                        />
-                        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors" />
-                        <button
-                          onClick={() => setPlayingVideoId(video.id)}
-                          className="absolute inset-0 flex items-center justify-center"
-                          aria-label={`Play ${video.title}`}
-                        >
-                          <div className="w-18 h-18 md:w-22 md:h-22 rounded-full bg-accent-gold hover:bg-yellow-400 flex items-center justify-center transition-all hover:scale-110 shadow-2xl">
-                            <Play className="w-9 h-9 md:w-11 md:h-11 text-primary-950 ml-1" fill="currentColor" />
-                          </div>
-                        </button>
-                        <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
-                          <span className="inline-block px-3 py-1 rounded-full bg-white/20 text-white text-xs font-bold mb-2 backdrop-blur-sm">
-                            {video.category}
-                          </span>
-                          <h3 className="text-white font-bold md:text-lg line-clamp-2">{video.title}</h3>
-                        </div>
-                      </>
-                    )}
-                  </div>
+                    <img
+                      src={`https://img.youtube.com/vi/${video.id}/maxresdefault.jpg`}
+                      alt={video.title}
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-18 h-18 md:w-22 md:h-22 rounded-full bg-accent-gold hover:bg-yellow-400 flex items-center justify-center transition-all hover:scale-110 shadow-2xl">
+                        <Play className="w-9 h-9 md:w-11 md:h-11 text-primary-950 ml-1" fill="currentColor" />
+                      </div>
+                    </div>
+                    <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
+                      <span className="inline-block px-3 py-1 rounded-full bg-white/20 text-white text-xs font-bold mb-2 backdrop-blur-sm">
+                        {video.category}
+                      </span>
+                      <h3 className="text-white font-bold md:text-lg line-clamp-2">{video.title}</h3>
+                    </div>
+                  </button>
                 ))}
               </div>
               </div>
@@ -259,22 +267,28 @@ function GalleryContent() {
 
       {/* Lightbox for Photos */}
       {lightboxImage !== null && (
-        <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center backdrop-blur-sm">
+        <div 
+          className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center backdrop-blur-sm"
+          onClick={closeLightbox}
+        >
           <button
             onClick={closeLightbox}
-            className="absolute top-6 right-6 w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm"
+            className="absolute top-6 right-6 w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm z-10"
           >
             <X className="w-7 h-7" />
           </button>
           
           <button
-            onClick={prevImage}
-            className="absolute left-6 w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm"
+            onClick={(e) => { e.stopPropagation(); prevImage(); }}
+            className="absolute left-6 w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm z-10"
           >
             <ChevronLeft className="w-7 h-7" />
           </button>
 
-          <div className="relative w-full max-w-5xl h-[80vh] mx-6">
+          <div 
+            className="relative w-full max-w-5xl h-[80vh] mx-6"
+            onClick={(e) => e.stopPropagation()}
+          >
             <Image
               src={filteredImages[lightboxImage].src}
               alt={filteredImages[lightboxImage].title}
@@ -288,11 +302,42 @@ function GalleryContent() {
           </div>
 
           <button
-            onClick={nextImage}
-            className="absolute right-6 w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm"
+            onClick={(e) => { e.stopPropagation(); nextImage(); }}
+            className="absolute right-6 w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm z-10"
           >
             <ChevronRight className="w-7 h-7" />
           </button>
+        </div>
+      )}
+
+      {/* Video Modal */}
+      {videoModal !== null && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center backdrop-blur-sm p-4"
+          onClick={closeVideoModal}
+        >
+          <button
+            onClick={closeVideoModal}
+            className="absolute top-6 right-6 w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors backdrop-blur-sm z-10"
+          >
+            <X className="w-7 h-7" />
+          </button>
+
+          <div 
+            className="relative w-full max-w-5xl aspect-video"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <iframe
+              src={`https://www.youtube.com/embed/${videoModal.id}?autoplay=1&rel=0`}
+              title={videoModal.title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="absolute inset-0 w-full h-full rounded-2xl shadow-2xl"
+            />
+            <div className="absolute -bottom-16 left-0 right-0 text-center">
+              <p className="text-white text-xl font-bold">{videoModal.title}</p>
+            </div>
+          </div>
         </div>
       )}
     </>
