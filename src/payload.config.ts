@@ -35,6 +35,13 @@ export default buildConfig({
     },
   },
 
+  // Security settings
+  csrf: [],
+  rateLimit: {
+    max: 500, // 500 requests per window
+    window: 15 * 60 * 1000, // 15 minutes
+  },
+
   editor: lexicalEditor({}),
 
   collections: [
@@ -54,13 +61,14 @@ export default buildConfig({
 
   globals: [SiteSettings],
 
+  // SQLite - perfect for cPanel deployment
   db: sqliteAdapter({
     client: {
       url: process.env.DATABASE_URI || 'file:./db/payload.db',
     },
   }),
 
-  secret: process.env.PAYLOAD_SECRET || 'CHANGE_ME_IN_PRODUCTION_TO_SECURE_SECRET',
+  secret: process.env.PAYLOAD_SECRET || 'bbforpeace-super-secret-key-change-in-production-min-32-chars',
 
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
@@ -68,7 +76,7 @@ export default buildConfig({
 
   upload: {
     limits: {
-      fileSize: 10000000, // 10MB
+      fileSize: 50000000, // 50MB for documents/images
     },
   },
 
