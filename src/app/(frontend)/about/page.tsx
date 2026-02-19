@@ -44,7 +44,7 @@ const teamMembers = [
     name: 'Anthonia Folashade',
     position: 'Communications Manager',
     bio: 'Passionate about storytelling for social change and amplifying youth voices across media platforms.',
-    image: '/images/ourteam/2. Anthonia Folashade, Communications Manager.jpeg',
+    image: '/images/ourteam/2. Anthonia Folashade, Communications Manager.png',
     email: 'comms@bbforpeace.org',
   },
   {
@@ -399,8 +399,8 @@ export default function AboutPage() {
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Meet Our Team</h2>
               <p className="text-gray-600 max-w-2xl mx-auto text-lg">Passionate young leaders dedicated to building peace and empowering communities.</p>
             </div>
-            <div className="max-w-5xl mx-auto">
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="max-w-6xl mx-auto">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
                 {teamMembers.map((member, idx) => {
                 const bgColors = [
                   'from-rose-200 to-pink-300',
@@ -410,7 +410,7 @@ export default function AboutPage() {
                 ]
                 return (
                 <div key={idx} className="group text-center" data-scroll="scale" data-delay={idx * 100}>
-                  <div className="relative mb-5">
+                  <div className="relative mb-6">
                     <div className={`absolute inset-0 bg-gradient-to-br ${bgColors[idx % bgColors.length]} rounded-[2rem] rotate-6 group-hover:rotate-12 transition-transform`} />
                     <div className="relative aspect-square rounded-[2rem] overflow-hidden shadow-xl">
                       <Image src={member.image} alt={member.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
@@ -423,9 +423,9 @@ export default function AboutPage() {
                       </div>
                     </div>
                   </div>
-                  <h3 className="font-bold text-gray-900 text-lg">{member.name}</h3>
+                  <h3 className="font-bold text-gray-900 text-xl">{member.name}</h3>
                   <p className="text-accent-gold text-sm font-semibold mb-2">{member.position}</p>
-                  <p className="text-gray-600 text-sm">{member.bio}</p>
+                  <p className="text-gray-600 text-sm leading-relaxed">{member.bio}</p>
                 </div>
               )})
               }
