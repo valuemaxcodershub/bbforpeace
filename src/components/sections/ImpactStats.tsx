@@ -119,17 +119,17 @@ export function ImpactStats() {
           </div>
 
           {/* Right - Stats Grid */}
-          <div className="grid grid-cols-2 gap-6" data-scroll="right">
+          <div className="grid grid-cols-2 gap-3 sm:gap-6" data-scroll="right">
             {stats.map((stat, index) => (
               <div
                 key={index}
-                className="relative bg-white/5 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/10 hover:border-accent-gold/30 hover:bg-white/10 transition-all duration-300 group"
+                className="relative bg-white/5 backdrop-blur-sm rounded-2xl p-4 sm:p-6 md:p-8 border border-white/10 hover:border-accent-gold/30 hover:bg-white/10 transition-all duration-300 group"
               >
-                <div className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 group-hover:text-accent-gold transition-colors">
+                <div className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-1 sm:mb-2 group-hover:text-accent-gold transition-colors">
                   <AnimatedCounter value={stat.value} suffix={stat.suffix} />
                 </div>
-                <div className="text-white font-semibold text-lg mb-1">{stat.label}</div>
-                <div className="text-gray-400 text-sm">{stat.description}</div>
+                <div className="text-white font-semibold text-sm sm:text-lg mb-0.5 sm:mb-1 leading-tight">{stat.label}</div>
+                <div className="text-gray-400 text-xs sm:text-sm hidden sm:block">{stat.description}</div>
                 {/* Decorative Corner */}
                 <div className="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-accent-gold/30 rounded-tr-lg opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>

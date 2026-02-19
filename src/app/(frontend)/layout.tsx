@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter, Poppins } from 'next/font/google'
 import { Header, Footer } from '@/components/layout'
 import { ScrollObserver } from '@/components/ui/ScrollObserver'
+import { BackToTop } from '@/components/ui/BackToTop'
 
 const inter = Inter({
   variable: '--font-inter',
@@ -91,6 +92,7 @@ export default function FrontendLayout({
         <Header />
         <main className="min-h-screen">{children}</main>
         <Footer />
+        <BackToTop />
       </body>
     </html>
   )

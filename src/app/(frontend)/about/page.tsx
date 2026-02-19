@@ -286,6 +286,7 @@ export default function AboutPage() {
 
         {/* Strategic Pillars */}
         <section 
+          id="strategy"
           className="py-24 relative overflow-hidden bg-fixed bg-cover bg-center"
           style={{ backgroundImage: 'url(/images/PXL_20251023_124331635.MP~2.jpg)' }}
         >
