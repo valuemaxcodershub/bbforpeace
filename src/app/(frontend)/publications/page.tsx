@@ -10,72 +10,78 @@ export const metadata: Metadata = {
     'Access research papers, reports, and educational materials from Building Blocks for Peace Foundation.',
 }
 
-// Placeholder publications with actual images
+// Publications from BBFORPEACE old website
 const publications = [
   {
     id: '1',
-    title: 'Youth Peacebuilding in Nigeria: A Comprehensive Guide',
-    excerpt: 'A detailed guide on engaging young people in peacebuilding activities and conflict prevention.',
-    slug: 'youth-peacebuilding-guide',
+    title: 'BASELINE STUDY ON THE IMPLEMENTATION OF NIGERIA\'S NATIONAL ACTION PLAN ON YOUTH, PEACE AND SECURITY',
+    excerpt: 'A comprehensive baseline study assessing the implementation progress of Nigeria\'s National Action Plan on Youth, Peace and Security.',
+    slug: 'baseline-study-nap-yps',
     coverImage: '/images/_VEE7124 (1).jpg',
-    category: 'Guides',
+    category: 'Research',
     year: 2024,
     downloadCount: 1250,
+    externalLink: 'https://bbforpeace.org/Publications/book/baseline-study-on-the-implementation-of-nigerias-national-action-plan-on-youth-peace-and-security/',
   },
   {
     id: '2',
-    title: 'Annual Impact Report 2023',
-    excerpt: 'Our achievements, challenges, and lessons learned from 2023.',
-    slug: 'annual-report-2023',
+    title: 'NIGERIA: SHRINKING CIVIC SPACE IN THE NAME OF SECURITY',
+    excerpt: 'An analysis of the shrinking civic space in Nigeria under security-related policies and their impact on civil society.',
+    slug: 'shrinking-civic-space',
     coverImage: '/images/_VEE6792.jpg',
-    category: 'Reports',
-    year: 2024,
+    category: 'Research',
+    year: 2023,
     downloadCount: 890,
+    externalLink: 'https://bbforpeace.org/Publications/book/nigeria-shrinking-civic-space-in-the-name-of-security/',
   },
   {
     id: '3',
-    title: 'Community Dialogue Toolkit',
-    excerpt: 'Step-by-step toolkit for facilitating community dialogue sessions.',
-    slug: 'community-dialogue-toolkit',
+    title: 'Complementarity of the United Nations Security Council Resolution 2250 and the African Union Continental Framework on Youth, Peace and Security',
+    excerpt: 'Examining the synergy between UNSCR 2250 and the AU Continental Framework on Youth, Peace and Security.',
+    slug: 'unscr-2250-au-framework',
     coverImage: '/images/_VEE7017 (19) (1).jpg',
-    category: 'Toolkits',
+    category: 'Research',
     year: 2023,
     downloadCount: 2100,
+    externalLink: 'https://bbforpeace.org/Publications/book/complementarity-of-the-united-nations-security-council-resolution-2250-and-the-african-union-continental-framework-on-youth-peace-and-security/',
   },
   {
     id: '4',
-    title: 'Peace Education Curriculum',
-    excerpt: 'A comprehensive curriculum for integrating peace education in schools.',
-    slug: 'peace-education-curriculum',
+    title: 'Beyond #ENDSARS: Effecting Positive Change in Governance in Nigeria',
+    excerpt: 'Exploring the aftermath of the #EndSARS movement and pathways to positive governance changes in Nigeria.',
+    slug: 'beyond-endsars',
     coverImage: '/images/_VEE7153 (6).jpg',
-    category: 'Curriculum',
-    year: 2023,
+    category: 'Reports',
+    year: 2021,
     downloadCount: 3500,
+    externalLink: 'https://bbforpeace.org/Publications/book/beyond-endsars/',
   },
   {
     id: '5',
-    title: 'Conflict Analysis Framework',
-    excerpt: 'Tools and methods for analyzing conflict dynamics in communities.',
-    slug: 'conflict-analysis-framework',
+    title: 'Connecting and Amplifying Voices of Youth Building Peace in Nigeria',
+    excerpt: 'Showcasing youth-led peacebuilding initiatives and amplifying the voices of young peace advocates across Nigeria.',
+    slug: 'youth-voices-peace',
     coverImage: '/images/_VEE7037 (1).jpg',
-    category: 'Research',
-    year: 2023,
+    category: 'Reports',
+    year: 2022,
     downloadCount: 1800,
+    externalLink: 'https://bbforpeace.org/Publications/book/connecting-and-amplifying-voices-of-youth-building-peace-in-nigeria/',
   },
   {
     id: '6',
-    title: 'GPPAC West Africa Strategy',
-    excerpt: 'Strategic framework for regional peacebuilding network.',
-    slug: 'gppac-strategy',
+    title: 'COVID-19 Pandemic: The Future of Peacebuilding in Nigeria',
+    excerpt: 'Analyzing the impact of the COVID-19 pandemic on peacebuilding efforts and the future outlook for Nigeria.',
+    slug: 'covid19-peacebuilding',
     coverImage: '/images/_VEE6887 (20).jpg',
-    category: 'Strategies',
-    year: 2022,
+    category: 'Research',
+    year: 2020,
     downloadCount: 950,
+    externalLink: 'https://bbforpeace.org/Publications/book/covid-19-pandemic-the-future-of-peacebuilding-in-nigeria-2/',
   },
 ]
 
-const categories = ['All', 'Reports', 'Guides', 'Toolkits', 'Research', 'Curriculum']
-const years = ['All Years', '2024', '2023', '2022', '2021']
+const categories = ['All', 'Research', 'Reports']
+const years = ['All Years', '2024', '2023', '2022', '2021', '2020']
 
 export default function PublicationsPage() {
   return (
@@ -203,10 +209,15 @@ export default function PublicationsPage() {
                 </h2>
                 <p className="text-gray-600 text-lg mb-8">{publications[0].excerpt}</p>
                 <div className="flex items-center gap-5">
-                  <button className="inline-flex items-center gap-2 px-7 py-4 bg-primary-900 text-white font-bold rounded-xl hover:bg-primary-800 transition-colors shadow-lg shadow-primary-900/30">
-                    <Download className="w-5 h-5" />
-                    Download PDF
-                  </button>
+                  <a 
+                    href={publications[0].externalLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-7 py-4 bg-primary-900 text-white font-bold rounded-xl hover:bg-primary-800 transition-colors shadow-lg shadow-primary-900/30"
+                  >
+                    <Eye className="w-5 h-5" />
+                    View Publication
+                  </a>
                   <span className="text-sm text-gray-500 font-medium">
                     {publications[0].downloadCount.toLocaleString()} downloads
                   </span>
@@ -257,9 +268,14 @@ export default function PublicationsPage() {
                         <Download className="w-4 h-4" />
                         {publication.downloadCount.toLocaleString()}
                       </span>
-                      <button className="inline-flex items-center gap-2 text-sm text-primary-900 font-bold group-hover:gap-3 transition-all">
-                        Download <ArrowRight className="w-4 h-4" />
-                      </button>
+                      <a 
+                        href={publication.externalLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-sm text-primary-900 font-bold group-hover:gap-3 transition-all"
+                      >
+                        View <ArrowRight className="w-4 h-4" />
+                      </a>
                     </div>
                   </div>
                 </article>
