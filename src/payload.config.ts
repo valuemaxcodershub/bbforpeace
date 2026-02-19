@@ -35,13 +35,6 @@ export default buildConfig({
     },
   },
 
-  // Security settings
-  csrf: [],
-  rateLimit: {
-    max: 500, // 500 requests per window
-    window: 15 * 60 * 1000, // 15 minutes
-  },
-
   editor: lexicalEditor({}),
 
   collections: [
