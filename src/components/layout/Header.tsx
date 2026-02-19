@@ -19,10 +19,10 @@ const navigation = [
     { name: 'Press Statements', href: '/media/press', icon: Newspaper, description: 'Official press releases' },
     { name: 'Gallery', href: '/gallery', icon: ImageIcon, description: 'Photos from our activities' },
   ]},
-  { name: 'Reports', href: '/publications', children: [
+  { name: 'Reports', href: '/reports', children: [
     { name: 'Publications', href: '/publications', icon: FileText, description: 'Research and publications' },
-    { name: 'Annual Reports', href: '/reports?category=annual', icon: Calendar, description: 'Yearly impact reports' },
-    { name: 'Project Reports', href: '/reports', icon: FileText, description: 'Project documentation' },
+    { name: 'Annual Reports', href: '/reports', icon: Calendar, description: 'Yearly impact reports' },
+    { name: 'Project Reports', href: '/reports/projects', icon: FileText, description: 'Project documentation' },
   ]},
   { name: 'Contact', href: '/contact' },
 ]
