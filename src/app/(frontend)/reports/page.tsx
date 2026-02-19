@@ -63,7 +63,7 @@ const projectReports = [
 const categories = ['All', 'Annual Report', 'Program Report', 'Research', 'Regional Program']
 
 export const metadata = {
-  title: 'Project Reports | BB4Peace',
+  title: 'Project Reports | BBFORPEACE',
   description: 'Access project reports, research findings, and impact assessments from Building Blocks for Peace Foundation.',
 }
 

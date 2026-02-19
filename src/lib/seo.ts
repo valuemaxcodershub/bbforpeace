@@ -14,7 +14,7 @@ interface SEOProps {
 
 const defaultSEO = {
   siteName: 'Building Blocks for Peace Foundation',
-  title: 'BB4Peace - Empowering Communities for Peace',
+  title: 'BBFORPEACE - Empowering Communities for Peace',
   description: 'Empowering Communities for Peace — Building Blocks for Peace Foundation is a youth-led peacebuilding NGO advocating for meaningful youth engagement in peace processes and sustainable development in Nigeria.',
   url: process.env.NEXT_PUBLIC_SITE_URL || 'https://bbforpeace.org',
   image: '/images/og-image.jpg',
@@ -32,7 +32,7 @@ export function generateSEO({
   author,
   keywords,
 }: SEOProps = {}): Metadata {
-  const seoTitle = title ? `${title} | BB4Peace` : defaultSEO.title
+  const seoTitle = title ? `${title} | BBFORPEACE` : defaultSEO.title
   const seoDescription = description || defaultSEO.description
   const seoImage = image || defaultSEO.image
   const seoUrl = url || defaultSEO.url
@@ -91,7 +91,7 @@ export const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'NGO',
   name: 'Building Blocks for Peace Foundation',
-  alternateName: 'BB4Peace',
+  alternateName: 'BBFORPEACE',
   slogan: 'Empowering Communities for Peace',
   url: 'https://bbforpeace.org',
   logo: 'https://bbforpeace.org/images/logo.png',

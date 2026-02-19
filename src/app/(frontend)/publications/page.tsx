@@ -5,7 +5,7 @@ import { PageHero } from '@/components/layout'
 import { Search, Filter, FileText, Download, Calendar, ArrowRight, BookOpen, Eye } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Publications & Resources | BB4Peace',
+  title: 'Publications & Resources | BBFORPEACE',
   description:
     'Access research papers, reports, and educational materials from Building Blocks for Peace Foundation.',
 }

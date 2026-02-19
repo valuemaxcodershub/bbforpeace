@@ -89,22 +89,6 @@ export function OurApproachSection() {
             )
           })}
         </div>
-
-        {/* Bottom CTA */}
-        <div className="mt-16 text-center" data-scroll="up">
-          <div className="inline-flex flex-col sm:flex-row items-center gap-4 p-6 bg-primary-900 rounded-2xl text-white">
-            <div className="text-center sm:text-left">
-              <h3 className="font-bold text-xl mb-1">Ready to Join Us?</h3>
-              <p className="text-gray-300 text-sm">Partner with BB4Peace to build peaceful communities.</p>
-            </div>
-            <a
-              href="/contact"
-              className="px-6 py-3 bg-accent-gold hover:bg-yellow-400 text-primary-950 font-semibold rounded-lg transition-colors whitespace-nowrap"
-            >
-              Get in Touch
-            </a>
-          </div>
-        </div>
       </div>
     </section>
   )

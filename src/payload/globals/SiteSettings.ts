@@ -291,7 +291,7 @@ export const SiteSettings: GlobalConfig = {
               name: 'aboutTitle',
               type: 'text',
               label: 'About Section Title',
-              defaultValue: 'Why BB4Peace?',
+              defaultValue: 'Why BBFORPEACE?',
             },
             {
               name: 'aboutDescription',
@@ -420,7 +420,7 @@ export const SiteSettings: GlobalConfig = {
                 {
                   name: 'metaTitle',
                   type: 'text',
-                  defaultValue: 'BB4Peace - Building Blocks for Peace Foundation',
+                  defaultValue: 'BBFORPEACE - Building Blocks for Peace Foundation',
                 },
                 {
                   name: 'metaDescription',

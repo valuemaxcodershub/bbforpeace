@@ -15,6 +15,7 @@ import {
 import { organizationJsonLd } from '@/lib/seo'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import Script from 'next/script'
 
 export default async function HomePage() {
   // Fetch site settings from CMS
@@ -64,7 +65,8 @@ export default async function HomePage() {
       <NewsletterSection />
       
       {/* Structured Data */}
-      <script
+      <Script
+        id="organization-jsonld"
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(organizationJsonLd)

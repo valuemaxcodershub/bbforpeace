@@ -101,7 +101,7 @@ export function ImpactStats() {
               <span className="block text-accent-gold">Impact</span>
             </h2>
             <p className="text-gray-300 text-lg leading-relaxed mb-8">
-              Since 2017, BB4Peace has been at the forefront of youth-led peacebuilding 
+              Since 2017, BBFORPEACE has been at the forefront of youth-led peacebuilding 
               in Nigeria, transforming communities through dialogue, education, and 
               grassroots engagement. Our work has reached thousands directly and 
               continues to create ripple effects across the nation.

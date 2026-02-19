@@ -5,7 +5,7 @@ import { PageHero } from '@/components/layout'
 import { Search, Filter, Calendar, ArrowRight, Tag, Clock, User } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Blog & Activities | BB4Peace',
+  title: 'Blog & Activities | BBFORPEACE',
   description:
     'Read the latest news, stories, and updates from Building Blocks for Peace Foundation. Stay informed about our peacebuilding activities across Nigeria.',
 }
@@ -22,7 +22,7 @@ const posts = [
     category: 'Events',
     publishedAt: '2024-01-15',
     readTime: '5 min read',
-    author: 'BB4Peace Team',
+    author: 'BBFORPEACE Team',
   },
   {
     id: '2',
@@ -34,7 +34,7 @@ const posts = [
     category: 'News',
     publishedAt: '2024-01-10',
     readTime: '4 min read',
-    author: 'BB4Peace Team',
+    author: 'BBFORPEACE Team',
   },
   {
     id: '3',
@@ -46,7 +46,7 @@ const posts = [
     category: 'Programs',
     publishedAt: '2024-01-05',
     readTime: '3 min read',
-    author: 'BB4Peace Team',
+    author: 'BBFORPEACE Team',
   },
   {
     id: '4',
@@ -58,7 +58,7 @@ const posts = [
     category: 'Training',
     publishedAt: '2024-01-01',
     readTime: '6 min read',
-    author: 'BB4Peace Team',
+    author: 'BBFORPEACE Team',
   },
   {
     id: '5',
@@ -70,7 +70,7 @@ const posts = [
     category: 'Awards',
     publishedAt: '2023-12-28',
     readTime: '3 min read',
-    author: 'BB4Peace Team',
+    author: 'BBFORPEACE Team',
   },
   {
     id: '6',
@@ -82,7 +82,7 @@ const posts = [
     category: 'Stories',
     publishedAt: '2023-12-20',
     readTime: '4 min read',
-    author: 'BB4Peace Team',
+    author: 'BBFORPEACE Team',
   },
 ]
 

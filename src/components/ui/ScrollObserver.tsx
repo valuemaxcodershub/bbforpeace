@@ -4,22 +4,47 @@ import { useEffect } from 'react'
 
 export function ScrollObserver() {
   useEffect(() => {
-    const handleScroll = () => {
-      const elements = document.querySelectorAll('[data-scroll]:not(.in-view)')
-      
-      elements.forEach((el) => {
+    // Use IntersectionObserver for reliable scroll animations
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const el = entry.target as HTMLElement
+            const delay = parseInt(el.dataset.delay || '0', 10)
+            
+            if (delay > 0) {
+              setTimeout(() => {
+                el.classList.add('in-view')
+              }, delay)
+            } else {
+              el.classList.add('in-view')
+            }
+            
+            // Stop observing once animated
+            observer.unobserve(el)
+          }
+        })
+      },
+      {
+        threshold: 0.1,  // Trigger when 10% visible
+        rootMargin: '0px 0px -10% 0px',  // Trigger slightly before fully in view
+      }
+    )
+
+    // Observe all scroll-animated elements
+    const elements = document.querySelectorAll('[data-scroll]')
+    elements.forEach((el) => observer.observe(el))
+
+    // Fallback: manually trigger for elements already in view on load
+    const triggerVisibleElements = () => {
+      const stillHidden = document.querySelectorAll('[data-scroll]:not(.in-view)')
+      stillHidden.forEach((el) => {
         const rect = el.getBoundingClientRect()
-        const windowHeight = window.innerHeight
-        
-        // Element is in viewport when its top is less than 85% of window height
-        if (rect.top < windowHeight * 0.85) {
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
           const htmlEl = el as HTMLElement
           const delay = parseInt(htmlEl.dataset.delay || '0', 10)
-          
           if (delay > 0) {
-            setTimeout(() => {
-              el.classList.add('in-view')
-            }, delay)
+            setTimeout(() => el.classList.add('in-view'), delay)
           } else {
             el.classList.add('in-view')
           }
@@ -27,15 +52,12 @@ export function ScrollObserver() {
       })
     }
 
-    // Run on scroll
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    
-    // Run once on mount after a short delay
-    setTimeout(handleScroll, 200)
+    // Run fallback multiple times to ensure elements are revealed
+    setTimeout(triggerVisibleElements, 100)
+    setTimeout(triggerVisibleElements, 500)
+    setTimeout(triggerVisibleElements, 1000)
 
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
+    return () => observer.disconnect()
   }, [])
 
   return null

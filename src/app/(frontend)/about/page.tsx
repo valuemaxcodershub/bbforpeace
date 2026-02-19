@@ -9,7 +9,7 @@ import {
 } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'About Us | BB4Peace',
+  title: 'About Us | BBFORPEACE',
   description: 'Learn about Building Blocks for Peace Foundation - a youth-led peacebuilding NGO working to create sustainable peace through knowledge-sharing, policy advocacy, partnerships and programs.',
 }
 
@@ -60,6 +60,28 @@ const teamMembers = [
     bio: 'Building bridges between communities, civil society, and international partners.',
     image: '/images/_VEE6887 (20).jpg',
     email: 'partnerships@bbforpeace.org',
+  },
+]
+
+// Board of Trustees - to be updated with actual data
+const boardOfTrustees = [
+  {
+    name: 'Board Chair',
+    position: 'Chairperson',
+    bio: 'Distinguished leader with decades of experience in conflict resolution and peace advocacy.',
+    image: '/images/_VEE7927.jpg',
+  },
+  {
+    name: 'Board Member',
+    position: 'Trustee',
+    bio: 'Expert in governance, policy development, and strategic leadership.',
+    image: '/images/_VEE7856.jpg',
+  },
+  {
+    name: 'Board Member',
+    position: 'Trustee',
+    bio: 'Committed to youth empowerment and sustainable development initiatives.',
+    image: '/images/_VEE7915 (1).jpg',
   },
 ]
 
@@ -384,6 +406,45 @@ export default function AboutPage() {
                           <a href={`mailto:${member.email}`} className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center text-white hover:bg-accent-gold hover:text-primary-950 transition-all"><Mail className="w-4 h-4" /></a>
                         </div>
                       </div>
+                    </div>
+                  </div>
+                  <h3 className="font-bold text-gray-900 text-lg">{member.name}</h3>
+                  <p className="text-accent-gold text-sm font-semibold mb-2">{member.position}</p>
+                  <p className="text-gray-600 text-sm">{member.bio}</p>
+                </div>
+              )})
+              }
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Board of Trustees Section */}
+        <section id="board" className="py-24 bg-white">
+          <div className="container">
+            <div className="text-center mb-14" data-scroll="up">
+              <span className="inline-flex items-center gap-3 justify-center text-primary-900 text-sm font-semibold uppercase tracking-widest mb-4">
+                <span className="w-8 h-[2px] bg-accent-gold" />
+                Governance
+                <span className="w-8 h-[2px] bg-accent-gold" />
+              </span>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Board of Trustees</h2>
+              <p className="text-gray-600 max-w-2xl mx-auto text-lg">Our distinguished board members provide strategic oversight and guidance for the organization.</p>
+            </div>
+            <div className="max-w-4xl mx-auto">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {boardOfTrustees.map((member, idx) => {
+                const bgColors = [
+                  'from-emerald-200 to-teal-300',
+                  'from-blue-200 to-indigo-300',
+                  'from-rose-200 to-pink-300',
+                ]
+                return (
+                <div key={idx} className="group text-center" data-scroll="scale" data-delay={idx * 100}>
+                  <div className="relative mb-5">
+                    <div className={`absolute inset-0 bg-gradient-to-br ${bgColors[idx % bgColors.length]} rounded-[2rem] rotate-6 group-hover:rotate-12 transition-transform`} />
+                    <div className="relative aspect-square rounded-[2rem] overflow-hidden shadow-xl">
+                      <Image src={member.image} alt={member.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
                     </div>
                   </div>
                   <h3 className="font-bold text-gray-900 text-lg">{member.name}</h3>

@@ -10,6 +10,7 @@ const navigation = [
   { name: 'About Us', href: '/about', children: [
     { name: 'Who We Are', href: '/about' },
     { name: 'Our Team', href: '/about#team' },
+    { name: 'Board of Trustees', href: '/about#board' },
     { name: 'Partners', href: '/about#partners' },
   ]},
   { name: 'Programmes', href: '/programmes' },
@@ -21,6 +22,7 @@ const navigation = [
   ]},
   { name: 'Reports', href: '/publications', children: [
     { name: 'Publications', href: '/publications' },
+    { name: 'Annual Reports', href: '/reports?category=annual' },
     { name: 'Project Reports', href: '/reports' },
   ]},
   { name: 'Contact', href: '/contact' },
@@ -122,20 +124,20 @@ export function Header() {
           <div className="flex justify-between items-center py-3">
             {/* Logo */}
             <Link href="/" className="flex items-center group">
-              <div className="relative w-14 h-14 rounded-full overflow-hidden shadow-md group-hover:shadow-lg transition-shadow ring-2 ring-primary-100">
+              <div className="relative w-10 h-10 sm:w-14 sm:h-14 rounded-full overflow-hidden shadow-md group-hover:shadow-lg transition-shadow ring-2 ring-primary-100 flex-shrink-0">
                 <Image
                   src="/images/logo.jpg"
-                  alt="BB4Peace Logo"
+                  alt="BBFORPEACE Logo"
                   fill
                   className="object-cover"
                   priority
                 />
               </div>
-              <div className="ml-3 hidden sm:block">
-                <span className="block text-lg font-bold text-gradient leading-tight">
-                  BB4Peace
+              <div className="ml-2 sm:ml-3">
+                <span className="block text-sm sm:text-lg font-bold text-gradient leading-tight">
+                  BBFORPEACE
                 </span>
-                <span className="block text-[10px] text-gray-500 font-medium">
+                <span className="block text-[8px] sm:text-[10px] text-gray-500 font-medium">
                   Building Blocks for Peace
                 </span>
               </div>

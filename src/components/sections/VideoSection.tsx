@@ -19,7 +19,7 @@ const allVideos = [
   {
     id: 'xvQ_AXIQbPM',
     title: 'Building Blocks for Peace: Our Journey',
-    description: 'Discover how BB4Peace is transforming communities across Nigeria.',
+    description: 'Discover how BBFORPEACE is transforming communities across Nigeria.',
   },
 ]
 

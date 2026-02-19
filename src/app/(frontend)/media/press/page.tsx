@@ -39,7 +39,7 @@ const pressStatements = [
 ]
 
 export const metadata = {
-  title: 'Press Statements | BB4Peace',
+  title: 'Press Statements | BBFORPEACE',
   description: 'Official press statements and announcements from Building Blocks for Peace Foundation.',
 }
 

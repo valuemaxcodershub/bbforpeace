@@ -3,7 +3,7 @@ import { PageHero } from '@/components/layout'
 import { Mail, Phone, MapPin, Clock, Send, Globe, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Contact Us | BB4Peace',
+  title: 'Contact Us | BBFORPEACE',
   description:
     'Get in touch with Building Blocks for Peace Foundation. We welcome inquiries, partnership opportunities, and feedback.',
 }

@@ -172,6 +172,21 @@
   [data-scroll] {
     opacity: 0;
     transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    will-change: opacity, transform;
+  }
+
+  /* Fallback: show content after a delay if JS fails */
+  @supports (animation-timeline: auto) {
+    [data-scroll] {
+      animation: scrollFallback 0s 3s forwards;
+    }
+  }
+
+  @keyframes scrollFallback {
+    to {
+      opacity: 1;
+      transform: none;
+    }
   }
 
   /* Direction: Up */

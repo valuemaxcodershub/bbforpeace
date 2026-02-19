@@ -241,7 +241,7 @@ function GalleryContent() {
               {/* YouTube Channel Link */}
               <div className="text-center mt-14" data-scroll="up">
                 <a
-                  href="https://www.youtube.com/@bb4peace"
+                  href="https://www.youtube.com/@bbforpeace"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-8 py-4 bg-primary-900 hover:bg-primary-800 text-white font-bold rounded-xl transition-colors shadow-lg shadow-primary-900/30"

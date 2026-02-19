@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Our Programmes | BB4Peace',
+  title: 'Our Programmes | BBFORPEACE',
   description:
     'Explore our peacebuilding programmes focused on youth empowerment, community dialogue, peace education, and conflict resolution.',
 }

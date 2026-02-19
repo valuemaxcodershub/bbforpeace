@@ -5,7 +5,7 @@ import { PageHero } from '@/components/layout'
 import { Calendar, MapPin, Filter, Clock, Users, ArrowRight, Sparkles } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Events | BB4Peace',
+  title: 'Events | BBFORPEACE',
   description:
     'Discover upcoming events, workshops, and conferences from Building Blocks for Peace Foundation.',
 }

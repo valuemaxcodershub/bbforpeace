@@ -30,7 +30,7 @@ export default buildConfig({
   admin: {
     user: Users.slug,
     meta: {
-      titleSuffix: '- BB4Peace Admin',
+      titleSuffix: '- BBFORPEACE Admin',
       icons: [{ url: '/favicon.ico' }],
     },
   },

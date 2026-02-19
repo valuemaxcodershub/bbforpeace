@@ -40,7 +40,7 @@ export interface AboutPreviewProps {
 }
 
 export function AboutPreview({
-  title = 'Why BB4Peace?',
+  title = 'Why BBFORPEACE?',
   highlights,
   video,
   images,
@@ -89,7 +89,7 @@ export function AboutPreview({
                   {/* Main Image as Thumbnail */}
                   <Image
                     src={mainImage}
-                    alt="BB4Peace team at work"
+                    alt="BBFORPEACE team at work"
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />

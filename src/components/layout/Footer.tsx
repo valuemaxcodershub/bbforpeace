@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from 'lucide-react'
+import { Facebook, Twitter, Instagram, Youtube, Linkedin, Mail, Phone, MapPin } from 'lucide-react'
 
 const quickLinks = [
   { name: 'Home', href: '/' },
@@ -26,6 +26,7 @@ const socialLinks = [
   { name: 'Facebook', href: 'https://web.facebook.com/bbforpeace/?_rdc=1&_rdr', icon: Facebook },
   { name: 'Instagram', href: 'https://www.instagram.com/bbforpeace/', icon: Instagram },
   { name: 'YouTube', href: 'https://www.youtube.com/channel/UC10Im94vib-oh7AvVhZNPIg/videos', icon: Youtube },
+  { name: 'LinkedIn', href: 'https://www.linkedin.com/company/43211235/', icon: Linkedin },
 ]
 
 export function Footer() {
@@ -44,13 +45,13 @@ export function Footer() {
               <div className="relative w-10 h-10 rounded-full overflow-hidden">
                 <Image
                   src="/images/logo.jpg"
-                  alt="BB4Peace Logo"
+                  alt="BBFORPEACE Logo"
                   fill
                   className="object-cover"
                 />
               </div>
               <div>
-                <span className="block font-bold">BB4Peace</span>
+                <span className="block font-bold">BBFORPEACE</span>
                 <span className="block text-[10px] text-gray-400">Building Blocks for Peace</span>
               </div>
             </div>
@@ -133,7 +134,7 @@ export function Footer() {
         <div className="container py-5">
           <div className="flex flex-col md:flex-row justify-between items-center gap-3 text-sm">
             <p className="text-gray-500 flex items-center gap-1 flex-wrap justify-center md:justify-start">
-              © {currentYear} BB4Peace. Developed by{' '}
+              © {currentYear} BBFORPEACE. Developed by{' '}
               <a 
                 href="https://valuemaxonline.com/" 
                 target="_blank" 

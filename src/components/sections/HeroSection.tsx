@@ -164,7 +164,7 @@ export function HeroSection({
         >
           <Image
             src={slide.image}
-            alt="BB4Peace"
+            alt="BBFORPEACE"
             fill
             className="object-cover"
             priority={idx === 0}
