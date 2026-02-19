@@ -5,7 +5,8 @@ import { PageHero } from '@/components/layout'
 import { 
   Target, Eye, CheckCircle, Shield, Users, Lightbulb, 
   Handshake, Heart, UserCheck, Award, Calendar, MapPin,
-  Linkedin, Twitter, Mail, ArrowRight
+  Linkedin, Twitter, Mail, ArrowRight,
+  GraduationCap, Scale, Leaf, Building2, HeartHandshake
 } from 'lucide-react'
 
 export const metadata: Metadata = {
@@ -23,11 +24,36 @@ const coreValues = [
 ]
 
 const strategicPillars = [
-  { title: 'Peace Education & Youth Empowerment', color: 'bg-blue-500' },
-  { title: 'Conflict Prevention, Governance & Accountability', color: 'bg-green-500' },
-  { title: 'Gender, Climate & Environmental Security', color: 'bg-yellow-500' },
-  { title: 'Organizational Sustainability & Partnerships', color: 'bg-purple-500' },
-  { title: 'Livelihoods and Humanitarian', color: 'bg-red-500' },
+  { 
+    title: 'Peace Education & Youth Empowerment', 
+    icon: GraduationCap,
+    gradient: 'from-blue-500 to-cyan-400',
+    shadow: 'shadow-blue-500/30'
+  },
+  { 
+    title: 'Conflict Prevention, Governance & Accountability', 
+    icon: Scale,
+    gradient: 'from-emerald-500 to-green-400',
+    shadow: 'shadow-emerald-500/30'
+  },
+  { 
+    title: 'Gender, Climate & Environmental Security', 
+    icon: Leaf,
+    gradient: 'from-amber-500 to-yellow-400',
+    shadow: 'shadow-amber-500/30'
+  },
+  { 
+    title: 'Organizational Sustainability & Partnerships', 
+    icon: Building2,
+    gradient: 'from-violet-500 to-purple-400',
+    shadow: 'shadow-violet-500/30'
+  },
+  { 
+    title: 'Livelihoods and Humanitarian', 
+    icon: HeartHandshake,
+    gradient: 'from-rose-500 to-pink-400',
+    shadow: 'shadow-rose-500/30'
+  },
 ]
 
 const teamMembers = [
@@ -317,12 +343,17 @@ export default function AboutPage() {
             </div>
             <div className="max-w-5xl mx-auto">
               <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                {strategicPillars.map((pillar, idx) => (
-                <div key={idx} className="group bg-white/10 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:bg-white/20 hover:border-accent-gold/30 transition-all text-center" data-scroll="scale" data-delay={idx * 100}>
-                  <div className={`w-12 h-12 ${pillar.color} rounded-xl mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg`} />
-                  <p className="text-white font-semibold leading-snug">{pillar.title}</p>
-                </div>
-              ))}
+                {strategicPillars.map((pillar, idx) => {
+                  const IconComponent = pillar.icon
+                  return (
+                    <div key={idx} className="group bg-white/10 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:bg-white/20 hover:border-accent-gold/30 transition-all text-center" data-scroll="scale" data-delay={idx * 100}>
+                      <div className={`w-14 h-14 bg-gradient-to-br ${pillar.gradient} rounded-2xl mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg ${pillar.shadow} flex items-center justify-center`}>
+                        <IconComponent className="w-7 h-7 text-white" strokeWidth={2} />
+                      </div>
+                      <p className="text-white font-semibold leading-snug">{pillar.title}</p>
+                    </div>
+                  )
+                })}
               </div>
             </div>
           </div>
