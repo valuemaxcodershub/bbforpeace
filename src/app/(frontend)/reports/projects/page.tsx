@@ -3,6 +3,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Download, FileText, Calendar, ArrowRight, Globe, Target, Sparkles, MapPin, FolderOpen } from 'lucide-react'
 import type { Metadata } from 'next'
+import { getPayload } from 'payload'
+import config from '@payload-config'
 
 export const metadata: Metadata = {
   title: 'Project Reports | BBFORPEACE',
@@ -133,9 +135,62 @@ const colorMap = {
   },
 }
 
-export default function ProjectReportsPage() {
-  const featuredReport = projectReports.find(r => r.featured)
-  const otherReports = projectReports.filter(r => !r.featured)
+export default async function ProjectReportsPage() {
+  const payload = await getPayload({ config })
+
+  let projectReportsFromCms: any[] = []
+  let reportsSettings: any = {}
+
+  try {
+    const [result, pageSettings] = await Promise.all([
+      payload.find({
+        collection: 'publications',
+        where: { subMenu: { equals: 'project-report' } },
+        sort: '-year',
+        limit: 20,
+        depth: 1,
+      }),
+      payload.findGlobal({ slug: 'reports-settings' }),
+    ])
+    reportsSettings = pageSettings as any
+
+    if (result.docs.length > 0) {
+      const colorCycle = ['blue', 'emerald', 'purple', 'amber']
+      projectReportsFromCms = result.docs.map((pub: any, idx: number) => ({
+        id: pub.id,
+        title: pub.title,
+        description: pub.excerpt || pub.description || '',
+        year: pub.year || new Date().getFullYear(),
+        category: pub.category || 'Program Report',
+        region: 'Nigeria',
+        pages: 0,
+        coverImage: pub.coverImage && typeof pub.coverImage === 'object' ? pub.coverImage.url : '/images/_VEE7927.jpg',
+        downloadUrl: pub.file && typeof pub.file === 'object' ? pub.file.url : '#',
+        featured: idx === 0,
+        color: colorCycle[idx % colorCycle.length],
+      }))
+    }
+  } catch (error) {
+    console.error('Failed to fetch project reports:', error)
+  }
+
+  const getImageUrl = (media: any) => {
+    if (!media) return '/images/_VEE7927.jpg'
+    if (typeof media === 'object' && media.url) return media.url
+    return media
+  }
+
+  // Page header from CMS
+  const heroTitle = reportsSettings.projectTitle || 'Project Reports'
+  const heroSubtitle = reportsSettings.projectSubtitle || 'Documentation & Research'
+  const heroDescription = reportsSettings.projectDescription || 'Access comprehensive documentation from our peacebuilding programs, research initiatives, and regional interventions.'
+  const heroBg = getImageUrl(reportsSettings.projectBackgroundImage) || '/images/_VEE7927.jpg'
+
+  // Use CMS data or hardcoded fallback
+  const displayReports = projectReportsFromCms.length > 0 ? projectReportsFromCms : projectReports
+
+  const featuredReport = displayReports.find(r => r.featured)
+  const otherReports = displayReports.filter(r => !r.featured)
   const reportsByYear = otherReports.reduce((acc, report) => {
     const year = report.year.toString()
     if (!acc[year]) acc[year] = []
@@ -146,10 +201,10 @@ export default function ProjectReportsPage() {
   return (
     <>
       <PageHero
-        title="Project Reports"
-        subtitle="Documentation & Research"
-        description="Access comprehensive documentation from our peacebuilding programs, research initiatives, and regional interventions."
-        backgroundImage="/images/_VEE7927.jpg"
+        title={heroTitle}
+        subtitle={heroSubtitle}
+        description={heroDescription}
+        backgroundImage={heroBg}
         breadcrumbs={[
           { label: 'Home', href: '/' },
           { label: 'Annual Reports', href: '/reports' },
@@ -245,7 +300,7 @@ export default function ProjectReportsPage() {
       )}
 
       {/* Reports by Year */}
-      {Object.entries(reportsByYear)
+      {(Object.entries(reportsByYear) as [string, any[]][])
         .sort(([a], [b]) => Number(b) - Number(a))
         .map(([year, reports]) => (
           <section key={year} className="py-16 odd:bg-gray-50 even:bg-white">

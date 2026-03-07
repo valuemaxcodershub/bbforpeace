@@ -1,46 +1,43 @@
 'use client'
 
-import { Target, GraduationCap, Megaphone, Handshake, Radio, Sparkles } from 'lucide-react'
+import { Target, GraduationCap, Megaphone, Handshake, Radio, Sparkles, Shield, Users, BookOpen } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 
-const pillars = [
-  {
-    icon: Target,
-    title: 'Research & Knowledge',
-    description: 'Generating evidence-based insights to inform peacebuilding strategies and policy advocacy.',
-    gradient: 'from-blue-500 to-cyan-500',
-    shadow: 'shadow-blue-500/25',
-  },
-  {
-    icon: GraduationCap,
-    title: 'Programs & Training',
-    description: 'Building capacity through workshops, mentorship, and skill development for young peacebuilders.',
-    gradient: 'from-violet-500 to-purple-500',
-    shadow: 'shadow-violet-500/25',
-  },
-  {
-    icon: Megaphone,
-    title: 'Advocacy & Engagement',
-    description: 'Influencing policies at local, national, and regional levels for sustainable peace.',
-    gradient: 'from-amber-500 to-orange-500',
-    shadow: 'shadow-amber-500/25',
-  },
-  {
-    icon: Handshake,
-    title: 'Partnerships & Networks',
-    description: 'Collaborating with organizations to amplify impact and create synergies.',
-    gradient: 'from-emerald-500 to-green-500',
-    shadow: 'shadow-emerald-500/25',
-  },
-  {
-    icon: Radio,
-    title: 'Communications & Outreach',
-    description: 'Amplifying peace narratives through media and community awareness campaigns.',
-    gradient: 'from-rose-500 to-pink-500',
-    shadow: 'shadow-rose-500/25',
-  },
+const iconMap: Record<string, LucideIcon> = {
+  Target, GraduationCap, Megaphone, Handshake, Radio, Shield, Users, BookOpen,
+}
+
+// Shadow map derived from color
+const shadowMap: Record<string, string> = {
+  'from-blue-500 to-cyan-500': 'shadow-blue-500/25',
+  'from-violet-500 to-purple-500': 'shadow-violet-500/25',
+  'from-amber-500 to-orange-500': 'shadow-amber-500/25',
+  'from-emerald-500 to-green-500': 'shadow-emerald-500/25',
+  'from-rose-500 to-pink-500': 'shadow-rose-500/25',
+}
+
+const defaultPillars = [
+  { title: 'Research & Knowledge', description: 'Generating evidence-based insights to inform peacebuilding strategies and policy advocacy.', icon: 'Target', color: 'from-blue-500 to-cyan-500' },
+  { title: 'Programs & Training', description: 'Building capacity through workshops, mentorship, and skill development for young peacebuilders.', icon: 'GraduationCap', color: 'from-violet-500 to-purple-500' },
+  { title: 'Advocacy & Engagement', description: 'Influencing policies at local, national, and regional levels for sustainable peace.', icon: 'Megaphone', color: 'from-amber-500 to-orange-500' },
+  { title: 'Partnerships & Networks', description: 'Collaborating with organizations to amplify impact and create synergies.', icon: 'Handshake', color: 'from-emerald-500 to-green-500' },
+  { title: 'Communications & Outreach', description: 'Amplifying peace narratives through media and community awareness campaigns.', icon: 'Radio', color: 'from-rose-500 to-pink-500' },
 ]
 
-export function OurApproachSection() {
+export interface OurApproachSectionProps {
+  badge?: string
+  heading?: string
+  description?: string
+  pillars?: { title: string; description: string; icon?: string | null; color?: string | null }[]
+}
+
+export function OurApproachSection({
+  badge = 'How We Work',
+  heading = 'Our Approach',
+  description = 'Five integrated pillars guide our work, ensuring comprehensive and sustainable impact in youth-led peacebuilding across Nigeria and West Africa.',
+  pillars: pillarsProp,
+}: OurApproachSectionProps) {
+  const pillars = pillarsProp?.length ? pillarsProp : defaultPillars
   return (
     <section className="py-24 bg-gradient-to-br from-primary-950 via-primary-900 to-indigo-900 relative overflow-hidden">
       {/* Background Pattern */}
@@ -56,22 +53,23 @@ export function OurApproachSection() {
             <span className="w-10 h-[2px] bg-accent-gold" />
             <span className="inline-flex items-center gap-2 text-accent-gold text-sm font-semibold uppercase tracking-widest">
               <Sparkles className="w-4 h-4" />
-              How We Work
+              {badge}
             </span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Our <span className="text-accent-gold">Approach</span>
+            Our <span className="text-accent-gold">{heading.replace('Our ', '')}</span>
           </h2>
           <p className="text-gray-300 text-lg leading-relaxed">
-            Five integrated pillars guide our work, ensuring comprehensive and sustainable 
-            impact in youth-led peacebuilding across Nigeria and West Africa.
+            {description}
           </p>
         </div>
 
         {/* Pillars Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
           {pillars.map((pillar, index) => {
-            const Icon = pillar.icon
+            const Icon = iconMap[pillar.icon || 'Target'] || Target
+            const gradient = pillar.color || 'from-blue-500 to-cyan-500'
+            const shadow = shadowMap[gradient] || 'shadow-blue-500/25'
             return (
               <div
                 key={index}
@@ -85,7 +83,7 @@ export function OurApproachSection() {
                 </div>
 
                 {/* Icon */}
-                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${pillar.gradient} flex items-center justify-center mb-5 shadow-lg ${pillar.shadow} group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300`}>
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center mb-5 shadow-lg ${shadow} group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300`}>
                   <Icon className="w-7 h-7 text-white" />
                 </div>
 

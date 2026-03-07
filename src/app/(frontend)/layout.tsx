@@ -4,6 +4,9 @@ import { Header, Footer } from '@/components/layout'
 import { ScrollObserver } from '@/components/ui/ScrollObserver'
 import { BackToTop } from '@/components/ui/BackToTop'
 
+// Force dynamic rendering - CMS content is always fresh, no build-time DB needed
+export const dynamic = 'force-dynamic'
+
 const inter = Inter({
   variable: '--font-inter',
   subsets: ['latin'],
@@ -79,6 +82,8 @@ export const metadata: Metadata = {
     apple: '/images/logo.jpg',
   },
 }
+
+export const revalidate = 60 // Revalidate every 60 seconds
 
 export default function FrontendLayout({
   children,

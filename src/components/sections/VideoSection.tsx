@@ -5,33 +5,34 @@ import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-const allVideos = [
-  {
-    id: 'nggBR0ErutQ',
-    title: 'Youth Peacebuilding Initiative 2024',
-    description: 'Empowering young people as active agents of peace.',
-  },
-  {
-    id: '81lEFT84dDQ',
-    title: 'Community Engagement & Dialogue',
-    description: 'Fostering meaningful dialogue between communities.',
-  },
-  {
-    id: 'xvQ_AXIQbPM',
-    title: 'Building Blocks for Peace: Our Journey',
-    description: 'Discover how BBFORPEACE is transforming communities across Nigeria.',
-  },
+const defaultVideos = [
+  { youtubeId: 'nggBR0ErutQ', title: 'Youth Peacebuilding Initiative 2024', description: 'Empowering young people as active agents of peace.' },
+  { youtubeId: '81lEFT84dDQ', title: 'Community Engagement & Dialogue', description: 'Fostering meaningful dialogue between communities.' },
+  { youtubeId: 'xvQ_AXIQbPM', title: 'Building Blocks for Peace: Our Journey', description: 'Discover how BBFORPEACE is transforming communities across Nigeria.' },
 ]
 
-export function VideoSection() {
-  const [activeVideoId, setActiveVideoId] = useState(allVideos[0].id)
+export interface VideoSectionProps {
+  badge?: string
+  heading?: string
+  description?: string
+  videos?: { youtubeId: string; title: string; description?: string | null }[]
+}
+
+export function VideoSection({
+  badge = 'Media',
+  heading = 'Watch Our Impact',
+  description = 'See how we are empowering communities and building peaceful societies.',
+  videos: videosProp,
+}: VideoSectionProps) {
+  const allVideos = videosProp?.length ? videosProp : defaultVideos
+  const [activeVideoId, setActiveVideoId] = useState(allVideos[0].youtubeId)
   const [isPlaying, setIsPlaying] = useState(false)
 
-  const activeVideo = allVideos.find(v => v.id === activeVideoId)!
-  const sideVideos = allVideos.filter(v => v.id !== activeVideoId)
+  const activeVideo = allVideos.find(v => v.youtubeId === activeVideoId)!
+  const sideVideos = allVideos.filter(v => v.youtubeId !== activeVideoId)
 
-  const handleSideVideoClick = (videoId: string) => {
-    setActiveVideoId(videoId)
+  const handleSideVideoClick = (youtubeId: string) => {
+    setActiveVideoId(youtubeId)
     setIsPlaying(true)
   }
 
@@ -46,14 +47,14 @@ export function VideoSection() {
         <div className="text-center mb-14" data-scroll="up">
           <span className="inline-flex items-center justify-center gap-3 text-primary-900 text-sm font-semibold uppercase tracking-widest mb-4">
             <span className="w-8 h-[2px] bg-primary-900" />
-            Media
+            {badge}
             <span className="w-8 h-[2px] bg-primary-900" />
           </span>
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Watch Our <span className="text-primary-900">Impact</span>
+            {heading}
           </h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            See how we are empowering communities and building peaceful societies.
+            {description}
           </p>
         </div>
 
@@ -64,8 +65,8 @@ export function VideoSection() {
             <div className="relative aspect-video rounded-2xl overflow-hidden shadow-xl bg-gray-900 group">
               {isPlaying ? (
                 <iframe
-                  key={activeVideo.id}
-                  src={`https://www.youtube.com/embed/${activeVideo.id}?autoplay=1&rel=0`}
+                  key={activeVideo.youtubeId}
+                  src={`https://www.youtube.com/embed/${activeVideo.youtubeId}?autoplay=1&rel=0`}
                   title={activeVideo.title}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
@@ -74,7 +75,7 @@ export function VideoSection() {
               ) : (
                 <>
                   <img
-                    src={`https://img.youtube.com/vi/${activeVideo.id}/maxresdefault.jpg`}
+                    src={`https://img.youtube.com/vi/${activeVideo.youtubeId}/maxresdefault.jpg`}
                     alt={activeVideo.title}
                     className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
@@ -90,7 +91,7 @@ export function VideoSection() {
                   </button>
                   <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
                     <h3 className="text-white font-bold text-xl mb-1">{activeVideo.title}</h3>
-                    <p className="text-gray-300 text-sm">{activeVideo.description}</p>
+                    <p className="text-gray-300 text-sm">{activeVideo.description || ''}</p>
                   </div>
                 </>
               )}
@@ -110,12 +111,12 @@ export function VideoSection() {
           <div className="lg:col-span-2 flex flex-col gap-4" data-scroll="right">
             {sideVideos.map((video) => (
               <div
-                key={video.id}
+                key={video.youtubeId}
                 className="relative aspect-video rounded-xl overflow-hidden shadow-md bg-gray-900 group cursor-pointer hover:shadow-lg transition-shadow"
-                onClick={() => handleSideVideoClick(video.id)}
+                onClick={() => handleSideVideoClick(video.youtubeId)}
               >
                 <img
-                  src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`}
+                  src={`https://img.youtube.com/vi/${video.youtubeId}/hqdefault.jpg`}
                   alt={video.title}
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />

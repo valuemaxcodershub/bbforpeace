@@ -2,8 +2,10 @@ import { PageHero } from '@/components/layout'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Calendar, ArrowRight } from 'lucide-react'
+import { getPayload } from 'payload'
+import config from '@payload-config'
 
-const pressStatements = [
+const defaultPressStatements = [
   {
     id: '1',
     title: 'BBFORPEACE Receives National Youth Development Award 2025',
@@ -43,14 +45,60 @@ export const metadata = {
   description: 'Official press statements and announcements from Building Blocks for Peace Foundation.',
 }
 
-export default function PressPage() {
+export default async function PressPage() {
+  const payload = await getPayload({ config })
+
+  let pressStatements: any[] = []
+  let mediaSettings: any = {}
+
+  try {
+    const [postsResult, pageSettings] = await Promise.all([
+      payload.find({
+        collection: 'posts',
+        where: { subMenu: { equals: 'press-statement' }, status: { equals: 'published' } },
+        sort: '-publishedAt',
+        limit: 20,
+        depth: 1,
+      }),
+      payload.findGlobal({ slug: 'media-page-settings' }),
+    ])
+    mediaSettings = pageSettings as any
+
+    if (postsResult.docs.length > 0) {
+      pressStatements = postsResult.docs.map((post: any) => ({
+        id: post.id,
+        title: post.title,
+        excerpt: post.excerpt || '',
+        date: post.publishedAt || post.createdAt,
+        slug: post.slug,
+        image: post.featuredImage && typeof post.featuredImage === 'object' ? post.featuredImage.url : '/images/_VEE7009 (1).jpg',
+      }))
+    } else {
+      pressStatements = defaultPressStatements
+    }
+  } catch (error) {
+    console.error('Failed to fetch press statements:', error)
+    pressStatements = defaultPressStatements
+  }
+
+  const getImageUrl = (media: any) => {
+    if (!media) return '/images/_VEE7009 (1).jpg'
+    if (typeof media === 'object' && media.url) return media.url
+    return media
+  }
+
+  // Page header from CMS
+  const heroTitle = mediaSettings.pressHeading || 'Press Statements'
+  const heroSubtitle = mediaSettings.pressSubtitle || 'Media'
+  const heroDescription = mediaSettings.pressDescription || 'Official announcements, press releases, and statements from Building Blocks for Peace Foundation.'
+  const heroBg = getImageUrl(mediaSettings.pressBackgroundImage) || '/images/_VEE7009 (1).jpg'
   return (
     <>
       <PageHero
-        title="Press Statements"
-        subtitle="Media"
-        description="Official announcements, press releases, and statements from Building Blocks for Peace Foundation."
-        backgroundImage="/images/_VEE7009 (1).jpg"
+        title={heroTitle}
+        subtitle={heroSubtitle}
+        description={heroDescription}
+        backgroundImage={heroBg}
         breadcrumbs={[
           { label: 'Home', href: '/' },
           { label: 'Media', href: '/media' },

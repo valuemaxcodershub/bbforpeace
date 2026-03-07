@@ -2,22 +2,40 @@
 
 import { useState } from 'react'
 import { ArrowRight, Mail, Bell } from 'lucide-react'
+import { subscribeNewsletter } from '@/app/actions/newsletter'
 
-export function NewsletterSection() {
+export interface NewsletterSectionProps {
+  heading?: string
+  description?: string
+  buttonText?: string
+}
+
+export function NewsletterSection({
+  heading = 'Stay Updated',
+  description = 'Subscribe to our newsletter for the latest news on youth peacebuilding in Nigeria.',
+  buttonText = 'Subscribe Now',
+}: NewsletterSectionProps) {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [message, setMessage] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setStatus('loading')
+    setMessage('')
 
-    try {
-      // TODO: Implement actual newsletter subscription
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      setStatus('success')
-      setEmail('')
-    } catch {
+    const formData = new FormData()
+    formData.append('email', email)
+
+    const result = await subscribeNewsletter(formData)
+
+    if (result.error) {
       setStatus('error')
+      setMessage(result.error)
+    } else {
+      setStatus('success')
+      setMessage(result.message || 'Subscribed successfully!')
+      setEmail('')
     }
   }
 
@@ -33,10 +51,10 @@ export function NewsletterSection() {
                   <Bell className="w-6 h-6 text-primary-900" />
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-                  Stay Updated
+                  {heading}
                 </h2>
                 <p className="text-gray-600">
-                  Subscribe to our newsletter for the latest news on youth peacebuilding in Nigeria.
+                  {description}
                 </p>
               </div>
 
@@ -60,7 +78,7 @@ export function NewsletterSection() {
                     disabled={status === 'loading'}
                     className="group w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold bg-primary-900 text-white hover:bg-primary-800 disabled:opacity-50 transition-colors"
                   >
-                    {status === 'loading' ? 'Subscribing...' : 'Subscribe Now'}
+                    {status === 'loading' ? 'Subscribing...' : buttonText}
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </form>
@@ -68,12 +86,12 @@ export function NewsletterSection() {
                 {status === 'success' && (
                   <p className="mt-3 text-green-600 text-sm flex items-center gap-2">
                     <span className="w-4 h-4 rounded-full bg-green-100 flex items-center justify-center">✓</span>
-                    Thank you for subscribing! Check your email to confirm.
+                    {message}
                   </p>
                 )}
                 {status === 'error' && (
                   <p className="mt-3 text-red-600 text-sm">
-                    Something went wrong. Please try again.
+                    {message}
                   </p>
                 )}
 

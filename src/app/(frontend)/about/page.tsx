@@ -2,155 +2,175 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { PageHero } from '@/components/layout'
+import { BoardMemberCard } from '@/components/cards/BoardMemberCard'
 import { 
   Target, Eye, CheckCircle, Shield, Users, Lightbulb, 
   Handshake, Heart, UserCheck, Award, Calendar, MapPin,
   Linkedin, Twitter, Mail, ArrowRight,
   GraduationCap, Scale, Leaf, Building2, HeartHandshake
 } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
+import { getPayload } from 'payload'
+import config from '@payload-config'
+
+const coreValueIconMap: Record<string, LucideIcon> = {
+  Shield, Users, Lightbulb, Handshake, Heart, UserCheck,
+}
+const pillarIconMap: Record<string, LucideIcon> = {
+  GraduationCap, Scale, Leaf, Building2, HeartHandshake,
+}
+const pillarShadowMap: Record<string, string> = {
+  'from-blue-500 to-cyan-400': 'shadow-blue-500/30',
+  'from-emerald-500 to-green-400': 'shadow-emerald-500/30',
+  'from-amber-500 to-yellow-400': 'shadow-amber-500/30',
+  'from-violet-500 to-purple-400': 'shadow-violet-500/30',
+  'from-rose-500 to-pink-400': 'shadow-rose-500/30',
+}
 
 export const metadata: Metadata = {
   title: 'About Us | BBFORPEACE',
   description: 'Learn about Building Blocks for Peace Foundation - a youth-led peacebuilding NGO working to create sustainable peace through knowledge-sharing, policy advocacy, partnerships and programs.',
 }
 
-const coreValues = [
-  { icon: Shield, title: 'Integrity & Accountability', description: 'Transparency in all our actions and decisions' },
-  { icon: Users, title: 'Inclusivity & Gender Equality', description: 'Ensuring all voices are heard and represented' },
-  { icon: Lightbulb, title: 'Innovation & Learning', description: 'Continuously improving our approaches' },
-  { icon: Handshake, title: 'Collaboration & Solidarity', description: 'Working together for greater impact' },
-  { icon: Heart, title: 'Non-Violence & Do No Harm', description: 'Peace in all our methods and actions' },
-  { icon: UserCheck, title: 'Youth Leadership', description: 'Young people at the center of decision-making' },
-]
+export default async function AboutPage() {
+  const payload = await getPayload({ config })
 
-const strategicPillars = [
-  { 
-    title: 'Peace Education & Youth Empowerment', 
-    icon: GraduationCap,
-    gradient: 'from-blue-500 to-cyan-400',
-    shadow: 'shadow-blue-500/30'
-  },
-  { 
-    title: 'Conflict Prevention, Governance & Accountability', 
-    icon: Scale,
-    gradient: 'from-emerald-500 to-green-400',
-    shadow: 'shadow-emerald-500/30'
-  },
-  { 
-    title: 'Gender, Climate & Environmental Security', 
-    icon: Leaf,
-    gradient: 'from-amber-500 to-yellow-400',
-    shadow: 'shadow-amber-500/30'
-  },
-  { 
-    title: 'Organizational Sustainability & Partnerships', 
-    icon: Building2,
-    gradient: 'from-violet-500 to-purple-400',
-    shadow: 'shadow-violet-500/30'
-  },
-  { 
-    title: 'Livelihoods and Humanitarian', 
-    icon: HeartHandshake,
-    gradient: 'from-rose-500 to-pink-400',
-    shadow: 'shadow-rose-500/30'
-  },
-]
+  // Fetch all data in parallel
+  let as: Record<string, any> = {}
+  let teamMembers: any[] = []
+  let boardOfTrustees: any[] = []
+  let partnersData: any = null
 
-const teamMembers = [
-  {
-    name: 'Rafiu Adeniran Lawal',
-    position: 'Executive Director',
-    bio: 'Founder of BBFORPEACE with extensive experience in youth peacebuilding, policy advocacy, and regional networking across West Africa.',
-    image: '/images/ourteam/1. Rafiu Adeniran Lawal, Executive Director.jpeg',
-    email: 'r.lawal@bbforpeace.org',
-    linkedin: '#',
-    twitter: '#',
-  },
-  {
-    name: 'Anthonia Folashade',
-    position: 'Communications Manager',
-    bio: 'Passionate about storytelling for social change and amplifying youth voices across media platforms.',
-    image: '/images/ourteam/2. Anthonia Folashade, Communications Manager.png',
-    email: 'comms@bbforpeace.org',
-  },
-  {
-    name: 'Eseimokumo Albert',
-    position: 'Project Officer (Youth, Peace and Security)',
-    bio: 'Expert in youth engagement and peacebuilding program design and implementation.',
-    image: '/images/ourteam/3. Eseimokumo Albert, Project Officer (Youth, Peace and Security).jpeg',
-    email: 'yps@bbforpeace.org',
-  },
-  {
-    name: 'Samson Shabu',
-    position: 'Project Officer (Climate, Peace and Security)',
-    bio: 'Focused on the nexus between climate change, environmental security, and peacebuilding.',
-    image: '/images/ourteam/5. Samson Shabu, Project Officer (Climate, Peace and Security).jpeg',
-    email: 'climate@bbforpeace.org',
-  },
-  {
-    name: 'Mercy Oyip',
-    position: 'Wellbeing and Admin Assistant',
-    bio: 'Ensuring organizational wellbeing and smooth administrative operations.',
-    image: '/images/ourteam/4. Mercy Oyip, Wellbeing and Admin Assistant.jpeg',
-    email: 'admin@bbforpeace.org',
-  },
-  {
-    name: 'Project Intern',
-    position: 'Gender, Monitoring and Evaluation',
-    bio: 'Supporting gender mainstreaming and monitoring & evaluation across all programs.',
-    image: '/images/ourteam/6. Project Intern (Gender, Monitoring and Evaluation).jpeg',
-    email: 'me@bbforpeace.org',
-  },
-]
+  try {
+    const [aboutSettings, teamResult, boardResult, partners] = await Promise.all([
+      payload.findGlobal({ slug: 'about-us-page-settings' }),
+      payload.find({ collection: 'team', where: { category: { equals: 'staff' }, isActive: { equals: true } }, sort: 'order', limit: 20, depth: 1 }),
+      payload.find({ collection: 'team', where: { category: { equals: 'board' }, isActive: { equals: true } }, sort: 'order', limit: 20, depth: 1 }),
+      payload.findGlobal({ slug: 'partners-settings' }),
+    ])
+    as = aboutSettings as Record<string, any>
+    teamMembers = teamResult.docs
+    boardOfTrustees = boardResult.docs
+    partnersData = partners as any
+  } catch (error) {
+    console.error('Failed to fetch about page data:', error)
+  }
 
-// Board of Trustees - to be updated with actual data
-const boardOfTrustees = [
-  {
-    name: 'Board Chair',
-    position: 'Chairperson',
-    bio: 'Distinguished leader with decades of experience in conflict resolution and peace advocacy.',
-    image: '/images/_VEE7927.jpg',
-  },
-  {
-    name: 'Board Member',
-    position: 'Trustee',
-    bio: 'Expert in governance, policy development, and strategic leadership.',
-    image: '/images/_VEE7856.jpg',
-  },
-  {
-    name: 'Board Member',
-    position: 'Trustee',
-    bio: 'Committed to youth empowerment and sustainable development initiatives.',
-    image: '/images/_VEE7915 (1).jpg',
-  },
-]
+  // Defaults
+  const pageTitle = as.title || 'About Us'
+  const pageSubtitle = as.subtitle || 'Who We Are'
+  const pageDesc = as.description || 'A youth-led organization bridging grassroots action, policy advocacy, and regional networking for sustainable peace.'
+  const bgImage = (typeof as.backgroundImage === 'object' && as.backgroundImage?.url) || '/images/_VEE7009 (1).jpg'
+  
+  const storyP1 = as.storyParagraph1 || 'Building Blocks for Peace (BBFORPEACE) Foundation is a non-governmental organization working on Conflict Prevention, Prevention of Violent Extremism, Peacebuilding and Sustainable Development in Nigeria.'
+  const storyP2 = as.storyParagraph2 || 'Founded by Rafiu Adeniran Lawal, BBFORPEACE began with the Nigeria Youth 4 Peace Initiative in 2016 — a movement of young people dissatisfied with the increasing participation of youth in violent extremism and their exclusion from decision-making processes.'
+  const storyP3 = as.storyParagraph3 || 'Through our Youth4Peace initiative, we have trained and empowered over 5,000 youth and children with support from several local and international stakeholders.'
 
-const partners = [
-  { name: 'GPPAC', description: 'Global Partnership for Prevention of Armed Conflict', logo: '/images/partners/gppac.jfif' },
-  { name: 'WANEP', description: 'West Africa Network for Peacebuilding', logo: '/images/partners/wanep.png' },
-  { name: 'British Council', description: 'Education & Cultural Relations', logo: '/images/partners/British_Council_logo.svg.png' },
-  { name: 'MacArthur Foundation', description: 'Funding Partner', logo: '/images/partners/maaurthor.jfif' },
-  { name: 'Open Society Foundations', description: 'Civic Space Protection', logo: '/images/partners/open%20society%20foundation.png' },
-  { name: 'Ford Foundation', description: 'Social Justice Funding', logo: '/images/partners/ford.png' },
-]
+  const milestones = as.milestones?.length ? as.milestones : [
+    { year: '2016', event: 'Nigeria Youth 4 Peace Initiative founded' },
+    { year: '2017', event: 'BBFORPEACE incorporated with Corporate Affairs Commission' },
+    { year: '2020', event: 'Became GPPAC West Africa Regional Secretariat' },
+    { year: '2023', event: 'Best Young Peacebuilding Organisation Award (WANEP)' },
+    { year: '2024', event: 'WAYPAN Regional Network established' },
+    { year: '2025', event: 'National Youth Development Award' },
+  ]
 
-const milestones = [
-  { year: '2016', event: 'Nigeria Youth 4 Peace Initiative founded' },
-  { year: '2017', event: 'BBFORPEACE incorporated with Corporate Affairs Commission' },
-  { year: '2020', event: 'Became GPPAC West Africa Regional Secretariat' },
-  { year: '2023', event: 'Best Young Peacebuilding Organisation Award (WANEP)' },
-  { year: '2024', event: 'WAYPAN Regional Network established' },
-  { year: '2025', event: 'National Youth Development Award' },
-]
+  const storyImages = [
+    (typeof as.storyImage1 === 'object' && as.storyImage1?.url) || '/images/_VEE6792.jpg',
+    (typeof as.storyImage2 === 'object' && as.storyImage2?.url) || '/images/_VEE7124 (1).jpg',
+    (typeof as.storyImage3 === 'object' && as.storyImage3?.url) || '/images/_VEE7037 (1).jpg',
+    (typeof as.storyImage4 === 'object' && as.storyImage4?.url) || '/images/PXL_20251008_122828933.jpg',
+  ]
 
-export default function AboutPage() {
+  const visionText = as.vision || 'A peaceful, just and inclusive Africa where youth, women and men lead resilient communities, accountable governance, and sustainable development.'
+  const missionText = as.mission || 'To equip youth, women and men as peacebuilders to prevent violent conflict, protect civic space, and promote sustainable peace through knowledge-sharing, policy advocacy, partnerships and programs.'
+
+  const coreValues = as.coreValues?.length ? as.coreValues : [
+    { icon: 'Shield', title: 'Integrity & Accountability', description: 'Transparency in all our actions and decisions' },
+    { icon: 'Users', title: 'Inclusivity & Gender Equality', description: 'Ensuring all voices are heard and represented' },
+    { icon: 'Lightbulb', title: 'Innovation & Learning', description: 'Continuously improving our approaches' },
+    { icon: 'Handshake', title: 'Collaboration & Solidarity', description: 'Working together for greater impact' },
+    { icon: 'Heart', title: 'Non-Violence & Do No Harm', description: 'Peace in all our methods and actions' },
+    { icon: 'UserCheck', title: 'Youth Leadership', description: 'Young people at the center of decision-making' },
+  ]
+
+  const strategyPeriod = as.strategyPeriod || '2026 - 2030'
+  const strategicPillars = as.strategicPillars?.length ? as.strategicPillars : [
+    { title: 'Peace Education & Youth Empowerment', icon: 'GraduationCap', gradient: 'from-blue-500 to-cyan-400' },
+    { title: 'Conflict Prevention, Governance & Accountability', icon: 'Scale', gradient: 'from-emerald-500 to-green-400' },
+    { title: 'Gender, Climate & Environmental Security', icon: 'Leaf', gradient: 'from-amber-500 to-yellow-400' },
+    { title: 'Organizational Sustainability & Partnerships', icon: 'Building2', gradient: 'from-violet-500 to-purple-400' },
+    { title: 'Livelihoods and Humanitarian', icon: 'HeartHandshake', gradient: 'from-rose-500 to-pink-400' },
+  ]
+
+  const uniqueIntro = as.uniqueIntro || "In Nigeria's peacebuilding ecosystem, BBFORPEACE occupies a unique niche as one of the few truly youth-led organizations operating from the grassroots to policy level."
+  const uniquePoints = as.uniquePoints?.length ? as.uniquePoints : [
+    { title: 'Youth-Led & Grassroots-Informed', description: 'Co-founded and run by young peacebuilders with authenticity among youth constituencies.' },
+    { title: 'Policy-Engaged', description: 'Contributing to YPS and WPS action plans across West Africa.' },
+    { title: 'GPPAC Regional Secretariat', description: 'West Africa secretariat for Global Partnership for Prevention of Armed Conflict.' },
+    { title: 'Global Youth Networks', description: 'Active in United Network of Young Peacebuilders.' },
+  ]
+
+  const aboutAwards = as.aboutAwards?.length ? as.aboutAwards : [
+    { title: 'National Youth Development Award', organization: 'Federal Ministry of Youth Development, Abuja', year: '2025' },
+    { title: 'Best Young Peacebuilding Organisation', organization: 'West Africa Network for Peacebuilding (WANEP-Nigeria)', year: '2023' },
+  ]
+
+  const teamHeading = as.teamHeading || 'Meet Our Team'
+  const teamDescription = as.teamDescription || 'Passionate young leaders dedicated to building peace and empowering communities.'
+  const boardHeading = as.boardHeading || 'Board of Trustees'
+  const boardDescription = as.boardDescription || 'Our distinguished board members provide strategic oversight and guidance for the organization.'
+
+  const ctaHeading = as.ctaHeading || 'Join Us in Building Peace'
+  const ctaDescription = as.ctaDescription || 'Whether as a volunteer, partner, or supporter, there are many ways to contribute to our mission.'
+  const headOfficeAddress = as.headOfficeAddress || '256, 1st Avenue, FHA, Lugbe'
+  const headOfficeCity = as.headOfficeCity || 'Abuja, Nigeria'
+  const headOfficePhone = as.headOfficePhone || '+234-8054151494'
+  const regionOfficeAddress = as.regionOfficeAddress || '35, Edward Ujege Street, High Level'
+  const regionOfficeCity = as.regionOfficeCity || 'Makurdi, Benue State'
+  const regionOfficeEmail = as.regionOfficeEmail || 'info@bbforpeace.org'
+
+  // Partners
+  const partners = (partnersData as any)?.items?.length ? (partnersData as any).items.map((p: any) => ({
+    name: p.name,
+    description: p.description || '',
+    logo: (typeof p.logo === 'object' && p.logo?.url) || '/images/partners/gppac.jfif',
+  })) : [
+    { name: 'GPPAC', description: 'Global Partnership for Prevention of Armed Conflict', logo: '/images/partners/gppac.jfif' },
+    { name: 'WANEP', description: 'West Africa Network for Peacebuilding', logo: '/images/partners/wanep.png' },
+    { name: 'British Council', description: 'Education & Cultural Relations', logo: '/images/partners/British_Council_logo.svg.png' },
+    { name: 'MacArthur Foundation', description: 'Funding Partner', logo: '/images/partners/maaurthor.jfif' },
+    { name: 'Open Society Foundations', description: 'Civic Space Protection', logo: '/images/partners/open%20society%20foundation.png' },
+    { name: 'Ford Foundation', description: 'Social Justice Funding', logo: '/images/partners/ford.png' },
+  ]
+
+  // Fallback team data when collection is empty
+  const defaultTeam = [
+    { name: 'Rafiu Adeniran Lawal', position: 'Executive Director', shortBio: 'Founder of BBFORPEACE with extensive experience in youth peacebuilding, policy advocacy, and regional networking across West Africa.', photo: { url: '/images/ourteam/1. Rafiu Adeniran Lawal, Executive Director.jpeg' }, email: 'r.lawal@bbforpeace.org', socialLinks: { linkedin: '#', twitter: '#' } },
+    { name: 'Anthonia Folashade', position: 'Communications Manager', shortBio: 'Passionate about storytelling for social change and amplifying youth voices across media platforms.', photo: { url: '/images/ourteam/2. Anthonia Folashade, Communications Manager.png' }, email: 'comms@bbforpeace.org' },
+    { name: 'Eseimokumo Albert', position: 'Project Officer (Youth, Peace and Security)', shortBio: 'Expert in youth engagement and peacebuilding program design and implementation.', photo: { url: '/images/ourteam/3. Eseimokumo Albert, Project Officer (Youth, Peace and Security).jpeg' }, email: 'yps@bbforpeace.org' },
+    { name: 'Samson Shabu', position: 'Project Officer (Climate, Peace and Security)', shortBio: 'Focused on the nexus between climate change, environmental security, and peacebuilding.', photo: { url: '/images/ourteam/5. Samson Shabu, Project Officer (Climate, Peace and Security).jpeg' }, email: 'climate@bbforpeace.org' },
+    { name: 'Mercy Oyip', position: 'Wellbeing and Admin Assistant', shortBio: 'Ensuring organizational wellbeing and smooth administrative operations.', photo: { url: '/images/ourteam/4. Mercy Oyip, Wellbeing and Admin Assistant.jpeg' }, email: 'admin@bbforpeace.org' },
+    { name: 'Project Intern', position: 'Gender, Monitoring and Evaluation', shortBio: 'Supporting gender mainstreaming and monitoring & evaluation across all programs.', photo: { url: '/images/ourteam/6. Project Intern (Gender, Monitoring and Evaluation).jpeg' }, email: 'me@bbforpeace.org' },
+  ]
+  const defaultBoard = [
+    { name: 'Professor Charles Ukeje', position: 'Board Chair', shortBio: 'Professor of International Relations at Obafemi Awolowo University with global research experience.', photo: { url: '/images/board/Professor Charles Ukeje (Board Chair).png' } },
+    { name: 'Rafiu Adeniran Lawal', position: 'Board Secretary', shortBio: 'Founder and Executive Director of BBFORPEACE. Master\'s in Peace and Conflict Studies from University of Ibadan.', photo: { url: '/images/board/Rafiu Adeniran Lawal (Board Secretary).jpeg' } },
+    { name: 'Lantana Bako Abdullahi', position: 'Member', shortBio: 'Extensive experience in mediation and interreligious dialogues. Member of African Union FEMWISE.', photo: { url: '/images/board/Lantana Bako Abdullahi (Member).jpeg' } },
+    { name: 'Mautin Akapo, ACA, ACTI', position: 'Member', shortBio: 'Principal at MHL & Associates with 15 years of experience in tax, accounting, and grants management.', photo: { url: '/images/board/Mautin Akapo, ACA, ACTI (Member).jpeg' } },
+    { name: 'Olayinka Risikat Lawal', position: 'Member', shortBio: 'Nigerian Business Administrator, Philanthropist, and Managing Director of Albarka Group of Companies.', photo: { url: '/images/board/Olayinka Risikat Lawal (Member).jpeg' } },
+    { name: 'Princess Moyinoluwa Olubunmi Falowo', position: 'Member', shortBio: 'Former Regent at Ibule-Soro Kingdom focusing on grassroots community development initiatives.', photo: { url: '/images/board/Princess Moyinoluwa Olubunmi Falowo (Member).jpeg' } },
+  ]
+
+  const displayTeam = teamMembers.length ? teamMembers : defaultTeam
+  const displayBoard = boardOfTrustees.length ? boardOfTrustees : defaultBoard
   return (
     <>
       <PageHero
-        title="About Us"
-        subtitle="Who We Are"
-        description="A youth-led organization bridging grassroots action, policy advocacy, and regional networking for sustainable peace."
-        backgroundImage="/images/_VEE7009 (1).jpg"
+        title={pageTitle}
+        subtitle={pageSubtitle}
+        description={pageDesc}
+        backgroundImage={bgImage}
         breadcrumbs={[{ label: 'About Us' }]}
       />
 
@@ -168,22 +188,16 @@ export default function AboutPage() {
                   Building Peace <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-primary-900">Since 2016</span>
                 </h2>
                 <div className="space-y-4 text-gray-600 leading-relaxed">
-                  <p>
-                    Building Blocks for Peace (BBFORPEACE) Foundation is a non-governmental organization working on Conflict Prevention, Prevention of Violent Extremism, Peacebuilding and Sustainable Development in Nigeria.
-                  </p>
-                  <p>
-                    Founded by <strong className="text-primary-900">Rafiu Adeniran Lawal</strong>, BBFORPEACE began with the Nigeria Youth 4 Peace Initiative in 2016 — a movement of young people dissatisfied with the increasing participation of youth in violent extremism and their exclusion from decision-making processes.
-                  </p>
-                  <p>
-                    Through our Youth4Peace initiative, we have trained and empowered <strong className="text-accent-gold">over 5,000 youth and children</strong> with support from several local and international stakeholders.
-                  </p>
+                  <p>{storyP1}</p>
+                  <p>{storyP2}</p>
+                  <p>{storyP3}</p>
                 </div>
 
                 {/* Timeline */}
                 <div className="mt-10 relative bg-white/60 backdrop-blur-sm p-6 rounded-[1.5rem] border border-white shadow-lg">
                   <div className="absolute left-8 top-8 bottom-8 w-0.5 bg-gradient-to-b from-accent-gold via-primary-600 to-primary-200" />
                   <div className="space-y-5">
-                    {milestones.map((milestone, idx) => {
+                    {milestones.map((milestone: any, idx: number) => {
                       const colors = [
                         'from-rose-400 to-pink-500',
                         'from-amber-400 to-orange-500',
@@ -211,18 +225,18 @@ export default function AboutPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-4">
                     <div className="relative aspect-[3/4] rounded-[1.5rem] overflow-hidden shadow-xl rotate-2 hover:rotate-0 transition-transform">
-                      <Image src="/images/_VEE6792.jpg" alt="Team" fill className="object-cover" />
+                      <Image src={storyImages[0]} alt="Team" fill className="object-cover" />
                     </div>
                     <div className="relative aspect-square rounded-[1.5rem] overflow-hidden shadow-xl -rotate-1 hover:rotate-0 transition-transform">
-                      <Image src="/images/_VEE7124 (1).jpg" alt="Workshop" fill className="object-cover" />
+                      <Image src={storyImages[1]} alt="Workshop" fill className="object-cover" />
                     </div>
                   </div>
                   <div className="space-y-4 pt-8">
                     <div className="relative aspect-square rounded-[1.5rem] overflow-hidden shadow-xl rotate-1 hover:rotate-0 transition-transform">
-                      <Image src="/images/_VEE7037 (1).jpg" alt="Community" fill className="object-cover" />
+                      <Image src={storyImages[2]} alt="Community" fill className="object-cover" />
                     </div>
                     <div className="relative aspect-[3/4] rounded-[1.5rem] overflow-hidden shadow-xl -rotate-2 hover:rotate-0 transition-transform">
-                      <Image src="/images/PXL_20251008_122828933.jpg" alt="Award" fill className="object-cover" />
+                      <Image src={storyImages[3]} alt="Award" fill className="object-cover" />
                     </div>
                   </div>
                 </div>
@@ -256,9 +270,7 @@ export default function AboutPage() {
                     </div>
                     <h3 className="text-lg font-bold text-gray-900">Our Vision</h3>
                   </div>
-                  <p className="text-gray-600 leading-relaxed">
-                    A peaceful, just and inclusive Africa where youth, women and men lead resilient communities, accountable governance, and sustainable development.
-                  </p>
+                  <p className="text-gray-600 leading-relaxed">{visionText}</p>
                 </div>
                 
                 {/* Mission */}
@@ -269,9 +281,7 @@ export default function AboutPage() {
                     </div>
                     <h3 className="text-lg font-bold text-gray-900">Our Mission</h3>
                   </div>
-                  <p className="text-gray-600 leading-relaxed">
-                    To equip youth, women and men as peacebuilders to prevent violent conflict, protect civic space, and promote sustainable peace through knowledge-sharing, policy advocacy, partnerships and programs.
-                  </p>
+                  <p className="text-gray-600 leading-relaxed">{missionText}</p>
                 </div>
               </div>
             </div>
@@ -291,8 +301,8 @@ export default function AboutPage() {
             </div>
             <div className="max-w-5xl mx-auto">
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {coreValues.map((value, idx) => {
-                const Icon = value.icon
+                {coreValues.map((value: any, idx: number) => {
+                const Icon = coreValueIconMap[value.icon] || Shield
                 const colors = [
                   'from-rose-100 to-pink-50 hover:from-rose-200 hover:to-pink-100',
                   'from-sky-100 to-cyan-50 hover:from-sky-200 hover:to-cyan-100',
@@ -335,7 +345,7 @@ export default function AboutPage() {
             <div className="text-center mb-14" data-scroll="up">
               <span className="inline-flex items-center gap-3 justify-center text-accent-gold text-sm font-semibold uppercase tracking-widest mb-4">
                 <span className="w-8 h-[2px] bg-accent-gold" />
-                2026 - 2030
+                {strategyPeriod}
                 <span className="w-8 h-[2px] bg-accent-gold" />
               </span>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">Strategic Pillars</h2>
@@ -343,11 +353,12 @@ export default function AboutPage() {
             </div>
             <div className="max-w-5xl mx-auto">
               <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                {strategicPillars.map((pillar, idx) => {
-                  const IconComponent = pillar.icon
+                {strategicPillars.map((pillar: any, idx: number) => {
+                  const IconComponent = pillarIconMap[pillar.icon] || GraduationCap
+                  const shadow = pillarShadowMap[pillar.gradient] || 'shadow-blue-500/30'
                   return (
                     <div key={idx} className="group bg-white/10 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:bg-white/20 hover:border-accent-gold/30 transition-all text-center" data-scroll="scale" data-delay={idx * 100}>
-                      <div className={`w-14 h-14 bg-gradient-to-br ${pillar.gradient} rounded-2xl mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg ${pillar.shadow} flex items-center justify-center`}>
+                      <div className={`w-14 h-14 bg-gradient-to-br ${pillar.gradient} rounded-2xl mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg ${shadow} flex items-center justify-center`}>
                         <IconComponent className="w-7 h-7 text-white" strokeWidth={2} />
                       </div>
                       <p className="text-white font-semibold leading-snug">{pillar.title}</p>
@@ -372,46 +383,33 @@ export default function AboutPage() {
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Our Unique Positioning</h2>
               </div>
               <div className="bg-white/80 backdrop-blur-sm p-8 md:p-10 rounded-[2rem] shadow-xl border border-white">
-                <p className="text-gray-700 text-lg leading-relaxed mb-8 text-center">
-                  In Nigeria's peacebuilding ecosystem, BBFORPEACE occupies a unique niche as one of the few truly <strong className="text-primary-900">youth-led organizations</strong> operating from the grassroots to policy level.
-                </p>
+                <p className="text-gray-700 text-lg leading-relaxed mb-8 text-center">{uniqueIntro}</p>
                 <div className="grid md:grid-cols-2 gap-6">
-                  <div className="flex gap-4 p-4 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center flex-shrink-0 shadow-lg">
-                      <CheckCircle className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Youth-Led & Grassroots-Informed</h4>
-                      <p className="text-gray-600 text-sm">Co-founded and run by young peacebuilders with authenticity among youth constituencies.</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-4 p-4 rounded-2xl bg-gradient-to-br from-sky-50 to-cyan-50 border border-sky-100">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-cyan-500 flex items-center justify-center flex-shrink-0 shadow-lg">
-                      <CheckCircle className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Policy-Engaged</h4>
-                      <p className="text-gray-600 text-sm">Contributing to YPS and WPS action plans across West Africa.</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-4 p-4 rounded-2xl bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-100">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center flex-shrink-0 shadow-lg">
-                      <CheckCircle className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">GPPAC Regional Secretariat</h4>
-                      <p className="text-gray-600 text-sm">West Africa secretariat for Global Partnership for Prevention of Armed Conflict.</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-4 p-4 rounded-2xl bg-gradient-to-br from-rose-50 to-pink-50 border border-rose-100">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center flex-shrink-0 shadow-lg">
-                      <CheckCircle className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Global Youth Networks</h4>
-                      <p className="text-gray-600 text-sm">Active in United Network of Young Peacebuilders.</p>
-                    </div>
-                  </div>
+                  {uniquePoints.map((point: any, idx: number) => {
+                    const bgGradients = [
+                      'from-emerald-50 to-teal-50 border-emerald-100',
+                      'from-sky-50 to-cyan-50 border-sky-100',
+                      'from-violet-50 to-purple-50 border-violet-100',
+                      'from-rose-50 to-pink-50 border-rose-100',
+                    ]
+                    const iconGradients = [
+                      'from-emerald-400 to-teal-500',
+                      'from-sky-400 to-cyan-500',
+                      'from-violet-400 to-purple-500',
+                      'from-rose-400 to-pink-500',
+                    ]
+                    return (
+                      <div key={idx} className={`flex gap-4 p-4 rounded-2xl bg-gradient-to-br ${bgGradients[idx % bgGradients.length]} border`}>
+                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${iconGradients[idx % iconGradients.length]} flex items-center justify-center flex-shrink-0 shadow-lg`}>
+                          <CheckCircle className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-gray-900 mb-1">{point.title}</h4>
+                          <p className="text-gray-600 text-sm">{point.description}</p>
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             </div>
@@ -427,46 +425,45 @@ export default function AboutPage() {
                 Leadership
                 <span className="w-8 h-[2px] bg-accent-gold" />
               </span>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Meet Our Team</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto text-lg">Passionate young leaders dedicated to building peace and empowering communities.</p>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">{teamHeading}</h2>
+              <p className="text-gray-600 max-w-2xl mx-auto text-lg">{teamDescription}</p>
             </div>
             <div className="max-w-6xl mx-auto">
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
-                {teamMembers.map((member, idx) => {
+                {displayTeam.map((member: any, idx: number) => {
                 const bgColors = [
                   'from-rose-200 to-pink-300',
                   'from-sky-200 to-cyan-300',
                   'from-violet-200 to-purple-300',
                   'from-amber-200 to-orange-300',
                 ]
+                const photoUrl = (typeof member.photo === 'object' && member.photo?.url) || '/images/ourteam/placeholder.jpg'
                 return (
                 <div key={idx} className="group text-center" data-scroll="scale" data-delay={idx * 100}>
                   <div className="relative mb-6">
                     <div className={`absolute inset-0 bg-gradient-to-br ${bgColors[idx % bgColors.length]} rounded-[2rem] rotate-6 group-hover:rotate-12 transition-transform`} />
                     <div className="relative aspect-square rounded-[2rem] overflow-hidden shadow-xl">
-                      <Image src={member.image} alt={member.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                      <Image src={photoUrl} alt={member.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
                       <div className="absolute inset-0 bg-gradient-to-t from-primary-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <div className="absolute bottom-4 left-4 right-4 flex justify-center gap-2">
-                          {member.linkedin && <a href={member.linkedin} className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center text-white hover:bg-accent-gold hover:text-primary-950 transition-all"><Linkedin className="w-4 h-4" /></a>}
-                          {member.twitter && <a href={member.twitter} className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center text-white hover:bg-accent-gold hover:text-primary-950 transition-all"><Twitter className="w-4 h-4" /></a>}
-                          <a href={`mailto:${member.email}`} className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center text-white hover:bg-accent-gold hover:text-primary-950 transition-all"><Mail className="w-4 h-4" /></a>
+                          {member.socialLinks?.linkedin && <a href={member.socialLinks.linkedin} className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center text-white hover:bg-accent-gold hover:text-primary-950 transition-all"><Linkedin className="w-4 h-4" /></a>}
+                          {member.socialLinks?.twitter && <a href={member.socialLinks.twitter} className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center text-white hover:bg-accent-gold hover:text-primary-950 transition-all"><Twitter className="w-4 h-4" /></a>}
+                          {member.email && <a href={`mailto:${member.email}`} className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center text-white hover:bg-accent-gold hover:text-primary-950 transition-all"><Mail className="w-4 h-4" /></a>}
                         </div>
                       </div>
                     </div>
                   </div>
                   <h3 className="font-bold text-gray-900 text-xl">{member.name}</h3>
                   <p className="text-accent-gold text-sm font-semibold mb-2">{member.position}</p>
-                  <p className="text-gray-600 text-sm leading-relaxed">{member.bio}</p>
+                  <p className="text-gray-600 text-sm leading-relaxed">{member.shortBio || member.bio}</p>
                 </div>
-              )})
-              }
-              </div>
+              )})}              </div>
             </div>
           </div>
         </section>
 
         {/* Board of Trustees Section */}
-        <section id="board" className="py-24 bg-white">
+        <section id="board" className="py-24 bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-100">
           <div className="container">
             <div className="text-center mb-14" data-scroll="up">
               <span className="inline-flex items-center gap-3 justify-center text-primary-900 text-sm font-semibold uppercase tracking-widest mb-4">
@@ -474,32 +471,24 @@ export default function AboutPage() {
                 Governance
                 <span className="w-8 h-[2px] bg-accent-gold" />
               </span>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Board of Trustees</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto text-lg">Our distinguished board members provide strategic oversight and guidance for the organization.</p>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">{boardHeading}</h2>
+              <p className="text-gray-600 max-w-2xl mx-auto text-lg">{boardDescription}</p>
             </div>
-            <div className="max-w-4xl mx-auto">
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {boardOfTrustees.map((member, idx) => {
-                const bgColors = [
-                  'from-emerald-200 to-teal-300',
-                  'from-blue-200 to-indigo-300',
-                  'from-rose-200 to-pink-300',
-                ]
-                return (
-                <div key={idx} className="group text-center" data-scroll="scale" data-delay={idx * 100}>
-                  <div className="relative mb-5">
-                    <div className={`absolute inset-0 bg-gradient-to-br ${bgColors[idx % bgColors.length]} rounded-[2rem] rotate-6 group-hover:rotate-12 transition-transform`} />
-                    <div className="relative aspect-square rounded-[2rem] overflow-hidden shadow-xl">
-                      <Image src={member.image} alt={member.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
-                    </div>
-                  </div>
-                  <h3 className="font-bold text-gray-900 text-lg">{member.name}</h3>
-                  <p className="text-accent-gold text-sm font-semibold mb-2">{member.position}</p>
-                  <p className="text-gray-600 text-sm">{member.bio}</p>
-                </div>
-              )})
-              }
-              </div>
+            <div className="max-w-6xl mx-auto">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {displayBoard.map((member: any, idx: number) => {
+                  const photoUrl = (typeof member.photo === 'object' && member.photo?.url) || '/images/board/placeholder.jpg'
+                  return (
+                  <BoardMemberCard
+                    key={idx}
+                    name={member.name}
+                    position={member.position}
+                    bio={member.shortBio || member.bio || ''}
+                    image={photoUrl}
+                    index={idx}
+                    imagePosition={member.imagePosition}
+                  />
+                )})}              </div>
             </div>
           </div>
         </section>
@@ -584,30 +573,29 @@ export default function AboutPage() {
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Awards & Recognition</h2>
             </div>
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              <div className="group bg-white p-8 rounded-[2rem] border border-amber-200 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1" data-scroll="left">
-                <div className="flex gap-5 items-start">
-                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all">
-                    <Award className="w-10 h-10 text-white" />
+              {aboutAwards.map((award: any, idx: number) => {
+                const awardColors = [
+                  { border: 'border-amber-200', bg: 'from-amber-400 to-orange-500', badge: 'bg-amber-100 text-amber-700', scroll: 'left' },
+                  { border: 'border-violet-200', bg: 'from-violet-400 to-purple-500', badge: 'bg-violet-100 text-violet-700', scroll: 'right' },
+                  { border: 'border-emerald-200', bg: 'from-emerald-400 to-teal-500', badge: 'bg-emerald-100 text-emerald-700', scroll: 'left' },
+                  { border: 'border-rose-200', bg: 'from-rose-400 to-pink-500', badge: 'bg-rose-100 text-rose-700', scroll: 'right' },
+                ]
+                const color = awardColors[idx % awardColors.length]
+                return (
+                  <div key={idx} className={`group bg-white p-8 rounded-[2rem] border ${color.border} shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1`} data-scroll={color.scroll}>
+                    <div className="flex gap-5 items-start">
+                      <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${color.bg} flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all`}>
+                        <Award className="w-10 h-10 text-white" />
+                      </div>
+                      <div>
+                        <span className={`inline-block px-3 py-1 rounded-full ${color.badge} text-sm font-bold mb-2`}>{award.year}</span>
+                        <h3 className="font-bold text-gray-900 text-lg">{award.title}</h3>
+                        <p className="text-gray-600 text-sm mt-1">{award.organization}</p>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <span className="inline-block px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-sm font-bold mb-2">2025</span>
-                    <h3 className="font-bold text-gray-900 text-lg">National Youth Development Award</h3>
-                    <p className="text-gray-600 text-sm mt-1">Federal Ministry of Youth Development, Abuja</p>
-                  </div>
-                </div>
-              </div>
-              <div className="group bg-white p-8 rounded-[2rem] border border-violet-200 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1" data-scroll="right">
-                <div className="flex gap-5 items-start">
-                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all">
-                    <Award className="w-10 h-10 text-white" />
-                  </div>
-                  <div>
-                    <span className="inline-block px-3 py-1 rounded-full bg-violet-100 text-violet-700 text-sm font-bold mb-2">2023</span>
-                    <h3 className="font-bold text-gray-900 text-lg">Best Young Peacebuilding Organisation</h3>
-                    <p className="text-gray-600 text-sm mt-1">West Africa Network for Peacebuilding (WANEP-Nigeria)</p>
-                  </div>
-                </div>
-              </div>
+                )
+              })}
             </div>
           </div>
         </section>
@@ -635,11 +623,11 @@ export default function AboutPage() {
                   <span className="text-sm font-semibold text-white/80 uppercase tracking-wider">Get Involved</span>
                 </div>
                 <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                  Join Us in <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400">Building Peace</span>
+                  {ctaHeading.includes('Building Peace') ? (
+                    <>Join Us in <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400">Building Peace</span></>
+                  ) : ctaHeading}
                 </h2>
-                <p className="text-white/60 text-lg md:text-xl max-w-2xl mx-auto">
-                  Whether as a volunteer, partner, or supporter, there are many ways to contribute to our mission.
-                </p>
+                <p className="text-white/60 text-lg md:text-xl max-w-2xl mx-auto">{ctaDescription}</p>
               </div>
               
               {/* CTA Buttons */}
@@ -668,9 +656,9 @@ export default function AboutPage() {
                       </div>
                       <div>
                         <span className="inline-block px-2 py-0.5 rounded-full bg-violet-500/30 text-violet-300 text-xs font-bold uppercase tracking-wider mb-2">Head Office</span>
-                        <p className="text-white font-medium mb-1">256, 1st Avenue, FHA, Lugbe</p>
-                        <p className="text-white/60">Abuja, Nigeria</p>
-                        <p className="text-amber-400 font-medium mt-2">+234-8054151494</p>
+                        <p className="text-white font-medium mb-1">{headOfficeAddress}</p>
+                        <p className="text-white/60">{headOfficeCity}</p>
+                        <p className="text-amber-400 font-medium mt-2">{headOfficePhone}</p>
                       </div>
                     </div>
                   </div>
@@ -686,9 +674,9 @@ export default function AboutPage() {
                       </div>
                       <div>
                         <span className="inline-block px-2 py-0.5 rounded-full bg-amber-500/30 text-amber-300 text-xs font-bold uppercase tracking-wider mb-2">Regional Office</span>
-                        <p className="text-white font-medium mb-1">35, Edward Ujege Street, High Level</p>
-                        <p className="text-white/60">Makurdi, Benue State</p>
-                        <p className="text-amber-400 font-medium mt-2">info@bbforpeace.org</p>
+                        <p className="text-white font-medium mb-1">{regionOfficeAddress}</p>
+                        <p className="text-white/60">{regionOfficeCity}</p>
+                        <p className="text-amber-400 font-medium mt-2">{regionOfficeEmail}</p>
                       </div>
                     </div>
                   </div>

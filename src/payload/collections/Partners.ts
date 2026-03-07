@@ -1,4 +1,10 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, Access } from 'payload'
+
+
+const isAdminOnly: Access = ({ req: { user } }) => {
+  if (!user) return false
+  return user.role === 'super-admin' || user.role === 'admin'
+}
 
 export const Partners: CollectionConfig = {
   slug: 'partners',
@@ -6,9 +12,14 @@ export const Partners: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ['name', 'website', 'order', 'isActive'],
     description: 'Partners and collaborating organizations',
+    group: 'About us page',
+    hidden: true,
   },
   access: {
-    read: () => true,
+    read: () => true, // Public can read partners
+    create: isAdminOnly,
+    update: isAdminOnly,
+    delete: ({ req: { user } }) => user?.role === 'super-admin',
   },
   fields: [
     {

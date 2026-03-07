@@ -3,6 +3,8 @@ import Image from 'next/image'
 import type { Metadata } from 'next'
 import { PageHero } from '@/components/layout'
 import { Calendar, MapPin, Filter, Clock, Users, ArrowRight, Sparkles } from 'lucide-react'
+import { getPayload } from 'payload'
+import config from '@payload-config'
 
 export const metadata: Metadata = {
   title: 'Events | BBFORPEACE',
@@ -10,94 +12,83 @@ export const metadata: Metadata = {
     'Discover upcoming events, workshops, and conferences from Building Blocks for Peace Foundation.',
 }
 
-// Upcoming events with actual images
-const upcomingEvents = [
-  {
-    id: '1',
-    title: 'Youth Peace Forum 2025',
-    excerpt: 'Annual gathering of young peacebuilders from across Nigeria for dialogue and skills building.',
-    slug: 'youth-peace-forum-2025',
-    featuredImage: '/images/_VEE7124 (1).jpg',
-    location: 'Abuja, Nigeria',
-    startDate: '2025-03-15',
-    endDate: '2025-03-17',
-    type: 'Conference',
-    attendees: 500,
-    featured: true,
-  },
-  {
-    id: '2',
-    title: 'Community Dialogue Workshop',
-    excerpt: 'Learn facilitation skills for leading community dialogue sessions.',
-    slug: 'community-dialogue-workshop',
-    featuredImage: '/images/_VEE7017 (19) (1).jpg',
-    location: 'Lagos, Nigeria',
-    startDate: '2025-02-28',
-    type: 'Workshop',
-    attendees: 50,
-  },
-  {
-    id: '3',
-    title: 'Peace Education Training',
-    excerpt: 'Training for educators on integrating peace education into curriculum.',
-    slug: 'peace-education-training',
-    featuredImage: '/images/_VEE7153 (6).jpg',
-    location: 'Online (Zoom)',
-    startDate: '2025-02-20',
-    endDate: '2025-02-22',
-    type: 'Training',
-    attendees: 100,
-  },
-]
+export default async function EventsPage() {
+  const payload = await getPayload({ config })
 
-const pastEvents = [
-  {
-    id: '4',
-    title: 'International Day of Peace Celebration 2024',
-    excerpt: 'Commemorating the UN International Day of Peace with community activities.',
-    slug: 'international-peace-day-2024',
-    featuredImage: '/images/_VEE6887 (20).jpg',
-    location: 'Abuja, Nigeria',
-    startDate: '2024-09-21',
-    type: 'Event',
-  },
-  {
-    id: '5',
-    title: 'Youth Summit on Conflict Resolution',
-    excerpt: 'Training young leaders in conflict resolution and mediation techniques.',
-    slug: 'youth-summit-conflict-resolution',
-    featuredImage: '/images/_VEE7037 (1).jpg',
-    location: 'Kaduna, Nigeria',
-    startDate: '2024-08-10',
-    endDate: '2024-08-12',
-    type: 'Summit',
-  },
-  {
-    id: '6',
-    title: 'WANEP Nigeria Annual Conference',
-    excerpt: 'Best Young Peacebuilding Organisation Award ceremony.',
-    slug: 'wanep-conference-2023',
-    featuredImage: '/images/PXL_20251008_122828933.jpg',
-    location: 'Lagos, Nigeria',
-    startDate: '2023-12-15',
-    type: 'Conference',
-  },
-]
+  let upcomingEvents: any[] = []
+  let pastEvents: any[] = []
+  let eventSettings: any = {}
 
-const filters = ['All', 'Upcoming', 'Ongoing', 'Past']
-const eventTypes = ['All Types', 'Conference', 'Workshop', 'Training', 'Webinar', 'Summit']
+  try {
+    const [upcomingResult, pastResult, pageSettings] = await Promise.all([
+      payload.find({ collection: 'events', where: { status: { in: ['upcoming', 'ongoing'] } }, sort: 'startDate', limit: 10, depth: 1 }),
+      payload.find({ collection: 'events', where: { status: { equals: 'completed' } }, sort: '-startDate', limit: 10, depth: 1 }),
+      payload.findGlobal({ slug: 'event-page-settings' }),
+    ])
+    upcomingEvents = upcomingResult.docs
+    pastEvents = pastResult.docs
+    eventSettings = pageSettings as any
+  } catch (error) {
+    console.error('Failed to fetch events:', error)
+  }
 
-export default function EventsPage() {
-  const featuredEvent = upcomingEvents.find(e => e.featured) || upcomingEvents[0]
-  const otherUpcoming = upcomingEvents.filter(e => e.id !== featuredEvent?.id)
+  const getImageUrl = (media: any) => {
+    if (!media) return '/images/_VEE7124 (1).jpg'
+    if (typeof media === 'object' && media.url) return media.url
+    return media
+  }
+
+  // Page header from CMS
+  const heroTitle = eventSettings.title || 'Events'
+  const heroSubtitle = eventSettings.subtitle || 'Join Us'
+  const heroDescription = eventSettings.description || 'Join our workshops, conferences, and community events. Learn, connect, and contribute to building peace.'
+  const heroBg = getImageUrl(eventSettings.backgroundImage) || '/images/_VEE6792.jpg'
+
+  // Fallback data
+  const defaultUpcoming = [
+    { id: '1', title: 'Youth Peace Forum 2025', excerpt: 'Annual gathering of young peacebuilders from across Nigeria for dialogue and skills building.', slug: 'youth-peace-forum-2025', featuredImage: '/images/_VEE7124 (1).jpg', location: 'Abuja, Nigeria', startDate: '2025-03-15', endDate: '2025-03-17', type: 'Conference', maxAttendees: 500, isFeatured: true },
+    { id: '2', title: 'Community Dialogue Workshop', excerpt: 'Learn facilitation skills for leading community dialogue sessions.', slug: 'community-dialogue-workshop', featuredImage: '/images/_VEE7017 (19) (1).jpg', location: 'Lagos, Nigeria', startDate: '2025-02-28', type: 'Workshop', maxAttendees: 50 },
+    { id: '3', title: 'Peace Education Training', excerpt: 'Training for educators on integrating peace education into curriculum.', slug: 'peace-education-training', featuredImage: '/images/_VEE7153 (6).jpg', location: 'Online (Zoom)', startDate: '2025-02-20', endDate: '2025-02-22', type: 'Training', maxAttendees: 100 },
+  ]
+  const defaultPast = [
+    { id: '4', title: 'International Day of Peace Celebration 2024', excerpt: 'Commemorating the UN International Day of Peace with community activities.', slug: 'international-peace-day-2024', featuredImage: '/images/_VEE6887 (20).jpg', location: 'Abuja, Nigeria', startDate: '2024-09-21', type: 'Event' },
+    { id: '5', title: 'Youth Summit on Conflict Resolution', excerpt: 'Training young leaders in conflict resolution and mediation techniques.', slug: 'youth-summit-conflict-resolution', featuredImage: '/images/_VEE7037 (1).jpg', location: 'Kaduna, Nigeria', startDate: '2024-08-10', endDate: '2024-08-12', type: 'Summit' },
+    { id: '6', title: 'WANEP Nigeria Annual Conference', excerpt: 'Best Young Peacebuilding Organisation Award ceremony.', slug: 'wanep-conference-2023', featuredImage: '/images/PXL_20251008_122828933.jpg', location: 'Lagos, Nigeria', startDate: '2023-12-15', type: 'Conference' },
+  ]
+
+  const normalize = (events: any[], defaults: any[]) => {
+    if (!events.length) return defaults
+    return events.map((e: any) => ({
+      id: e.id,
+      title: e.title,
+      excerpt: e.excerpt || '',
+      slug: e.slug,
+      featuredImage: getImageUrl(e.featuredImage),
+      location: e.location || '',
+      startDate: e.startDate,
+      endDate: e.endDate || null,
+      type: e.status === 'upcoming' ? 'Upcoming' : e.status === 'ongoing' ? 'Ongoing' : 'Event',
+      maxAttendees: e.maxAttendees || null,
+      isFeatured: e.isFeatured || false,
+    }))
+  }
+
+  const displayUpcoming = normalize(upcomingEvents, defaultUpcoming)
+  const displayPast = normalize(pastEvents, defaultPast)
+
+  const featuredEvent = displayUpcoming.find((e: any) => e.isFeatured) || displayUpcoming[0]
+  const otherUpcoming = displayUpcoming.filter((e: any) => e.id !== featuredEvent?.id)
+
+  const filters = ['All', 'Upcoming', 'Ongoing', 'Past']
+  const eventTypes = ['All Types', 'Conference', 'Workshop', 'Training', 'Webinar', 'Summit']
 
   return (
     <>
       <PageHero
-        title="Events"
-        subtitle="Join Us"
-        description="Join our workshops, conferences, and community events. Learn, connect, and contribute to building peace."
-        backgroundImage="/images/_VEE6792.jpg"
+        title={heroTitle}
+        subtitle={heroSubtitle}
+        description={heroDescription}
+        backgroundImage={heroBg}
         breadcrumbs={[
           { label: 'Home', href: '/' },
           { label: 'Events', href: '/events' },
@@ -184,12 +175,12 @@ export default function EventsPage() {
                       </div>
                       {featuredEvent.location}
                     </div>
-                    {featuredEvent.attendees && (
+                    {featuredEvent.maxAttendees && (
                       <div className="flex items-center gap-2 text-gray-600">
                         <div className="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center">
                           <Users className="w-5 h-5 text-primary-900" />
                         </div>
-                        {featuredEvent.attendees} expected
+                        {featuredEvent.maxAttendees} expected
                       </div>
                     )}
                   </div>
@@ -279,7 +270,7 @@ export default function EventsPage() {
             </div>
             <div className="max-w-5xl mx-auto">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {pastEvents.map((event, idx) => (
+              {displayPast.map((event: any, idx: number) => (
                 <Link key={event.id} href={`/events/${event.slug}`} className="group" data-scroll="scale" data-delay={idx * 100}>
                   <article className="bg-gray-50 rounded-3xl overflow-hidden hover:shadow-xl transition-all border border-gray-100">
                     <div className="relative aspect-[16/10] overflow-hidden">

@@ -31,6 +31,8 @@ interface AboutImages {
 
 export interface AboutPreviewProps {
   title?: string
+  paragraph1?: string
+  paragraph2?: string
   highlights?: { text: string }[]
   video?: AboutVideo
   images?: AboutImages
@@ -41,6 +43,8 @@ export interface AboutPreviewProps {
 
 export function AboutPreview({
   title = 'Why BBFORPEACE?',
+  paragraph1 = 'BBFORPEACE occupies a unique niche as one of the few truly youth-led organizations operating from the grassroots to policy level. We seamlessly link community action, policy advocacy, and regional networking.',
+  paragraph2 = 'Founded in 2016, we began as Nigeria Youth 4 Peace Initiative — a movement challenging the exclusion of youth from the decision-making process and advocating for meaningful engagement in peacebuilding.',
   highlights,
   video,
   images,
@@ -149,11 +153,11 @@ export function AboutPreview({
             </h2>
             
             <p className="text-gray-600 text-lg leading-relaxed mb-6">
-              BBFORPEACE occupies a unique niche as one of the few truly youth-led organizations operating from the grassroots to policy level. We seamlessly link community action, policy advocacy, and regional networking.
+              {paragraph1}
             </p>
             
             <p className="text-gray-600 text-lg leading-relaxed mb-8">
-              Founded in 2016, we began as Nigeria Youth 4 Peace Initiative — a movement challenging the exclusion of youth from the decision-making process and advocating for meaningful engagement in peacebuilding.
+              {paragraph2}
             </p>
 
             {/* Highlights */}

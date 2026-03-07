@@ -163,7 +163,6 @@ interface HeroCta {
 }
 
 export interface HeroSectionProps {
-  slogan?: string
   mainTitle?: string
   slides?: HeroSlide[]
   typewriterPhrases?: { phrase: string }[]
@@ -213,7 +212,6 @@ function TypewriterText({ phrases }: { phrases: string[] }) {
 }
 
 export function HeroSection({
-  slogan = 'Empowering Communities for Peace',
   mainTitle = 'Building Blocks for Peace',
   slides,
   typewriterPhrases,
@@ -318,15 +316,7 @@ export function HeroSection({
       {/* Main Content */}
       <div className="container relative z-30 h-full flex flex-col justify-center pt-4 sm:pt-0">
         <div className="max-w-5xl -mt-8 sm:-mt-4">
-          {/* Line 1: Slogan */}
-          <div className="inline-flex items-center gap-3 mb-2 whitespace-nowrap">
-            <span className="w-10 h-[2px] bg-accent-gold" />
-            <span className="text-accent-gold text-xs sm:text-sm font-semibold uppercase tracking-widest drop-shadow-lg">
-              {slogan}
-            </span>
-          </div>
-
-          {/* Line 2: Big Caption */}
+          {/* Big Caption */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-none mb-2 whitespace-nowrap drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
             {mainTitle}
           </h1>

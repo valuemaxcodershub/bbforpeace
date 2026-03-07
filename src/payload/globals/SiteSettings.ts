@@ -1,10 +1,21 @@
-import type { GlobalConfig } from 'payload'
+import type { GlobalConfig, Access } from 'payload'
+
+// Only super admin and admin can update site settings
+const isAdminOnly: Access = ({ req: { user } }) => {
+  if (!user) return false
+  return user.role === 'super-admin' || user.role === 'admin'
+}
 
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
   label: 'Site Settings',
+  admin: {
+    group: 'Global setting',
+    hidden: true,
+  },
   access: {
-    read: () => true,
+    read: () => true, // Public can read settings
+    update: isAdminOnly, // Only admins can update
   },
   fields: [
     {
@@ -432,6 +443,87 @@ export const SiteSettings: GlobalConfig = {
                   type: 'upload',
                   relationTo: 'media',
                   label: 'Default Social Share Image',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          label: 'Content Routing',
+          description: 'Define submenu structure and placeholders used by admin content routing.',
+          fields: [
+            {
+              name: 'menuStructure',
+              type: 'group',
+              fields: [
+                {
+                  name: 'aboutUsSubmenu',
+                  type: 'array',
+                  label: 'About Us Submenu',
+                  fields: [
+                    { name: 'title', type: 'text', required: true },
+                    { name: 'slug', type: 'text', required: true },
+                  ],
+                  defaultValue: [
+                    { title: 'Who We Are', slug: 'who-we-are' },
+                    { title: 'Our Strategy', slug: 'our-strategy' },
+                    { title: 'Our Team', slug: 'our-team' },
+                  ],
+                },
+                {
+                  name: 'mediaSubmenu',
+                  type: 'array',
+                  label: 'Media Submenu',
+                  fields: [
+                    { name: 'title', type: 'text', required: true },
+                    { name: 'slug', type: 'text', required: true },
+                  ],
+                  defaultValue: [
+                    { title: 'Blog', slug: 'blog' },
+                    { title: 'Press Statement', slug: 'press-statement' },
+                    { title: 'Gallery - Photo', slug: 'gallery-photo' },
+                    { title: 'Gallery - Video', slug: 'gallery-video' },
+                  ],
+                },
+                {
+                  name: 'reportSubmenu',
+                  type: 'array',
+                  label: 'Report Submenu',
+                  fields: [
+                    { name: 'title', type: 'text', required: true },
+                    { name: 'slug', type: 'text', required: true },
+                  ],
+                  defaultValue: [
+                    { title: 'Publication', slug: 'publication' },
+                    { title: 'Annual Report', slug: 'annual-report' },
+                    { title: 'Project Report', slug: 'project-report' },
+                    { title: 'Strategic Plan', slug: 'strategic-plan' },
+                  ],
+                },
+              ],
+            },
+            {
+              name: 'annualReportPlaceholders',
+              type: 'array',
+              label: 'Annual Report Placeholders',
+              admin: {
+                description: 'Existing annual reports as editable placeholders in admin.',
+              },
+              fields: [
+                { name: 'title', type: 'text', required: true },
+                { name: 'year', type: 'number', required: true },
+                { name: 'fileUrl', type: 'text', required: true },
+              ],
+              defaultValue: [
+                {
+                  title: 'BBFORPEACE Annual Report 2024',
+                  year: 2024,
+                  fileUrl: '/documents/BBFORPEACE ANNUAL REPORT 2024.pdf',
+                },
+                {
+                  title: 'BBFORPEACE Annual Report 2025',
+                  year: 2025,
+                  fileUrl: '/documents/BBFORPEACE ANNUAL REPORT 2025.pdf',
                 },
               ],
             },

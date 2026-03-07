@@ -1,14 +1,24 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, Access } from 'payload'
+
+// Access control: Admins and above can manage content
+const isAdminOrAbove: Access = ({ req: { user } }) => {
+  if (!user) return false
+  return user.role === 'super-admin' || user.role === 'admin' || user.role === 'editor'
+}
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'category', 'status', 'publishedAt'],
+    defaultColumns: ['title', 'category', 'status', 'publishedAt', 'author'],
     description: 'Blog posts and activity reports',
+    group: 'Media Page',
   },
   access: {
-    read: () => true,
+    read: () => true, // Public can read published posts
+    create: isAdminOrAbove,
+    update: isAdminOrAbove,
+    delete: ({ req: { user } }) => user?.role === 'super-admin' || user?.role === 'admin',
   },
   fields: [
     {
@@ -131,6 +141,46 @@ export const Posts: CollectionConfig = {
       required: true,
       admin: {
         position: 'sidebar',
+      },
+    },
+    {
+      name: 'menuSection',
+      type: 'select',
+      label: 'Menu Section',
+      required: true,
+      defaultValue: 'media',
+      options: [
+        { label: 'About Us', value: 'about-us' },
+        { label: 'Media', value: 'media' },
+        { label: 'Report', value: 'report' },
+      ],
+      admin: {
+        position: 'sidebar',
+        description: 'Top-level website menu where this content belongs.',
+      },
+    },
+    {
+      name: 'subMenu',
+      type: 'select',
+      label: 'Submenu Destination',
+      required: true,
+      defaultValue: 'blog',
+      options: [
+        { label: 'Who We Are', value: 'who-we-are' },
+        { label: 'Our Strategy', value: 'our-strategy' },
+        { label: 'Our Team', value: 'our-team' },
+        { label: 'Blog', value: 'blog' },
+        { label: 'Press Statement', value: 'press-statement' },
+        { label: 'Gallery - Photo', value: 'gallery-photo' },
+        { label: 'Gallery - Video', value: 'gallery-video' },
+        { label: 'Publication', value: 'publication' },
+        { label: 'Annual Report', value: 'annual-report' },
+        { label: 'Project Report', value: 'project-report' },
+        { label: 'Strategic Plan', value: 'strategic-plan' },
+      ],
+      admin: {
+        position: 'sidebar',
+        description: 'Specific submenu destination for display/routing.',
       },
     },
     {

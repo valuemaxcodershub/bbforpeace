@@ -18,10 +18,21 @@ const seed = async () => {
   
   const payload = await getPayload({ config })
   
-  // Super admin credentials from environment or defaults
-  const superAdminEmail = process.env.SUPER_ADMIN_EMAIL || 'admin@bbforpeace.org'
-  const superAdminPassword = process.env.SUPER_ADMIN_PASSWORD || 'ChangeMe123!'
+  // Super admin credentials from environment (NO hardcoded defaults)
+  const superAdminEmail = process.env.SUPER_ADMIN_EMAIL || 'superadmin@bbforpeace.org'
+  const superAdminPassword = process.env.SUPER_ADMIN_PASSWORD
   const superAdminName = process.env.SUPER_ADMIN_NAME || 'Super Administrator'
+
+  if (!superAdminPassword) {
+    console.error('❌ SUPER_ADMIN_PASSWORD environment variable is required.')
+    console.error('   Set it before running seed: export SUPER_ADMIN_PASSWORD="YourStrongPassword123!"')
+    process.exit(1)
+  }
+
+  if (superAdminPassword.length < 12) {
+    console.error('❌ SUPER_ADMIN_PASSWORD must be at least 12 characters.')
+    process.exit(1)
+  }
   
   try {
     // Check if any super admin exists
@@ -78,7 +89,6 @@ const seed = async () => {
         
         console.log('✅ Super Admin created successfully!')
         console.log(`   Email: ${superAdmin.email}`)
-        console.log(`   Password: ${superAdminPassword}`)
         console.log('')
         console.log('⚠️  IMPORTANT: Change the password immediately after first login!')
       }

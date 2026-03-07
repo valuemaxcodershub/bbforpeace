@@ -3,6 +3,8 @@ import Image from 'next/image'
 import type { Metadata } from 'next'
 import { PageHero } from '@/components/layout'
 import { Search, Filter, Calendar, ArrowRight, Tag, Clock, User } from 'lucide-react'
+import { getPayload } from 'payload'
+import config from '@payload-config'
 
 export const metadata: Metadata = {
   title: 'Blog & Activities | BBFORPEACE',
@@ -10,100 +12,89 @@ export const metadata: Metadata = {
     'Read the latest news, stories, and updates from Building Blocks for Peace Foundation. Stay informed about our peacebuilding activities across Nigeria.',
 }
 
-// Placeholder posts with actual images
-const posts = [
-  {
-    id: '1',
-    title: 'Youth Peace Summit 2024: Building Bridges Across Communities',
-    excerpt:
-      'Over 500 young people gathered for a three-day summit focused on dialogue and understanding. The summit brought together diverse voices to chart a path forward for youth-led peacebuilding.',
-    slug: 'youth-peace-summit-2024',
-    featuredImage: '/images/_VEE7124 (1).jpg',
-    category: 'Events',
-    publishedAt: '2024-01-15',
-    readTime: '5 min read',
-    author: 'BBFORPEACE Team',
-  },
-  {
-    id: '2',
-    title: 'New Partnership with GPPAC West Africa Strengthened',
-    excerpt:
-      'BBFORPEACE continues its role as GPPAC West Africa Regional Secretariat, coordinating peacebuilding efforts across the region.',
-    slug: 'gppac-partnership',
-    featuredImage: '/images/_VEE7037 (1).jpg',
-    category: 'News',
-    publishedAt: '2024-01-10',
-    readTime: '4 min read',
-    author: 'BBFORPEACE Team',
-  },
-  {
-    id: '3',
-    title: 'Community Dialogue Series Launches in Northern Nigeria',
-    excerpt:
-      'Our new dialogue series brings together diverse communities for meaningful conversations on conflict prevention.',
-    slug: 'community-dialogue-series',
-    featuredImage: '/images/_VEE7017 (19) (1).jpg',
-    category: 'Programs',
-    publishedAt: '2024-01-05',
-    readTime: '3 min read',
-    author: 'BBFORPEACE Team',
-  },
-  {
-    id: '4',
-    title: 'Peace Education Workshop for Teachers',
-    excerpt:
-      'Training educators to integrate peace education into their classrooms and empower the next generation.',
-    slug: 'peace-education-workshop',
-    featuredImage: '/images/_VEE7153 (6).jpg',
-    category: 'Training',
-    publishedAt: '2024-01-01',
-    readTime: '6 min read',
-    author: 'BBFORPEACE Team',
-  },
-  {
-    id: '5',
-    title: 'National Youth Development Award 2025',
-    excerpt:
-      'BBFORPEACE receives recognition from the Federal Ministry of Youth Development for outstanding contributions to youth peacebuilding.',
-    slug: 'national-youth-award',
-    featuredImage: '/images/PXL_20251008_122828933.jpg',
-    category: 'Awards',
-    publishedAt: '2023-12-28',
-    readTime: '3 min read',
-    author: 'BBFORPEACE Team',
-  },
-  {
-    id: '6',
-    title: 'Volunteer Spotlight: Meet Our Peace Champions',
-    excerpt:
-      'Celebrating the dedication and impact of our volunteer network across 36 states.',
-    slug: 'volunteer-spotlight',
-    featuredImage: '/images/_VEE6887 (20).jpg',
-    category: 'Stories',
-    publishedAt: '2023-12-20',
-    readTime: '4 min read',
-    author: 'BBFORPEACE Team',
-  },
-]
+export default async function BlogPage() {
+  const payload = await getPayload({ config })
 
-const categories = [
-  'All',
-  'News',
-  'Events',
-  'Programs',
-  'Training',
-  'Stories',
-  'Awards',
-]
+  // Fetch posts, categories, and page settings from CMS in parallel
+  let posts: any[] = []
+  let categories: any[] = []
+  let mediaSettings: any = {}
 
-export default function BlogPage() {
+  try {
+    const [postsResult, categoriesResult, pageSettings] = await Promise.all([
+      payload.find({ 
+        collection: 'posts', 
+        where: { status: { equals: 'published' }, subMenu: { equals: 'blog' } },
+        sort: '-publishedAt',
+        limit: 20,
+        depth: 2,
+      }),
+      payload.find({
+        collection: 'categories',
+        limit: 50,
+        sort: 'name',
+      }),
+      payload.findGlobal({ slug: 'media-page-settings' }),
+    ])
+    posts = postsResult.docs
+    categories = categoriesResult.docs
+    mediaSettings = pageSettings as any
+  } catch (error) {
+    console.error('Failed to fetch blog data:', error)
+  }
+
+  const getImageUrl = (media: any) => {
+    if (!media) return '/images/_VEE7124 (1).jpg'
+    if (typeof media === 'object' && media.url) return media.url
+    return media
+  }
+
+  // Page header from CMS
+  const heroTitle = mediaSettings.blogHeading || 'Blog & Activities'
+  const heroSubtitle = mediaSettings.blogSubtitle || 'Latest News'
+  const heroDescription = mediaSettings.blogDescription || 'Stay updated with the latest news, stories, and insights from our peacebuilding work across Nigeria.'
+  const heroBg = getImageUrl(mediaSettings.blogBackgroundImage) || '/images/_VEE6792.jpg'
+
+  // Build category list for filter
+  const categoryNames = ['All', ...categories.map((c: any) => c.name)]
+
+  // Helper to get category name
+  const getCategoryName = (cat: any) => {
+    if (!cat) return 'Uncategorized'
+    if (typeof cat === 'object') return cat.name || 'Uncategorized'
+    return cat
+  }
+
+  // Fallback posts when CMS is empty
+  const defaultPosts = [
+    { id: '1', title: 'Youth Peace Summit 2024: Building Bridges Across Communities', excerpt: 'Over 500 young people gathered for a three-day summit focused on dialogue and understanding.', slug: 'youth-peace-summit-2024', featuredImage: '/images/_VEE7124 (1).jpg', category: 'Events', publishedAt: '2024-01-15', readTime: '5 min read' },
+    { id: '2', title: 'New Partnership with GPPAC West Africa Strengthened', excerpt: 'BBFORPEACE continues its role as GPPAC West Africa Regional Secretariat.', slug: 'gppac-partnership', featuredImage: '/images/_VEE7037 (1).jpg', category: 'News', publishedAt: '2024-01-10', readTime: '4 min read' },
+    { id: '3', title: 'Community Dialogue Series Launches in Northern Nigeria', excerpt: 'Our new dialogue series brings together diverse communities for meaningful conversations.', slug: 'community-dialogue-series', featuredImage: '/images/_VEE7017 (19) (1).jpg', category: 'Programs', publishedAt: '2024-01-05', readTime: '3 min read' },
+    { id: '4', title: 'Peace Education Workshop for Teachers', excerpt: 'Training educators to integrate peace education into their classrooms.', slug: 'peace-education-workshop', featuredImage: '/images/_VEE7153 (6).jpg', category: 'Training', publishedAt: '2024-01-01', readTime: '6 min read' },
+    { id: '5', title: 'National Youth Development Award 2025', excerpt: 'BBFORPEACE receives recognition from the Federal Ministry of Youth Development.', slug: 'national-youth-award', featuredImage: '/images/PXL_20251008_122828933.jpg', category: 'Awards', publishedAt: '2023-12-28', readTime: '3 min read' },
+    { id: '6', title: 'Volunteer Spotlight: Meet Our Peace Champions', excerpt: 'Celebrating the dedication and impact of our volunteer network across 36 states.', slug: 'volunteer-spotlight', featuredImage: '/images/_VEE6887 (20).jpg', category: 'Stories', publishedAt: '2023-12-20', readTime: '4 min read' },
+  ]
+
+  // Normalize CMS posts to a consistent shape
+  const displayPosts = posts.length ? posts.map((post: any) => ({
+    id: post.id,
+    title: post.title,
+    excerpt: post.excerpt || '',
+    slug: post.slug,
+    featuredImage: getImageUrl(post.featuredImage),
+    category: getCategoryName(post.category),
+    publishedAt: post.publishedAt || post.createdAt,
+    readTime: `${Math.max(2, Math.ceil((post.excerpt?.length || 100) / 200))} min read`,
+  })) : defaultPosts
+
+  const displayCategories = categories.length ? categoryNames : ['All', 'News', 'Events', 'Programs', 'Training', 'Stories', 'Awards']
   return (
     <>
       <PageHero
-        title="Blog & Activities"
-        subtitle="Latest News"
-        description="Stay updated with the latest news, stories, and insights from our peacebuilding work across Nigeria."
-        backgroundImage="/images/_VEE6792.jpg"
+        title={heroTitle}
+        subtitle={heroSubtitle}
+        description={heroDescription}
+        backgroundImage={heroBg}
         breadcrumbs={[
           { label: 'Home', href: '/' },
           { label: 'Blog', href: '/blog' },
@@ -127,7 +118,7 @@ export default function BlogPage() {
               {/* Categories */}
               <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
                 <Filter className="w-5 h-5 text-gray-400 flex-shrink-0" />
-                {categories.map((category) => (
+                {displayCategories.map((category) => (
                   <button
                     key={category}
                     className={`px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all ${
@@ -148,12 +139,12 @@ export default function BlogPage() {
         <section className="py-16">
           <div className="container">
             <div className="max-w-5xl mx-auto">
-            <Link href={`/blog/${posts[0].slug}`} className="group block" data-scroll="up">
+            <Link href={`/blog/${displayPosts[0].slug}`} className="group block" data-scroll="up">
               <div className="grid lg:grid-cols-2 gap-0 items-stretch bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-shadow border border-gray-100">
                 <div className="relative aspect-[4/3] lg:aspect-auto lg:min-h-[450px]">
                   <Image 
-                    src={posts[0].featuredImage} 
-                    alt={posts[0].title} 
+                    src={displayPosts[0].featuredImage} 
+                    alt={displayPosts[0].title} 
                     fill 
                     className="object-cover group-hover:scale-105 transition-transform duration-700" 
                   />
@@ -167,23 +158,23 @@ export default function BlogPage() {
                 </div>
                 <div className="p-8 lg:p-12 flex flex-col justify-center">
                   <span className="inline-block px-4 py-1.5 rounded-full text-xs font-bold bg-primary-100 text-primary-900 mb-5 w-fit">
-                    {posts[0].category}
+                    {displayPosts[0].category}
                   </span>
                   <h2 className="text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-4 group-hover:text-primary-900 transition-colors leading-tight">
-                    {posts[0].title}
+                    {displayPosts[0].title}
                   </h2>
-                  <p className="text-gray-600 text-lg mb-8 line-clamp-3">{posts[0].excerpt}</p>
+                  <p className="text-gray-600 text-lg mb-8 line-clamp-3">{displayPosts[0].excerpt}</p>
                   <div className="flex items-center justify-between mt-auto">
                     <div className="flex items-center gap-4 text-sm text-gray-500">
                       <span className="flex items-center gap-1.5">
                         <Calendar className="w-4 h-4" />
-                        {new Date(posts[0].publishedAt).toLocaleDateString('en-US', { 
+                        {new Date(displayPosts[0].publishedAt).toLocaleDateString('en-US', { 
                           year: 'numeric', month: 'long', day: 'numeric' 
                         })}
                       </span>
                       <span className="flex items-center gap-1.5">
                         <Clock className="w-4 h-4" />
-                        {posts[0].readTime}
+                        {displayPosts[0].readTime}
                       </span>
                     </div>
                     <span className="inline-flex items-center gap-2 text-primary-900 font-bold group-hover:gap-3 transition-all">
@@ -210,7 +201,7 @@ export default function BlogPage() {
             </div>
             <div className="max-w-5xl mx-auto">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {posts.slice(1).map((post, idx) => (
+              {displayPosts.slice(1).map((post, idx) => (
                 <Link key={post.id} href={`/blog/${post.slug}`} className="group" data-scroll="scale" data-delay={idx * 100}>
                   <article className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all h-full flex flex-col border border-gray-100">
                     <div className="relative aspect-[16/10] overflow-hidden">

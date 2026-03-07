@@ -2,38 +2,35 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight, Calendar } from 'lucide-react'
 
-// Placeholder data - will be replaced with actual data from Payload
-const recentPosts = [
-  {
-    id: '1',
-    title: 'National Youth Development Award 2025 Recognition',
-    excerpt: 'BBFORPEACE receives the National Youth Development Award from the Federal Ministry of Youth Development in recognition of our impact.',
-    slug: 'national-youth-development-award-2025',
-    featuredImage: '/images/PXL_20251008_095815014~2.jpg',
-    category: 'Award',
-    publishedAt: '2025-10-08',
-  },
-  {
-    id: '2',
-    title: 'West Africa Peace and Security Dialogue (WAPSeD) Regional Convening',
-    excerpt: 'Building regional networks to address security challenges including violent extremism, political instability, and climate stress across West Africa.',
-    slug: 'wapsed-regional-convening',
-    featuredImage: '/images/PXL_20251007_102503598.MP.jpg',
-    category: 'Event',
-    publishedAt: '2025-10-07',
-  },
-  {
-    id: '3',
-    title: 'Champions of Peace Youth Initiative Workshop',
-    excerpt: 'Training young peace champions through social media engagement, advocacy, dialogue, and community sensitization programs.',
-    slug: 'champions-of-peace-workshop',
-    featuredImage: '/images/PXL_20251023_124331635.MP~2.jpg',
-    category: 'Workshop',
-    publishedAt: '2025-10-23',
-  },
+// Default placeholder data used when no posts are available
+const defaultPosts = [
+  { id: '1', title: 'National Youth Development Award 2025 Recognition', excerpt: 'BBFORPEACE receives the National Youth Development Award from the Federal Ministry of Youth Development in recognition of our impact.', slug: 'national-youth-development-award-2025', featuredImage: '/images/PXL_20251008_095815014~2.jpg', category: 'Award', publishedAt: '2025-10-08' },
+  { id: '2', title: 'West Africa Peace and Security Dialogue (WAPSeD) Regional Convening', excerpt: 'Building regional networks to address security challenges including violent extremism, political instability, and climate stress across West Africa.', slug: 'wapsed-regional-convening', featuredImage: '/images/PXL_20251007_102503598.MP.jpg', category: 'Event', publishedAt: '2025-10-07' },
+  { id: '3', title: 'Champions of Peace Youth Initiative Workshop', excerpt: 'Training young peace champions through social media engagement, advocacy, dialogue, and community sensitization programs.', slug: 'champions-of-peace-workshop', featuredImage: '/images/PXL_20251023_124331635.MP~2.jpg', category: 'Workshop', publishedAt: '2025-10-23' },
 ]
 
-export function RecentActivities() {
+export interface RecentActivitiesProps {
+  posts?: {
+    id: string
+    title: string
+    excerpt?: string | null
+    slug: string
+    featuredImage?: { url?: string } | string | null
+    category?: { title?: string } | string | null
+    publishedAt?: string | null
+  }[]
+}
+
+export function RecentActivities({ posts }: RecentActivitiesProps) {
+  const recentPosts = posts?.length ? posts.map(p => ({
+    id: p.id,
+    title: p.title,
+    excerpt: p.excerpt || '',
+    slug: p.slug,
+    featuredImage: typeof p.featuredImage === 'string' ? p.featuredImage : p.featuredImage?.url || '/images/PXL_20251008_095815014~2.jpg',
+    category: typeof p.category === 'string' ? p.category : p.category?.title || 'Update',
+    publishedAt: p.publishedAt || new Date().toISOString(),
+  })) : defaultPosts
   return (
     <section 
       className="py-24 relative overflow-hidden bg-fixed bg-cover bg-center"

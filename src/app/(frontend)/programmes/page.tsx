@@ -6,6 +6,15 @@ import {
   Users, Target, CheckCircle, ArrowRight, BookOpen, Shield, 
   Globe, Leaf, Heart, Sparkles 
 } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
+import { getPayload } from 'payload'
+import config from '@payload-config'
+
+const iconMap: Record<string, LucideIcon> = {
+  BookOpen, Shield, Leaf, Globe, Heart, Users, Target,
+}
+
+const colorMap = ['bg-blue-500', 'bg-green-500', 'bg-yellow-500', 'bg-purple-500', 'bg-red-500']
 
 export const metadata: Metadata = {
   title: 'Our Programmes | BBFORPEACE',
@@ -13,87 +22,65 @@ export const metadata: Metadata = {
     'Explore our peacebuilding programmes focused on youth empowerment, community dialogue, peace education, and conflict resolution.',
 }
 
-const strategicPillars = [
-  {
-    id: 1,
-    icon: BookOpen,
-    title: 'Peace Education & Youth Empowerment',
-    color: 'bg-blue-500',
-    image: '/images/_VEE7124 (1).jpg',
-    description: 'Integrating peace education into school curricula and empowering young people with leadership skills, conflict resolution techniques, and advocacy training.',
-    objectives: [
-      'Train educators in peace education methodologies',
-      'Establish youth peace clubs across communities',
-      'Develop localized peace education curriculum',
-    ],
-    achievements: ['5,000+ youth trained', '75 youth peace clubs established', 'Curriculum adopted in 25+ schools'],
-  },
-  {
-    id: 2,
-    icon: Shield,
-    title: 'Conflict Prevention, Governance & Accountability',
-    color: 'bg-green-500',
-    image: '/images/_VEE7017 (19) (1).jpg',
-    description: 'Facilitating constructive conversations between diverse community groups, building early warning systems, and promoting transparent governance.',
-    objectives: [
-      'Conduct community dialogues annually',
-      'Train dialogue facilitators',
-      'Establish early warning systems',
-    ],
-    achievements: ['150+ community dialogues held', '120 trained facilitators', '15 communities with early warning'],
-  },
-  {
-    id: 3,
-    icon: Leaf,
-    title: 'Gender, Climate & Environmental Security',
-    color: 'bg-yellow-500',
-    image: '/images/_VEE6887 (20).jpg',
-    description: 'Supporting women as key actors in peacebuilding and addressing the nexus between climate change, environmental degradation, and conflict.',
-    objectives: [
-      'Train women in conflict resolution',
-      'Support women-led peace initiatives',
-      'Advocate for gender-inclusive peace processes',
-    ],
-    achievements: ['250+ women trained', '80 initiatives supported', '5 policy advocacy campaigns'],
-  },
-  {
-    id: 4,
-    icon: Globe,
-    title: 'Organizational Sustainability & Partnerships',
-    color: 'bg-purple-500',
-    image: '/images/_VEE7037 (1).jpg',
-    description: 'Building strategic partnerships with local and international organizations to expand our reach and ensure long-term sustainability.',
-    objectives: [
-      'Expand regional network across West Africa',
-      'Strengthen GPPAC secretariat role',
-      'Develop sustainable funding models',
-    ],
-    achievements: ['GPPAC West Africa Secretariat', 'WAYPAN Regional Network', 'Member of UNOY'],
-  },
-  {
-    id: 5,
-    icon: Heart,
-    title: 'Livelihoods & Humanitarian',
-    color: 'bg-red-500',
-    image: '/images/_VEE7153 (6).jpg',
-    description: 'Providing economic empowerment opportunities and humanitarian support to conflict-affected communities.',
-    objectives: [
-      'Economic empowerment for vulnerable youth',
-      'Humanitarian response in conflict zones',
-      'Livelihood support programs',
-    ],
-    achievements: ['Economic training workshops', 'Humanitarian aid distribution', 'Community support initiatives'],
-  },
-]
+export default async function ProgrammesPage() {
+  const payload = await getPayload({ config })
 
-export default function ProgrammesPage() {
+  let settings: any = {}
+  let programmes: any[] = []
+
+  try {
+    const [pageSettings, programmesResult] = await Promise.all([
+      payload.findGlobal({ slug: 'programme-page-settings' }),
+      payload.find({ collection: 'programmes', where: { status: { equals: 'active' } }, sort: 'order', limit: 10, depth: 1 }),
+    ])
+    settings = pageSettings as any
+    programmes = programmesResult.docs
+  } catch (error) {
+    console.error('Failed to fetch programmes data:', error)
+  }
+
+  const pageTitle = settings.title || 'Our Programmes'
+  const pageSubtitle = settings.subtitle || 'Strategic Initiatives'
+  const pageDesc = settings.description || 'Five interlinked impact areas guiding our work toward sustainable peace in Nigeria and West Africa.'
+  const bgImage = typeof settings.backgroundImage === 'object' ? settings.backgroundImage?.url : (settings.backgroundImage || '/images/_VEE7009 (1).jpg')
+  const overviewBadge = settings.overviewBadge || '2026 - 2030 Strategy'
+  const overviewHeading = settings.overviewHeading || 'Strategic Pillars'
+  const ctaBadge = settings.ctaBadge || 'Get Involved'
+  const ctaHeading = settings.ctaHeading || 'Support Our Programmes'
+  const ctaDescription = settings.ctaDescription || 'Your support helps us expand our reach and impact more communities. Join us as a partner, donor, or volunteer.'
+
+  const getImageUrl = (media: any) => {
+    if (!media) return '/images/_VEE7124 (1).jpg'
+    if (typeof media === 'object' && media.url) return media.url
+    return media
+  }
+
+  // Fallback pillars when collection is empty
+  const defaultPillars = [
+    { id: 1, icon: 'BookOpen', title: 'Peace Education & Youth Empowerment', color: 'bg-blue-500', image: '/images/_VEE7124 (1).jpg', shortDescription: 'Integrating peace education into school curricula and empowering young people with leadership skills, conflict resolution techniques, and advocacy training.', objectives: [{ objective: 'Train educators in peace education methodologies' }, { objective: 'Establish youth peace clubs across communities' }, { objective: 'Develop localized peace education curriculum' }], achievements: [{ metric: '5,000+ youth trained' }, { metric: '75 youth peace clubs established' }, { metric: 'Curriculum adopted in 25+ schools' }] },
+    { id: 2, icon: 'Shield', title: 'Conflict Prevention, Governance & Accountability', color: 'bg-green-500', image: '/images/_VEE7017 (19) (1).jpg', shortDescription: 'Facilitating constructive conversations between diverse community groups, building early warning systems, and promoting transparent governance.', objectives: [{ objective: 'Conduct community dialogues annually' }, { objective: 'Train dialogue facilitators' }, { objective: 'Establish early warning systems' }], achievements: [{ metric: '150+ community dialogues held' }, { metric: '120 trained facilitators' }, { metric: '15 communities with early warning' }] },
+    { id: 3, icon: 'Leaf', title: 'Gender, Climate & Environmental Security', color: 'bg-yellow-500', image: '/images/_VEE6887 (20).jpg', shortDescription: 'Supporting women as key actors in peacebuilding and addressing the nexus between climate change, environmental degradation, and conflict.', objectives: [{ objective: 'Train women in conflict resolution' }, { objective: 'Support women-led peace initiatives' }, { objective: 'Advocate for gender-inclusive peace processes' }], achievements: [{ metric: '250+ women trained' }, { metric: '80 initiatives supported' }, { metric: '5 policy advocacy campaigns' }] },
+    { id: 4, icon: 'Globe', title: 'Organizational Sustainability & Partnerships', color: 'bg-purple-500', image: '/images/_VEE7037 (1).jpg', shortDescription: 'Building strategic partnerships with local and international organizations to expand our reach and ensure long-term sustainability.', objectives: [{ objective: 'Expand regional network across West Africa' }, { objective: 'Strengthen GPPAC secretariat role' }, { objective: 'Develop sustainable funding models' }], achievements: [{ metric: 'GPPAC West Africa Secretariat' }, { metric: 'WAYPAN Regional Network' }, { metric: 'Member of UNOY' }] },
+    { id: 5, icon: 'Heart', title: 'Livelihoods & Humanitarian', color: 'bg-red-500', image: '/images/_VEE7153 (6).jpg', shortDescription: 'Providing economic empowerment opportunities and humanitarian support to conflict-affected communities.', objectives: [{ objective: 'Economic empowerment for vulnerable youth' }, { objective: 'Humanitarian response in conflict zones' }, { objective: 'Livelihood support programs' }], achievements: [{ metric: 'Economic training workshops' }, { metric: 'Humanitarian aid distribution' }, { metric: 'Community support initiatives' }] },
+  ]
+
+  const displayPillars = programmes.length ? programmes.map((p: any, idx: number) => ({
+    id: p.id || idx + 1,
+    icon: p.icon || 'BookOpen',
+    title: p.title,
+    color: colorMap[idx % colorMap.length],
+    image: getImageUrl(p.featuredImage),
+    shortDescription: p.shortDescription || '',
+    objectives: p.objectives || [],
+    achievements: p.achievements || [],
+  })) : defaultPillars
   return (
     <>
       <PageHero
-        title="Our Programmes"
-        subtitle="Strategic Initiatives"
-        description="Five interlinked impact areas guiding our work toward sustainable peace in Nigeria and West Africa."
-        backgroundImage="/images/_VEE7009 (1).jpg"
+        title={pageTitle}
+        subtitle={pageSubtitle}
+        description={pageDesc}
+        backgroundImage={bgImage}
         breadcrumbs={[
           { label: 'Home', href: '/' },
           { label: 'Programmes', href: '/programmes' },
@@ -106,15 +93,15 @@ export default function ProgrammesPage() {
             <div className="text-center mb-14" data-scroll="up">
               <span className="inline-flex items-center gap-3 justify-center text-primary-900 text-sm font-semibold uppercase tracking-widest mb-4">
                 <span className="w-8 h-[2px] bg-primary-900" />
-                2026 - 2030 Strategy
+                {overviewBadge}
                 <span className="w-8 h-[2px] bg-primary-900" />
               </span>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">Strategic Pillars</h2>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">{overviewHeading}</h2>
             </div>
             <div className="max-w-5xl mx-auto">
             <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-5" data-scroll="scale">
-              {strategicPillars.map((pillar, idx) => {
-                const Icon = pillar.icon
+              {displayPillars.map((pillar: any, idx: number) => {
+                const Icon = iconMap[pillar.icon] || BookOpen
                 return (
                   <a 
                     key={pillar.id} 
@@ -140,8 +127,8 @@ export default function ProgrammesPage() {
           <div className="container">
             <div className="max-w-5xl mx-auto">
             <div className="space-y-32">
-              {strategicPillars.map((pillar, index) => {
-                const Icon = pillar.icon
+              {displayPillars.map((pillar: any, index: number) => {
+                const Icon = iconMap[pillar.icon] || BookOpen
                 return (
                   <div
                     key={pillar.id}
@@ -183,7 +170,7 @@ export default function ProgrammesPage() {
                           {pillar.title}
                         </h2>
                         <p className="text-gray-600 text-lg mb-8 leading-relaxed">
-                          {pillar.description}
+                          {pillar.shortDescription}
                         </p>
 
                         {/* Objectives */}
@@ -193,10 +180,10 @@ export default function ProgrammesPage() {
                             Key Objectives
                           </h3>
                           <ul className="space-y-3">
-                            {pillar.objectives.map((objective, i) => (
+                            {pillar.objectives.map((obj: any, i: number) => (
                               <li key={i} className="flex items-start text-gray-600">
                                 <span className="w-2 h-2 bg-accent-gold rounded-full mt-2 mr-3 flex-shrink-0" />
-                                {objective}
+                                {obj.objective || obj}
                               </li>
                             ))}
                           </ul>
@@ -209,13 +196,13 @@ export default function ProgrammesPage() {
                             Achievements
                           </h3>
                           <div className="flex flex-wrap gap-2">
-                            {pillar.achievements.map((achievement, i) => (
+                            {pillar.achievements.map((ach: any, i: number) => (
                               <span 
                                 key={i} 
                                 className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-green-50 text-green-700 text-sm font-medium rounded-full border border-green-100"
                               >
                                 <CheckCircle className="w-3.5 h-3.5" />
-                                {achievement}
+                                {ach.metric || ach.title || ach}
                               </span>
                             ))}
                           </div>
@@ -249,10 +236,10 @@ export default function ProgrammesPage() {
                 <span className="w-8 h-[2px] bg-accent-gold" />
               </span>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
-                Support Our Programmes
+                {ctaHeading}
               </h2>
               <p className="text-gray-300 text-lg mb-10">
-                Your support helps us expand our reach and impact more communities. Join us as a partner, donor, or volunteer.
+                {ctaDescription}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link 

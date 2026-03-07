@@ -1,4 +1,10 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, Access } from 'payload'
+
+// Access control: Admins and above can manage content
+const isAdminOrAbove: Access = ({ req: { user } }) => {
+  if (!user) return false
+  return user.role === 'super-admin' || user.role === 'admin' || user.role === 'editor'
+}
 
 export const Events: CollectionConfig = {
   slug: 'events',
@@ -6,9 +12,13 @@ export const Events: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'startDate', 'location', 'status'],
     description: 'Upcoming and past events',
+    group: 'Event page',
   },
   access: {
-    read: () => true,
+    read: () => true, // Public can read events
+    create: isAdminOrAbove,
+    update: isAdminOrAbove,
+    delete: ({ req: { user } }) => user?.role === 'super-admin' || user?.role === 'admin',
   },
   fields: [
     {

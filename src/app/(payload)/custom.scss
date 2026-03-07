@@ -23,9 +23,851 @@
   --theme-success-500: #10b981;
   --theme-error-500: #ef4444;
   --theme-warning-500: #f59e0b;
+  --theme-success-400: #34d399;
+  --theme-bg: #f6f3fb;
+  --theme-text: #1f2230;
+  --theme-input-bg: #ffffff;
+  --theme-elevation-1000: #28005b;
 }
 
-/* Custom styling for the admin panel */
-.nav-header__logo {
-  max-height: 40px;
+html,
+body {
+  background: linear-gradient(180deg, #f6f3fb 0%, #ffffff 65%);
+  font-size: 16px;
+}
+
+.template-default,
+.template-minimal {
+  background: linear-gradient(180deg, #f6f3fb 0%, #ffffff 65%);
+}
+
+.app-header,
+.nav,
+.drawer,
+.collection-list,
+.doc-controls,
+.render-fields {
+  border-radius: 12px;
+}
+
+.nav {
+  background: linear-gradient(180deg, #250054 0%, #28005b 55%, #2e0763 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 12px 28px rgba(23, 0, 52, 0.4);
+}
+
+.template-default .nav,
+.template-default .drawer,
+.template-default .drawer__content {
+  background: #28005b !important;
+}
+
+.template-default .gutter--left {
+  background: #28005b !important;
+}
+
+.template-default .gutter--left .nav,
+.template-default .gutter--left .drawer,
+.template-default .gutter--left .drawer__content {
+  background: linear-gradient(180deg, #250054 0%, #28005b 55%, #2e0763 100%) !important;
+}
+
+.nav a,
+.nav button,
+.nav .pill {
+  color: #e7e2f0;
+}
+
+.nav .active,
+.nav a:hover,
+.nav button:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.nav,
+.nav * {
+  font-size: 0.98rem;
+}
+
+.bb-admin-logo {
+  padding: 4px 2px;
+}
+
+.bb-admin-actions {
+  position: relative;
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 40px;
+}
+
+.bb-admin-actions__title {
+  color: #28005b;
+  font-weight: 700;
+  font-size: 1rem;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  max-width: calc(100% - 72px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bb-admin-user {
+  position: relative;
+  margin-left: auto;
+}
+
+.bb-admin-user__trigger {
+  border: 1px solid #d7c7ef;
+  background: #fff;
+  color: #28005b;
+  border-radius: 999px;
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.bb-admin-user__trigger:hover {
+  background: #f6efff;
+}
+
+.bb-admin-user__icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.bb-admin-user__menu {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  min-width: 140px;
+  background: #fff;
+  border: 1px solid #e8ddf8;
+  border-radius: 10px;
+  box-shadow: 0 10px 26px rgba(40, 0, 91, 0.15);
+  padding: 0.35rem;
+  z-index: 50;
+}
+
+.bb-admin-user__item {
+  display: block;
+  text-decoration: none;
+  color: #28005b;
+  font-weight: 600;
+  font-size: 0.88rem;
+  border-radius: 8px;
+  padding: 0.45rem 0.55rem;
+}
+
+.bb-admin-user__item:hover {
+  background: #f6efff;
+}
+
+/* ==========================================
+   HIDE DEFAULT PAYLOAD CONTROLS & GRAVATAR
+   ========================================== */
+
+/* Hide default Payload header controls (including gravatar) — keep only our custom actions */
+.app-header .nav__controls > *:not(.bb-admin-actions) {
+  display: none !important;
+}
+
+/* Hide any gravatar image that might be rendered */
+img.gravatar-account,
+.gravatar-account,
+img[src*="gravatar.com"] {
+  display: none !important;
+}
+
+/* ==========================================
+   RESPONSIVE  — LARGE TABLETS (≤ 1024px)
+   ========================================== */
+@media (max-width: 1024px) {
+  .bb-custom-nav {
+    padding-top: 3.2rem;
+  }
+
+  .bb-dash__grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+
+  .bb-dash__welcome {
+    flex-wrap: wrap;
+  }
+}
+
+/* ==========================================
+   RESPONSIVE  — TABLETS (≤ 768px)
+   ========================================== */
+@media (max-width: 768px) {
+  /* Hide title on small devices */
+  .bb-admin-actions__title {
+    display: none;
+  }
+
+  .bb-admin-actions {
+    min-height: 36px;
+  }
+
+  /* Sidebar */
+  .bb-custom-nav {
+    padding-top: 2.4rem;
+    gap: 0.25rem;
+  }
+
+  .bb-custom-nav__item,
+  .bb-custom-nav__parent {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.6rem;
+  }
+
+  .bb-custom-nav__child {
+    font-size: 0.82rem;
+    padding: 0.38rem 0.5rem;
+  }
+
+  .bb-custom-nav__children {
+    padding-left: 0.55rem;
+  }
+
+  /* Dashboard */
+  .bb-dash {
+    padding: 1rem;
+  }
+
+  .bb-dash__welcome {
+    padding: 1.2rem 1.4rem;
+  }
+
+  .bb-dash__heading {
+    font-size: 1.25rem;
+  }
+
+  .bb-dash__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.65rem;
+  }
+
+  .bb-dash-card {
+    padding: 0.8rem;
+  }
+
+}
+
+/* ==========================================
+   RESPONSIVE  — PHONES (≤ 480px)
+   ========================================== */
+@media (max-width: 480px) {
+  html, body {
+    font-size: 14px;
+  }
+
+  .bb-custom-nav {
+    padding-top: 2rem;
+    gap: 0.15rem;
+  }
+
+  .bb-custom-nav__item,
+  .bb-custom-nav__parent {
+    font-size: 0.82rem;
+    padding: 0.45rem 0.5rem;
+  }
+
+  .bb-custom-nav__icon {
+    width: 13px;
+    height: 13px;
+  }
+
+  .bb-custom-nav__child {
+    font-size: 0.76rem;
+    padding: 0.32rem 0.42rem;
+  }
+
+  .bb-admin-user__trigger {
+    width: 32px;
+    height: 32px;
+  }
+
+  .bb-admin-user__icon {
+    font-size: 0.85rem;
+  }
+
+  /* Dashboard — single column on phones */
+  .bb-dash {
+    padding: 0.75rem;
+  }
+
+  .bb-dash__welcome {
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1.25rem;
+  }
+
+  .bb-dash__heading {
+    font-size: 1.1rem;
+  }
+
+  .bb-dash__subheading {
+    font-size: 0.82rem;
+  }
+
+  .bb-dash__welcome-badge {
+    display: none;
+  }
+
+  .bb-dash__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bb-dash-card__icon-wrap {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+  }
+
+  /* Cards / forms / content */
+  .card,
+  .collection-list,
+  .document-fields,
+  .render-fields {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(40, 0, 91, 0.06);
+  }
+
+  input, textarea, select, .field-type {
+    border-radius: 8px;
+  }
+}
+
+/* Login page should not have extra gutter */
+.template-minimal {
+  --gutter-h: 60px;
+}
+
+.bb-admin-actions__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  background: #28005b;
+  border: 1px solid #4a1491;
+  text-decoration: none;
+}
+
+.bb-admin-actions__button:hover {
+  background: #3a0a75;
+}
+
+.bb-admin-actions__button--primary {
+  background: #28005b;
+  border-color: #4a1491;
+  color: #fff;
+}
+
+.bb-admin-actions__button--primary:hover {
+  background: #3a0a75;
+}
+
+.bb-admin-dashboard,
+.bb-admin-dashboard__header,
+.bb-admin-dashboard__grid,
+.bb-admin-stat-card,
+.bb-admin-stat-card__label,
+.bb-admin-stat-card__value,
+.bb-admin-stat-card__cta,
+.bb-admin-stat-card__description {
+  /* legacy — kept for override safety */
+  display: none !important;
+}
+
+/* ==========================================
+   MODERN DASHBOARD
+   ========================================== */
+.bb-dash {
+  padding: 1.5rem;
+  max-width: 900px;
+}
+
+/* — Welcome banner — */
+.bb-dash__welcome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background: linear-gradient(135deg, #28005b 0%, #4a1491 50%, #6d28d9 100%);
+  border-radius: 16px;
+  padding: 1.6rem 2rem;
+  margin-bottom: 1.75rem;
+  color: #fff;
+  box-shadow: 0 8px 32px rgba(40, 0, 91, 0.28);
+  position: relative;
+  overflow: hidden;
+}
+
+.bb-dash__welcome::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -10%;
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.bb-dash__welcome::after {
+  content: '';
+  position: absolute;
+  bottom: -50%;
+  left: 15%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(139,92,246,0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.bb-dash__welcome-text {
+  position: relative;
+  z-index: 1;
+}
+
+.bb-dash__heading {
+  margin: 0;
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  color: #fbbf24;
+}
+
+.bb-dash__subheading {
+  margin: 0.35rem 0 0;
+  font-size: 0.92rem;
+  opacity: 0.85;
+  font-weight: 400;
+}
+
+.bb-dash__welcome-badge {
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(6px);
+  border-radius: 999px;
+  padding: 0.35rem 1rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ede9fe;
+}
+
+/* — Cards grid — */
+.bb-dash__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.bb-dash-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1rem 1.15rem;
+  background: #ffffff;
+  border: 1px solid #e9e2f3;
+  border-radius: 14px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 2px 8px rgba(40, 0, 91, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.bb-dash-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(40, 0, 91, 0.14);
+  border-color: #d4bfff;
+}
+
+.bb-dash-card:hover .bb-dash-card__arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.bb-dash-card__icon-wrap {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.bb-dash-card__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.bb-dash-card__label {
+  display: block;
+  font-size: 0.93rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  line-height: 1.3;
+}
+
+.bb-dash-card__desc {
+  display: block;
+  font-size: 0.78rem;
+  color: #6b7280;
+  margin-top: 0.15rem;
+  line-height: 1.35;
+}
+
+.bb-dash-card__arrow {
+  flex-shrink: 0;
+  color: #a78bfa;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* (legacy footer removed) */
+
+.template-default--dashboard .bb-dash ~ * {
+  display: none !important;
+}
+
+.template-default--dashboard .collection-list__group,
+.template-default--dashboard .collection-list__label,
+.template-default--dashboard .collection-list__card-list,
+.template-default--dashboard .collection-list__card-list li,
+.template-default--dashboard .collection-list .card,
+.template-default--dashboard .collection-list .card__click {
+  display: none !important;
+}
+
+.bb-custom-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 4.9rem 0.2rem 0.4rem;
+  background: linear-gradient(180deg, #250054 0%, #28005b 55%, #2e0763 100%);
+  border-radius: 12px;
+}
+
+.bb-custom-nav__item,
+.bb-custom-nav__parent,
+.bb-custom-nav__child {
+  border: none;
+  text-align: left;
+  text-decoration: none;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.bb-custom-nav__item,
+.bb-custom-nav__parent {
+  color: #e7e2f0;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.58rem 0.7rem;
+  background: transparent;
+}
+
+.bb-custom-nav__item-content,
+.bb-custom-nav__child-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bb-custom-nav__icon {
+  color: #f4f1fa;
+  flex-shrink: 0;
+}
+
+.bb-custom-nav__icon--child {
+  opacity: 0.92;
+}
+
+.bb-custom-nav__item:hover,
+.bb-custom-nav__parent:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.bb-custom-nav__item.is-active {
+  background: linear-gradient(90deg, rgba(252, 195, 11, 0.34), rgba(255, 255, 255, 0.12));
+  color: #fff;
+}
+
+.bb-custom-nav__parent {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.bb-custom-nav__caret {
+  font-size: 0.95rem;
+  opacity: 0.9;
+  transform: rotate(-90deg);
+}
+
+.bb-custom-nav__caret.is-open {
+  transform: rotate(0deg);
+}
+
+.bb-custom-nav__children {
+  margin: 0.3rem 0 0.45rem;
+  padding-left: 0.85rem;
+  border-left: 2px solid rgba(255, 255, 255, 0.22);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.bb-custom-nav__child {
+  color: #d4ccdf;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.43rem 0.58rem;
+  margin-left: 0.25rem;
+}
+
+.bb-custom-nav__child:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.bb-custom-nav__child.is-active {
+  background: linear-gradient(90deg, rgba(252, 195, 11, 0.28), rgba(255, 255, 255, 0.08));
+  color: #fff;
+  font-weight: 700;
+}
+
+/* ==========================================
+   SIDEBAR ALWAYS OPEN ON DESKTOP
+   Force the sidebar open by default (desktop).
+   The user can still click the hamburger to close it.
+   ========================================== */
+
+/* On desktop (> 1024px), force the sidebar grid column visible until
+   Payload adds --nav-open (which happens once NavOpenDefault forces
+   setNavOpen(true) after hydration).  This prevents a visual flash
+   where the sidebar briefly collapses before the JS forces it open. */
+@media (min-width: 1025px) {
+  /* Pre-hydration: sidebar visible immediately (SSR / first paint) */
+  .template-default:not(.template-default--nav-hydrated) {
+    grid-template-columns: var(--nav-width, 280px) auto !important;
+  }
+
+  .template-default:not(.template-default--nav-hydrated) .gutter--left {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+
+  /* Post-hydration but nav not yet forced open by JS: keep sidebar visible
+     to bridge the ~350 ms gap until NavOpenDefault calls setNavOpen(true).
+     Once JS adds .bb-nav-initialized to <html>, CSS steps aside and the
+     hamburger button can close the sidebar normally. */
+  :root:not(.bb-nav-initialized) .template-default.template-default--nav-hydrated:not(.template-default--nav-open) {
+    grid-template-columns: var(--nav-width, 280px) auto !important;
+  }
+
+  :root:not(.bb-nav-initialized) .template-default.template-default--nav-hydrated:not(.template-default--nav-open) .gutter--left {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+}
+
+/* ==========================================
+   MOBILE SIDEBAR — SLIDE-OVER CANVAS
+   On mobile/tablet the sidebar is an overlay drawer.
+   A semi-transparent backdrop lets the user tap outside to close.
+   ========================================== */
+@media (max-width: 1024px) {
+  /* Overlay backdrop when nav is open */
+  .template-default--nav-open .template-default__nav-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 998;
+    pointer-events: auto;
+  }
+
+  /* Slide the left gutter in as an overlay drawer */
+  .template-default .gutter--left {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--nav-width, 280px);
+    max-width: 85vw;
+    z-index: 999;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .template-default--nav-open .gutter--left {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.25);
+  }
+}
+
+/* ==========================================
+   ADMIN CONTENT BODY PADDING
+   Give the main content area generous spacing
+   so text/forms aren't flush against edges.
+   ========================================== */
+
+/* Increase base gutter for the entire admin layout */
+.template-default {
+  --gutter-h: 80px;
+}
+
+/* Main content area — comfortable inner padding */
+.template-default .gutter--right {
+  background: transparent !important;
+  padding-top: 1.5rem;
+  padding-bottom: 2rem;
+  padding-left: var(--gutter-h);
+  padding-right: var(--gutter-h);
+}
+
+/* Document form fields wrapper */
+.template-default .document-fields__main {
+  padding: 1.5rem 1.75rem 2rem;
+}
+
+/* Collection list view */
+.template-default .collection-list {
+  padding: 1.25rem 1.5rem;
+}
+
+/* Global edit view */
+.template-default .render-fields {
+  padding: 1.25rem 1.5rem;
+}
+
+/* Tabs inside globals/documents */
+.template-default .tabs-field {
+  padding: 0.75rem 0.5rem 0;
+}
+
+/* Table cells need a little air too */
+.template-default table.table td,
+.template-default table.table th {
+  padding: 0.65rem 1rem;
+}
+
+/* Doc controls / save bar */
+.template-default .doc-controls {
+  padding: 0.75rem var(--gutter-h);
+}
+
+/* App header breathing room */
+.template-default .app-header {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Step-nav breadcrumb area */
+.template-default .step-nav {
+  padding-left: 0.5rem;
+}
+
+/* Small screens: scale gutter down */
+@media (max-width: 1024px) {
+  .template-default {
+    --gutter-h: 36px;
+  }
+
+  .template-default .document-fields__main {
+    padding: 1rem 1.15rem 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .template-default {
+    --gutter-h: 20px;
+  }
+
+  .template-default .gutter--right {
+    padding-top: 1rem;
+  }
+
+  .template-default .document-fields__main {
+    padding: 0.75rem 0.65rem 1.25rem;
+  }
+
+  .template-default .collection-list,
+  .template-default .render-fields {
+    padding: 0.75rem 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .template-default {
+    --gutter-h: 14px;
+  }
+
+  .template-default .document-fields__main {
+    padding: 0.5rem 0.35rem 1rem;
+  }
+}
+
+/* ========================================== */
+
+.login,
+.template-default .gutter--right {
+  background: transparent !important;
+}
+
+.btn--style-primary,
+.btn.btn--style-primary {
+  background: #28005b;
+  border-color: #28005b;
+}
+
+.btn--style-primary:hover,
+.btn.btn--style-primary:hover {
+  background: #3a0a75;
+  border-color: #3a0a75;
+}
+
+.card,
+.collection-list,
+.document-fields,
+.render-fields {
+  box-shadow: 0 8px 24px rgba(40, 0, 91, 0.08);
+}
+
+input,
+textarea,
+select,
+.field-type {
+  border-radius: 10px;
 }

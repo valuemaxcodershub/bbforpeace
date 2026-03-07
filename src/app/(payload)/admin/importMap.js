@@ -21,6 +21,12 @@ import { StrikethroughFeatureClient as StrikethroughFeatureClient_e70f5e05f09f93
 import { UnderlineFeatureClient as UnderlineFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
+import { CustomNav as CustomNav_907748efc1bfff20b2e913403526da61 } from '../../../../src/components/admin/CustomNav'
+import { Icon as Icon_b04c0db8d89d68ff5dd20d513b3034b9 } from '../../../../src/components/admin/Icon'
+import { Logo as Logo_4522c7900ab0b0df414ce3e1574aaee4 } from '../../../../src/components/admin/Logo'
+import { AdminActions as AdminActions_495d710e6a77187e75e440d1fadde88b } from '../../../../src/components/admin/AdminActions'
+import { NavOpenDefault as NavOpenDefault_bf6d1cf1c1d5c4224e6b6dac5ffcab53 } from '../../../../src/components/admin/NavOpenDefault'
+import { CustomDashboard as CustomDashboard_3a64ea8dcdfa35c0d9eb557c84ef02d0 } from '../../../../src/components/admin/CustomDashboard'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 export const importMap = {
@@ -47,5 +53,11 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#UnderlineFeatureClient": UnderlineFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#BoldFeatureClient": BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
+  "/src/components/admin/CustomNav#CustomNav": CustomNav_907748efc1bfff20b2e913403526da61,
+  "/src/components/admin/Icon#Icon": Icon_b04c0db8d89d68ff5dd20d513b3034b9,
+  "/src/components/admin/Logo#Logo": Logo_4522c7900ab0b0df414ce3e1574aaee4,
+  "/src/components/admin/AdminActions#AdminActions": AdminActions_495d710e6a77187e75e440d1fadde88b,
+  "/src/components/admin/NavOpenDefault#NavOpenDefault": NavOpenDefault_bf6d1cf1c1d5c4224e6b6dac5ffcab53,
+  "/src/components/admin/CustomDashboard#CustomDashboard": CustomDashboard_3a64ea8dcdfa35c0d9eb557c84ef02d0,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

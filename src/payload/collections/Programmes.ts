@@ -1,4 +1,10 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, Access } from 'payload'
+
+// Access control: Admins and above can manage programmes
+const isAdminOrAbove: Access = ({ req: { user } }) => {
+  if (!user) return false
+  return user.role === 'super-admin' || user.role === 'admin' || user.role === 'editor'
+}
 
 export const Programmes: CollectionConfig = {
   slug: 'programmes',
@@ -6,9 +12,13 @@ export const Programmes: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'status', 'order'],
     description: 'Programs and initiatives',
+    group: 'Programme page',
   },
   access: {
-    read: () => true,
+    read: () => true, // Public can read programmes
+    create: isAdminOrAbove,
+    update: isAdminOrAbove,
+    delete: ({ req: { user } }) => user?.role === 'super-admin' || user?.role === 'admin',
   },
   fields: [
     {

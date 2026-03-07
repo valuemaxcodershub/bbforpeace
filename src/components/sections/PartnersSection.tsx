@@ -1,16 +1,25 @@
 'use client'
 
-// Partner organizations with local logos
-const partners = [
-  { id: '1', name: 'GPPAC Foundation', acronym: 'GPPAC', logo: '/images/partners/gppac.jfif' },
-  { id: '2', name: 'West Africa Network for Peacebuilding', acronym: 'WANEP', logo: '/images/partners/wanep.png' },
-  { id: '3', name: 'British Council', acronym: 'BC', logo: '/images/partners/British_Council_logo.svg.png' },
-  { id: '4', name: 'MacArthur Foundation', acronym: 'MAC', logo: '/images/partners/maaurthor.jfif' },
-  { id: '5', name: 'Open Society Foundations', acronym: 'OSF', logo: '/images/partners/open%20society%20foundation.png' },
-  { id: '6', name: 'Ford Foundation', acronym: 'FORD', logo: '/images/partners/ford.png' },
+// Default partner organizations with local logos
+const defaultPartners = [
+  { id: '1', name: 'GPPAC Foundation', logo: '/images/partners/gppac.jfif' },
+  { id: '2', name: 'West Africa Network for Peacebuilding', logo: '/images/partners/wanep.png' },
+  { id: '3', name: 'British Council', logo: '/images/partners/British_Council_logo.svg.png' },
+  { id: '4', name: 'MacArthur Foundation', logo: '/images/partners/maaurthor.jfif' },
+  { id: '5', name: 'Open Society Foundations', logo: '/images/partners/open%20society%20foundation.png' },
+  { id: '6', name: 'Ford Foundation', logo: '/images/partners/ford.png' },
 ]
 
-export function PartnersSection() {
+export interface PartnersSectionProps {
+  partners?: { name: string; logo?: { url?: string } | string | null }[]
+}
+
+export function PartnersSection({ partners: partnersProp }: PartnersSectionProps) {
+  const partners = partnersProp?.length ? partnersProp.map((p, i) => ({
+    id: String(i + 1),
+    name: p.name,
+    logo: typeof p.logo === 'string' ? p.logo : p.logo?.url || '/images/partners/gppac.jfif',
+  })) : defaultPartners
   // Double the partners array for seamless infinite scroll
   const doubledPartners = [...partners, ...partners]
 

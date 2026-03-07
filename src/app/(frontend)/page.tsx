@@ -17,52 +17,137 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import Script from 'next/script'
 
+export const revalidate = 60
+
 export default async function HomePage() {
-  // Fetch site settings from CMS
-  let siteSettings = null
+  const payload = await getPayload({ config })
+
+  // Fetch home page settings from CMS
+  let hs: Record<string, any> = {}
   try {
-    const payload = await getPayload({ config })
-    siteSettings = await payload.findGlobal({
-      slug: 'site-settings',
-    })
+    hs = (await payload.findGlobal({ slug: 'home-page-settings' })) as Record<string, any>
   } catch (error) {
-    console.error('Failed to fetch site settings:', error)
+    console.error('Failed to fetch home page settings:', error)
   }
 
-  // Extract hero section data
-  const heroData = siteSettings ? {
-    slogan: siteSettings.heroSlogan,
-    mainTitle: siteSettings.heroMainTitle,
-    slides: siteSettings.heroSlides,
-    typewriterPhrases: siteSettings.typewriterPhrases,
-    cta: siteSettings.heroCta,
-  } : {}
+  // Fetch partners from partners-settings global
+  let partnersData: any = null
+  try {
+    partnersData = await payload.findGlobal({ slug: 'partners-settings' })
+  } catch {}
 
-  // Extract about section data
-  const aboutData = siteSettings ? {
-    title: siteSettings.aboutTitle,
-    highlights: siteSettings.aboutHighlights,
-    video: siteSettings.aboutVideo,
-    images: siteSettings.aboutImages,
-    yearsOfImpact: siteSettings.yearsOfImpact,
-    mission: siteSettings.mission,
-    vision: siteSettings.vision,
-  } : {}
+  // Fetch recent posts from posts collection
+  let recentPostsDocs: any[] = []
+  try {
+    const { docs } = await payload.find({
+      collection: 'posts',
+      where: { status: { equals: 'published' } },
+      sort: '-publishedAt',
+      limit: 3,
+      depth: 1,
+    })
+    recentPostsDocs = docs
+  } catch {}
+
+  // Fetch recent publications from publications collection
+  let recentPubsDocs: any[] = []
+  try {
+    const { docs } = await payload.find({
+      collection: 'publications',
+      sort: '-year',
+      limit: 4,
+      depth: 1,
+    })
+    recentPubsDocs = docs
+  } catch {}
 
   return (
     <>
-      <HeroSection {...heroData} />
-      <ImpactStats />
-      <AboutPreview {...aboutData} />
-      <ProgrammesSection />
-      <OurApproachSection />
-      <InitiativesSection />
-      <RecentActivities />
-      <VideoSection />
-      <AwardsSection />
-      <PublicationsSection />
-      <PartnersSection />
-      <NewsletterSection />
+      <HeroSection
+        mainTitle={hs.heroMainTitle}
+        slides={hs.heroSlides}
+        typewriterPhrases={hs.typewriterPhrases}
+        cta={hs.heroCta}
+      />
+      <ImpactStats
+        badge={hs.impactBadge}
+        heading={hs.impactHeading}
+        description={hs.impactDescription}
+        image={hs.impactImage}
+        highlights={hs.impactHighlights}
+        stats={hs.impactStats}
+      />
+      <AboutPreview
+        title={hs.aboutTitle}
+        paragraph1={hs.aboutParagraph1}
+        paragraph2={hs.aboutParagraph2}
+        highlights={hs.aboutHighlights}
+        video={{ youtubeId: hs.aboutVideoId, title: hs.aboutVideoTitle }}
+        images={{ mainImage: hs.aboutMainImage, secondaryImage: hs.aboutSecondaryImage }}
+        yearsOfImpact={hs.aboutYearsOfImpact}
+        mission={hs.aboutMission}
+        vision={hs.aboutVision}
+      />
+      <ProgrammesSection
+        badge={hs.focusBadge}
+        heading={hs.focusHeading}
+        description={hs.focusDescription}
+        backgroundImage={hs.focusBackgroundImage}
+        focusAreas={hs.focusAreas}
+      />
+      <OurApproachSection
+        badge={hs.approachBadge}
+        heading={hs.approachHeading}
+        description={hs.approachDescription}
+        pillars={hs.approachPillars}
+      />
+      <InitiativesSection
+        badge={hs.initiativesBadge}
+        heading={hs.initiativesHeading}
+        description={hs.initiativesDescription}
+        initiatives={hs.initiatives}
+      />
+      <RecentActivities
+        posts={recentPostsDocs.length ? recentPostsDocs.map((p: any) => ({
+          id: p.id,
+          title: p.title,
+          excerpt: p.excerpt,
+          slug: p.slug,
+          featuredImage: p.featuredImage,
+          category: p.category,
+          publishedAt: p.publishedAt,
+        })) : undefined}
+      />
+      <VideoSection
+        badge={hs.videoBadge}
+        heading={hs.videoHeading}
+        description={hs.videoDescription}
+        videos={hs.videos}
+      />
+      <AwardsSection
+        heading={hs.awardsHeading}
+        description={hs.awardsDescription}
+        backgroundImage={hs.awardsBackgroundImage}
+        awards={hs.awards}
+      />
+      <PublicationsSection
+        publications={recentPubsDocs.length ? recentPubsDocs.map((p: any) => ({
+          id: p.id,
+          title: p.title,
+          coverImage: p.coverImage,
+          file: p.file,
+          year: p.year,
+          category: p.category,
+        })) : undefined}
+      />
+      <PartnersSection
+        partners={(partnersData as any)?.items}
+      />
+      <NewsletterSection
+        heading={hs.newsletterHeading}
+        description={hs.newsletterDescription}
+        buttonText={hs.newsletterButtonText}
+      />
       
       {/* Structured Data */}
       <Script

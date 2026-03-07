@@ -1,28 +1,33 @@
 import Image from 'next/image'
 import { Award, Trophy, Star } from 'lucide-react'
 
-const awards = [
-  {
-    title: 'National Youth Development Award 2025',
-    organization: 'Federal Ministry of Youth Development, Abuja',
-    year: '2025',
-    image: '/images/PXL_20251008_122828933.jpg',
-    description: 'Recognized for outstanding contributions to youth empowerment and peacebuilding across Nigeria.',
-  },
-  {
-    title: 'Best Young Peacebuilding Organisation 2023',
-    organization: 'West Africa Network for Peacebuilding (WANEP-Nigeria)',
-    year: '2023',
-    image: '/images/PXL_20251008_122924872.jpg',
-    description: 'Awarded for innovative approaches to conflict prevention and youth-led peace initiatives.',
-  },
+const defaultAwards = [
+  { title: 'National Youth Development Award 2025', organization: 'Federal Ministry of Youth Development, Abuja', year: '2025', image: '/images/PXL_20251008_122828933.jpg', description: 'Recognized for outstanding contributions to youth empowerment and peacebuilding across Nigeria.' },
+  { title: 'Best Young Peacebuilding Organisation 2023', organization: 'West Africa Network for Peacebuilding (WANEP-Nigeria)', year: '2023', image: '/images/PXL_20251008_122924872.jpg', description: 'Awarded for innovative approaches to conflict prevention and youth-led peace initiatives.' },
 ]
 
-export function AwardsSection() {
+export interface AwardsSectionProps {
+  heading?: string
+  description?: string
+  backgroundImage?: { url?: string } | string | null
+  awards?: { title: string; organization: string; year: string; description?: string | null; image?: { url?: string } | string | null }[]
+}
+
+export function AwardsSection({
+  heading = 'Awards & Achievements',
+  description = 'Our commitment to peacebuilding has been recognized by national and regional bodies.',
+  backgroundImage,
+  awards: awardsProp,
+}: AwardsSectionProps) {
+  const awards = awardsProp?.length ? awardsProp.map(a => ({
+    ...a,
+    image: typeof a.image === 'string' ? a.image : a.image?.url || '/images/PXL_20251008_122828933.jpg',
+  })) : defaultAwards
+  const bgImage = typeof backgroundImage === 'string' ? backgroundImage : backgroundImage?.url || '/images/_VEE7153 (6).jpg'
   return (
     <section 
       className="py-24 relative overflow-hidden bg-fixed bg-cover bg-center"
-      style={{ backgroundImage: 'url(/images/_VEE7153%20(6).jpg)' }}
+      style={{ backgroundImage: `url(${bgImage.replace(/ /g, '%20')})` }}
     >
       {/* Overlay with gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary-950/95 via-primary-900/90 to-primary-950/95" />
@@ -44,10 +49,10 @@ export function AwardsSection() {
             <span className="w-8 h-[2px] bg-accent-gold" />
           </span>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Awards & Achievements
+            {heading}
           </h2>
           <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-            Our commitment to peacebuilding has been recognized by national and regional bodies.
+            {description}
           </p>
         </div>
 
@@ -64,7 +69,7 @@ export function AwardsSection() {
                 {/* Image Section */}
                 <div className="relative h-56 overflow-hidden">
                   <Image
-                    src={award.image}
+                    src={typeof award.image === 'string' ? award.image : '/images/PXL_20251008_122828933.jpg'}
                     alt={award.title}
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-700"
@@ -98,7 +103,7 @@ export function AwardsSection() {
                     {award.organization}
                   </p>
                   <p className="text-gray-300 text-sm leading-relaxed">
-                    {award.description}
+                    {award.description || ''}
                   </p>
                 </div>
               </div>

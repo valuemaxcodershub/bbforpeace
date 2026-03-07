@@ -1,4 +1,10 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, Access } from 'payload'
+
+// Access control: Only admins can view/manage subscribers
+const isAdminOnly: Access = ({ req: { user } }) => {
+  if (!user) return false
+  return user.role === 'super-admin' || user.role === 'admin'
+}
 
 export const Subscribers: CollectionConfig = {
   slug: 'subscribers',
@@ -6,9 +12,13 @@ export const Subscribers: CollectionConfig = {
     useAsTitle: 'email',
     defaultColumns: ['email', 'status', 'subscribedAt'],
     description: 'Newsletter subscribers',
+    group: 'user',
   },
   access: {
-    read: () => true,
+    read: isAdminOnly, // Only admins can view subscribers
+    create: () => true, // Public can subscribe (via forms)
+    update: isAdminOnly,
+    delete: ({ req: { user } }) => user?.role === 'super-admin',
   },
   fields: [
     {

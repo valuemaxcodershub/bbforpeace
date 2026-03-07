@@ -2,89 +2,29 @@ import { PageHero } from '@/components/layout'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Download, FileText, Calendar, ArrowRight, BookOpen, Eye, Sparkles, ExternalLink } from 'lucide-react'
-
-// Publications data - all files stored locally in /public/documents/
-const publications = [
-  {
-    id: '1',
-    title: 'Baseline Study on the Implementation of Nigeria\'s National Action Plan on Youth, Peace and Security',
-    excerpt: 'A comprehensive baseline study assessing the implementation progress of Nigeria\'s National Action Plan on Youth, Peace and Security, with key findings and recommendations for stakeholders.',
-    coverImage: '/images/_VEE7124 (1).jpg',
-    category: 'Research',
-    type: 'Study',
-    year: 2024,
-    pages: 48,
-    downloadUrl: '/documents/BBFORPEACE-Baseline-Study-NAP-YPS.pdf',
-    featured: true,
-  },
-  {
-    id: '2',
-    title: 'Nigeria: Shrinking Civic Space in the Name of Security',
-    excerpt: 'An in-depth analysis of how security-related policies are affecting civic space in Nigeria and the implications for civil society organizations.',
-    coverImage: '/images/_VEE6792.jpg',
-    category: 'Research',
-    type: 'Policy Brief',
-    year: 2023,
-    pages: 24,
-    downloadUrl: '/documents/BBFORPEACE-Shrinking-Civic-Space.pdf',
-  },
-  {
-    id: '3',
-    title: 'Complementarity of UNSCR 2250 and AU Continental Framework on Youth, Peace and Security',
-    excerpt: 'Examining the alignment and synergies between the UN Security Council Resolution 2250 and the African Union Continental Framework on Youth, Peace and Security.',
-    coverImage: '/images/_VEE7017 (19) (1).jpg',
-    category: 'Research',
-    type: 'Research Paper',
-    year: 2023,
-    pages: 36,
-    downloadUrl: '/documents/BBFORPEACE-UNSCR-2250-AU-Framework.pdf',
-  },
-  {
-    id: '4',
-    title: 'Beyond #ENDSARS: Effecting Positive Change in Governance in Nigeria',
-    excerpt: 'Exploring the aftermath of the #EndSARS movement and pathways to positive governance transformation through youth civic engagement.',
-    coverImage: '/images/_VEE7153 (6).jpg',
-    category: 'Report',
-    type: 'Report',
-    year: 2021,
-    pages: 52,
-    downloadUrl: '/documents/BBFORPEACE-Beyond-EndSARS.pdf',
-  },
-  {
-    id: '5',
-    title: 'Connecting and Amplifying Voices of Youth Building Peace in Nigeria',
-    excerpt: 'Documentation of youth-led peacebuilding initiatives and strategies for amplifying the voices of young peace advocates across Nigeria.',
-    coverImage: '/images/_VEE7037 (1).jpg',
-    category: 'Report',
-    type: 'Report',
-    year: 2022,
-    pages: 40,
-    downloadUrl: '/documents/BBFORPEACE-Youth-Voices-Peace.pdf',
-  },
-  {
-    id: '6',
-    title: 'COVID-19 Pandemic: The Future of Peacebuilding in Nigeria',
-    excerpt: 'Analysis of the pandemic\'s impact on peacebuilding efforts and recommendations for sustainable peace during and after crises.',
-    coverImage: '/images/_VEE6887 (20).jpg',
-    category: 'Research',
-    type: 'Research Paper',
-    year: 2020,
-    pages: 32,
-    downloadUrl: '/documents/BBFORPEACE-COVID19-Peacebuilding.pdf',
-  },
-]
+import { getPayload } from 'payload'
+import config from '@payload-config'
 
 const getCategoryStyle = (category: string) => {
   switch (category) {
-    case 'Research':
+    case 'research': case 'Research':
       return { bg: 'bg-purple-100', text: 'text-purple-700', border: 'border-purple-200' }
-    case 'Report':
+    case 'report': case 'Report':
       return { bg: 'bg-emerald-100', text: 'text-emerald-700', border: 'border-emerald-200' }
-    case 'Policy Brief':
+    case 'policy-brief': case 'Policy Brief':
       return { bg: 'bg-blue-100', text: 'text-blue-700', border: 'border-blue-200' }
     default:
       return { bg: 'bg-gray-100', text: 'text-gray-700', border: 'border-gray-200' }
   }
+}
+
+const categoryLabels: Record<string, string> = {
+  'research': 'Research Paper',
+  'report': 'Report',
+  'policy-brief': 'Policy Brief',
+  'factsheet': 'Factsheet',
+  'manual': 'Manual',
+  'other': 'Other',
 }
 
 export const metadata = {
@@ -92,17 +32,78 @@ export const metadata = {
   description: 'Access research papers, policy briefs, reports, and educational resources on peacebuilding and conflict resolution from BBFORPEACE.',
 }
 
-export default function PublicationsPage() {
-  const featuredPublication = publications.find(p => p.featured)
-  const otherPublications = publications.filter(p => !p.featured)
+export default async function PublicationsPage() {
+  const payload = await getPayload({ config })
+
+  let publications: any[] = []
+  let reportsSettings: any = {}
+
+  try {
+    const [result, pageSettings] = await Promise.all([
+      payload.find({
+        collection: 'publications',
+        where: { subMenu: { equals: 'publication' } },
+        sort: '-year',
+        limit: 20,
+        depth: 1,
+      }),
+      payload.findGlobal({ slug: 'reports-settings' }),
+    ])
+    publications = result.docs
+    reportsSettings = pageSettings as any
+  } catch (error) {
+    console.error('Failed to fetch publications:', error)
+  }
+
+  const getImageUrl = (media: any) => {
+    if (!media) return '/images/_VEE7124 (1).jpg'
+    if (typeof media === 'object' && media.url) return media.url
+    return media
+  }
+
+  const getFileUrl = (media: any) => {
+    if (!media) return '#'
+    if (typeof media === 'object' && media.url) return media.url
+    return media
+  }
+
+  // Page header from CMS
+  const heroTitle = reportsSettings.publicationsTitle || 'Publications'
+  const heroSubtitle = reportsSettings.publicationsSubtitle || 'Knowledge Hub'
+  const heroDescription = reportsSettings.publicationsDescription || 'Access our research papers, policy briefs, reports, and educational resources on peacebuilding and conflict resolution.'
+  const heroBg = getImageUrl(reportsSettings.publicationsBackgroundImage) || '/images/_VEE7037 (1).jpg'
+
+  // Fallback data
+  const defaultPubs = [
+    { id: '1', title: "Baseline Study on the Implementation of Nigeria's National Action Plan on Youth, Peace and Security", excerpt: 'A comprehensive baseline study assessing the implementation progress.', coverImage: '/images/_VEE7124 (1).jpg', category: 'research', year: 2024, downloadUrl: '/documents/BBFORPEACE-Baseline-Study-NAP-YPS.pdf', isFeatured: true },
+    { id: '2', title: 'Nigeria: Shrinking Civic Space in the Name of Security', excerpt: 'An in-depth analysis of how security-related policies are affecting civic space.', coverImage: '/images/_VEE6792.jpg', category: 'research', year: 2023, downloadUrl: '/documents/BBFORPEACE-Shrinking-Civic-Space.pdf' },
+    { id: '3', title: 'Complementarity of UNSCR 2250 and AU Continental Framework on Youth, Peace and Security', excerpt: 'Examining alignment between UNSCR 2250 and AU Continental Framework.', coverImage: '/images/_VEE7017 (19) (1).jpg', category: 'research', year: 2023, downloadUrl: '/documents/BBFORPEACE-UNSCR-2250-AU-Framework.pdf' },
+    { id: '4', title: 'Beyond #ENDSARS: Effecting Positive Change in Governance in Nigeria', excerpt: 'Exploring the aftermath of #EndSARS and pathways to governance transformation.', coverImage: '/images/_VEE7153 (6).jpg', category: 'report', year: 2021, downloadUrl: '/documents/BBFORPEACE-Beyond-EndSARS.pdf' },
+    { id: '5', title: 'Connecting and Amplifying Voices of Youth Building Peace in Nigeria', excerpt: 'Documentation of youth-led peacebuilding initiatives.', coverImage: '/images/_VEE7037 (1).jpg', category: 'report', year: 2022, downloadUrl: '/documents/BBFORPEACE-Youth-Voices-Peace.pdf' },
+    { id: '6', title: 'COVID-19 Pandemic: The Future of Peacebuilding in Nigeria', excerpt: "Analysis of the pandemic's impact on peacebuilding efforts.", coverImage: '/images/_VEE6887 (20).jpg', category: 'research', year: 2020, downloadUrl: '/documents/BBFORPEACE-COVID19-Peacebuilding.pdf' },
+  ]
+
+  const displayPubs = publications.length ? publications.map((p: any) => ({
+    id: p.id,
+    title: p.title,
+    excerpt: p.excerpt || '',
+    coverImage: getImageUrl(p.coverImage),
+    category: p.category || 'research',
+    year: p.year,
+    downloadUrl: getFileUrl(p.file),
+    isFeatured: p.isFeatured || false,
+  })) : defaultPubs
+
+  const featuredPublication = displayPubs.find((p: any) => p.isFeatured) || displayPubs[0]
+  const otherPublications = displayPubs.filter((p: any) => p.id !== featuredPublication?.id)
 
   return (
     <>
       <PageHero
-        title="Publications"
-        subtitle="Knowledge Hub"
-        description="Access our research papers, policy briefs, reports, and educational resources on peacebuilding and conflict resolution."
-        backgroundImage="/images/_VEE7037 (1).jpg"
+        title={heroTitle}
+        subtitle={heroSubtitle}
+        description={heroDescription}
+        backgroundImage={heroBg}
         breadcrumbs={[
           { label: 'Home', href: '/' },
           { label: 'Publications', href: '/publications' },
@@ -134,7 +135,7 @@ export default function PublicationsPage() {
                         Featured
                       </span>
                       <span className="px-3 py-1.5 rounded-full bg-white/10 text-white text-xs font-semibold backdrop-blur-sm">
-                        {featuredPublication.type}
+                        {categoryLabels[featuredPublication.category] || featuredPublication.category}
                       </span>
                       <span className="flex items-center gap-1.5 text-white/70 text-sm">
                         <Calendar className="w-4 h-4" />
@@ -159,10 +160,6 @@ export default function PublicationsPage() {
                         <Download className="w-5 h-5" />
                         Download PDF
                       </a>
-                      <span className="flex items-center gap-2 text-white/60 text-sm">
-                        <FileText className="w-4 h-4" />
-                        {featuredPublication.pages} pages
-                      </span>
                     </div>
                   </div>
 
@@ -224,15 +221,11 @@ export default function PublicationsPage() {
                         {/* Meta */}
                         <div className="flex flex-wrap items-center gap-2 mb-3">
                           <span className={`px-3 py-1 rounded-full text-xs font-bold ${categoryStyle.bg} ${categoryStyle.text}`}>
-                            {pub.type}
+                            {categoryLabels[pub.category] || pub.category}
                           </span>
                           <span className="flex items-center gap-1 text-xs text-gray-500">
                             <Calendar className="w-3 h-3" />
                             {pub.year}
-                          </span>
-                          <span className="flex items-center gap-1 text-xs text-gray-500">
-                            <FileText className="w-3 h-3" />
-                            {pub.pages} pages
                           </span>
                         </div>
 

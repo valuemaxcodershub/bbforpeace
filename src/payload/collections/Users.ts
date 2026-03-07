@@ -22,14 +22,14 @@ const superAdminFieldAccess: FieldAccess = ({ req: { user } }) => {
 export const Users: CollectionConfig = {
   slug: 'users',
   auth: {
-    tokenExpiration: 7200, // 2 hours
-    maxLoginAttempts: 5,
-    lockTime: 600000, // 10 minutes
+    tokenExpiration: 3600, // 1 hour - limits window if token is compromised
+    maxLoginAttempts: 3, // Lock after 3 failed attempts
+    lockTime: 900000, // 15 minutes lockout
   },
   admin: {
     useAsTitle: 'email',
     defaultColumns: ['email', 'name', 'role', 'createdAt'],
-    group: 'Admin',
+    group: 'user',
     description: 'Manage admin users and their permissions',
   },
   access: {
@@ -100,15 +100,6 @@ export const Users: CollectionConfig = {
     },
   ],
   hooks: {
-    beforeLogin: [
-      async ({ user }) => {
-        // Check if user is active
-        if (!user.isActive) {
-          throw new Error('Your account has been deactivated. Please contact the administrator.')
-        }
-        return user
-      },
-    ],
     afterLogin: [
       async ({ req, user }) => {
         // Update last login time

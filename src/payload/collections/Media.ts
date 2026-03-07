@@ -1,17 +1,27 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, Access } from 'payload'
+
+// Access control: Authenticated users can manage media
+const isAuthenticated: Access = ({ req: { user } }) => {
+  return Boolean(user)
+}
 
 export const Media: CollectionConfig = {
   slug: 'media',
   admin: {
     useAsTitle: 'alt',
     defaultColumns: ['filename', 'alt', 'mimeType', 'updatedAt'],
+    group: 'Media Page',
+    hidden: true,
   },
   access: {
-    read: () => true,
+    read: () => true, // Public can view media
+    create: isAuthenticated,
+    update: isAuthenticated,
+    delete: ({ req: { user } }) => user?.role === 'super-admin' || user?.role === 'admin',
   },
   upload: {
     staticDir: '../public/uploads',
-    mimeTypes: ['image/*', 'application/pdf'],
+    mimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf'],
     imageSizes: [
       {
         name: 'thumbnail',

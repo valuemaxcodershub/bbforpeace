@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Menu, X, ChevronDown, Search, Users, Target, UserCircle, BookOpen, Newspaper, ImageIcon, FileText, Calendar, ArrowRight } from 'lucide-react'
+import { Menu, X, ChevronDown, Search, Users, Target, UserCircle, BookOpen, Newspaper, ImageIcon, FileText, Calendar, ArrowRight, Compass, MessageSquareQuote } from 'lucide-react'
 
 const navigation = [
   { name: 'Home', href: '/' },
@@ -18,11 +18,13 @@ const navigation = [
     { name: 'Blog', href: '/blog', icon: BookOpen, description: 'Latest news and insights' },
     { name: 'Press Statements', href: '/media/press', icon: Newspaper, description: 'Official press releases' },
     { name: 'Gallery', href: '/gallery', icon: ImageIcon, description: 'Photos from our activities' },
+    { name: 'Testimonials', href: '/media/testimonials', icon: MessageSquareQuote, description: 'What people say about our work' },
   ]},
   { name: 'Reports', href: '/reports', children: [
     { name: 'Publications', href: '/publications', icon: FileText, description: 'Research and publications' },
     { name: 'Annual Reports', href: '/reports', icon: Calendar, description: 'Yearly impact reports' },
     { name: 'Project Reports', href: '/reports/projects', icon: FileText, description: 'Project documentation' },
+    { name: 'Strategic Plan', href: '/reports/strategic-plan', icon: Target, description: 'Our strategic direction 2026-2030' },
   ]},
   { name: 'Contact', href: '/contact' },
 ]
@@ -69,9 +71,11 @@ export function Header() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
-    if (searchQuery.trim()) {
-      // Navigate to search results (you can implement a search page)
-      window.location.href = `/blog?search=${encodeURIComponent(searchQuery)}`
+    const trimmed = searchQuery.trim()
+    if (trimmed && trimmed.length <= 200) {
+      // Sanitize: strip HTML/script characters
+      const sanitized = trimmed.replace(/[<>"']/g, '')
+      window.location.href = `/blog?search=${encodeURIComponent(sanitized)}`
     }
   }
 
@@ -89,6 +93,7 @@ export function Header() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  maxLength={200}
                   placeholder="Search articles, publications, events..."
                   className="w-full pl-14 pr-14 py-5 text-lg text-gray-900 placeholder-gray-400 focus:outline-none"
                 />
@@ -123,21 +128,21 @@ export function Header() {
           <div className="flex justify-between items-center py-3">
             {/* Logo */}
             <Link href="/" className="flex items-center group">
-              <div className="relative w-10 h-10 sm:w-14 sm:h-14 rounded-full overflow-hidden shadow-md group-hover:shadow-lg transition-shadow ring-2 ring-primary-100 flex-shrink-0">
+              <div className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-full overflow-hidden shadow-md group-hover:shadow-lg transition-shadow ring-2 ring-primary-100 flex-shrink-0">
                 <Image
                   src="/images/logo.jpg"
-                  alt="BBFORPEACE Logo"
+                  alt="Building Blocks for Peace Logo"
                   fill
                   className="object-cover"
                   priority
                 />
               </div>
               <div className="ml-2 sm:ml-3">
-                <span className="block text-sm sm:text-lg font-bold text-gradient leading-tight">
-                  BBFORPEACE
-                </span>
-                <span className="block text-[8px] sm:text-[10px] text-gray-500 font-medium">
+                <span className="block text-[3.2vw] sm:text-[2vw] md:text-[1.4vw] lg:text-[1.1vw] font-bold text-gradient leading-tight">
                   Building Blocks for Peace
+                </span>
+                <span className="block text-[1.8vw] sm:text-[1.2vw] md:text-[0.8vw] lg:text-[0.65vw] text-gray-500 font-medium">
+                  --Empowering Communities for Peace
                 </span>
               </div>
             </Link>

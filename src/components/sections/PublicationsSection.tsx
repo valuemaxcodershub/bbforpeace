@@ -2,43 +2,34 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight, Download, Sparkles } from 'lucide-react'
 
-// These should be the last 4 reports - will be replaced with actual data from Payload
-const publications = [
-  {
-    id: '1',
-    title: '2025 Annual Report: Consolidating Peace',
-    coverImage: '/images/PXL_20251023_124331635.MP~2.jpg',
-    downloadUrl: '/documents/BBFORPEACE ANNUAL REPORT 2025.pdf',
-    year: 2025,
-    type: 'Annual Report',
-  },
-  {
-    id: '2',
-    title: '2024 Annual Report: Building Resilient Communities',
-    coverImage: '/images/_VEE7037 (1).jpg',
-    downloadUrl: '/documents/BBFORPEACE ANNUAL REPORT 2024.pdf',
-    year: 2024,
-    type: 'Annual Report',
-  },
-  {
-    id: '3',
-    title: 'Beyond #ENDSARS: Effecting Positive Change',
-    coverImage: '/images/PXL_20251209_112904682.MP.jpg',
-    downloadUrl: 'https://drive.google.com/file/d/1ABC123/view',
-    year: 2021,
-    type: 'Policy Brief',
-  },
-  {
-    id: '4',
-    title: 'Nigeria: Shrinking Civic Space',
-    coverImage: '/images/WhatsApp Image 2024-09-25 at 12.37.49_611b169f.jpg',
-    downloadUrl: 'https://drive.google.com/file/d/1DEF456/view',
-    year: 2019,
-    type: 'Research',
-  },
+// Default fallback data
+const defaultPublications = [
+  { id: '1', title: '2025 Annual Report: Consolidating Peace', coverImage: '/images/PXL_20251023_124331635.MP~2.jpg', downloadUrl: '/documents/BBFORPEACE ANNUAL REPORT 2025.pdf', year: 2025, type: 'Annual Report' },
+  { id: '2', title: '2024 Annual Report: Building Resilient Communities', coverImage: '/images/_VEE7037 (1).jpg', downloadUrl: '/documents/BBFORPEACE ANNUAL REPORT 2024.pdf', year: 2024, type: 'Annual Report' },
+  { id: '3', title: 'Beyond #ENDSARS: Effecting Positive Change', coverImage: '/images/PXL_20251209_112904682.MP.jpg', downloadUrl: 'https://drive.google.com/file/d/1ABC123/view', year: 2021, type: 'Policy Brief' },
+  { id: '4', title: 'Nigeria: Shrinking Civic Space', coverImage: '/images/WhatsApp Image 2024-09-25 at 12.37.49_611b169f.jpg', downloadUrl: 'https://drive.google.com/file/d/1DEF456/view', year: 2019, type: 'Research' },
 ]
 
-export function PublicationsSection() {
+export interface PublicationsSectionProps {
+  publications?: {
+    id: string
+    title: string
+    coverImage?: { url?: string } | string | null
+    file?: { url?: string } | string | null
+    year?: number | null
+    category?: string | null
+  }[]
+}
+
+export function PublicationsSection({ publications: pubsProp }: PublicationsSectionProps) {
+  const publications = pubsProp?.length ? pubsProp.map(p => ({
+    id: p.id,
+    title: p.title,
+    coverImage: typeof p.coverImage === 'string' ? p.coverImage : p.coverImage?.url || '/images/PXL_20251023_124331635.MP~2.jpg',
+    downloadUrl: typeof p.file === 'string' ? p.file : p.file?.url || '#',
+    year: p.year || new Date().getFullYear(),
+    type: p.category || 'Report',
+  })) : defaultPublications
   return (
     <section className="py-24 bg-gradient-to-br from-gray-50 via-white to-gray-50">
       <div className="container">

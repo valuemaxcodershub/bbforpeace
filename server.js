@@ -1,28 +1,28 @@
-// server.js - Custom server for cPanel deployment
-const { createServer } = require('http')
-const { parse } = require('url')
-const next = require('next')
+// server.js - Standalone server for cPanel deployment
+const path = require('path')
 
-const dev = process.env.NODE_ENV !== 'production'
+process.env.NODE_ENV = 'production'
+process.chdir(__dirname)
+
+const port = parseInt(process.env.PORT, 10) || 3000
 const hostname = process.env.HOSTNAME || '0.0.0.0'
-const port = parseInt(process.env.PORT || '3000', 10)
 
-const app = next({ dev, hostname, port })
-const handle = app.getRequestHandler()
+// Load Next.js start server from standalone build
+const { startServer } = require('next/dist/server/lib/start-server')
 
-app.prepare().then(() => {
-  createServer(async (req, res) => {
-    try {
-      const parsedUrl = parse(req.url, true)
-      await handle(req, res, parsedUrl)
-    } catch (err) {
-      console.error('Error occurred handling', req.url, err)
-      res.statusCode = 500
-      res.end('internal server error')
-    }
-  }).listen(port, hostname, (err) => {
-    if (err) throw err
-    console.log(`> BB4Peace ready on http://${hostname}:${port}`)
-    console.log(`> Admin panel: http://${hostname}:${port}/admin`)
-  })
+const nextConfig = require('./.next/required-server-files.json').config
+
+startServer({
+  dir: __dirname,
+  isDev: false,
+  config: nextConfig,
+  hostname,
+  port,
+  allowRetry: false,
+}).then(() => {
+  console.log(`> BB4Peace ready on http://${hostname}:${port}`)
+  console.log(`> Admin panel: http://${hostname}:${port}/admin`)
+}).catch((err) => {
+  console.error(err)
+  process.exit(1)
 })

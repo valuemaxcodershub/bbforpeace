@@ -1,4 +1,10 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, Access } from 'payload'
+
+// Access control: Admins and above can manage content
+const isAdminOrAbove: Access = ({ req: { user } }) => {
+  if (!user) return false
+  return user.role === 'super-admin' || user.role === 'admin' || user.role === 'editor'
+}
 
 export const Publications: CollectionConfig = {
   slug: 'publications',
@@ -6,9 +12,13 @@ export const Publications: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'category', 'year', 'downloadCount'],
     description: 'Research papers, reports, and downloadable resources',
+    group: 'Reports',
   },
   access: {
-    read: () => true,
+    read: () => true, // Public can read publications
+    create: isAdminOrAbove,
+    update: isAdminOrAbove,
+    delete: ({ req: { user } }) => user?.role === 'super-admin' || user?.role === 'admin',
   },
   fields: [
     {
@@ -62,6 +72,36 @@ export const Publications: CollectionConfig = {
       required: true,
       admin: {
         position: 'sidebar',
+      },
+    },
+    {
+      name: 'menuSection',
+      type: 'select',
+      label: 'Menu Section',
+      required: true,
+      defaultValue: 'report',
+      options: [
+        { label: 'Report', value: 'report' },
+      ],
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'subMenu',
+      type: 'select',
+      label: 'Report Submenu',
+      required: true,
+      defaultValue: 'publication',
+      options: [
+        { label: 'Publication', value: 'publication' },
+        { label: 'Annual Report', value: 'annual-report' },
+        { label: 'Project Report', value: 'project-report' },
+        { label: 'Strategic Plan', value: 'strategic-plan' },
+      ],
+      admin: {
+        position: 'sidebar',
+        description: 'Submenu destination under Report.',
       },
     },
     {

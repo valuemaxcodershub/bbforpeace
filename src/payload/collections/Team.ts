@@ -1,4 +1,10 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, Access } from 'payload'
+
+// Access control: Only super admin and admin can manage team
+const isAdminOnly: Access = ({ req: { user } }) => {
+  if (!user) return false
+  return user.role === 'super-admin' || user.role === 'admin'
+}
 
 export const Team: CollectionConfig = {
   slug: 'team',
@@ -6,9 +12,13 @@ export const Team: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ['name', 'position', 'category', 'order'],
     description: 'Team members, board of trustees, and advisors',
+    group: 'About us page',
   },
   access: {
-    read: () => true,
+    read: () => true, // Public can read team info
+    create: isAdminOnly,
+    update: isAdminOnly,
+    delete: ({ req: { user } }) => user?.role === 'super-admin',
   },
   fields: [
     {
