@@ -260,8 +260,8 @@ export default buildConfig({
   // PostgreSQL (Supabase/Neon/etc - accepts DATABASE_URI or POSTGRES_URL from Supabase integration)
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URI || process.env.POSTGRES_URL || '',
-      ssl: process.env.POSTGRES_URL ? { rejectUnauthorized: false } : undefined,
+      connectionString: (process.env.DATABASE_URI || process.env.POSTGRES_URL || '').replace('sslmode=require', 'sslmode=no-verify'),
+      ssl: { rejectUnauthorized: false },
     },
   }),
 
