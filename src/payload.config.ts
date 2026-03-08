@@ -1,7 +1,7 @@
 import { buildConfig } from 'payload'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { postgresAdapter } from '@payloadcms/db-postgres'
-import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+// import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import crypto from 'crypto'
@@ -275,13 +275,8 @@ export default buildConfig({
   },
 
   plugins: [
-    // Only include Vercel Blob plugin when token is configured (avoids importMap warnings)
-    ...(process.env.BLOB_READ_WRITE_TOKEN
-      ? [vercelBlobStorage({
-          collections: { media: true },
-          token: process.env.BLOB_READ_WRITE_TOKEN,
-        })]
-      : []),
+    // Vercel Blob storage disabled until configured
+    // Re-enable when BLOB_READ_WRITE_TOKEN is set in Vercel dashboard
   ],
 
   upload: {
