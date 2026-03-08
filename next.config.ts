@@ -43,7 +43,8 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: '/(.*)',
+        // Apply security headers to frontend routes only (not admin panel)
+        source: '/((?!admin).*)',
         headers: [
           // Prevent clickjacking
           { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
