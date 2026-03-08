@@ -257,10 +257,10 @@ export default buildConfig({
     ContactUsPageSettings,
   ],
 
-  // PostgreSQL via Neon (cloud-hosted, no native binary issues)
+  // PostgreSQL (Supabase/Neon/etc - accepts DATABASE_URI or POSTGRES_URL from Supabase integration)
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URI || '',
+      connectionString: process.env.DATABASE_URI || process.env.POSTGRES_URL || '',
     },
   }),
 
