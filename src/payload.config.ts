@@ -258,11 +258,12 @@ export default buildConfig({
     ContactUsPageSettings,
   ],
 
-  // PostgreSQL (Supabase/Neon/etc - accepts DATABASE_URI or POSTGRES_URL from Supabase integration)
+  // PostgreSQL — use direct connection (non-pooling) for DDL support (push: true)
+  // Supabase pooler (port 6543) doesn't support CREATE TABLE; direct (port 5432) does
   db: postgresAdapter({
     push: true,
     pool: {
-      connectionString: (process.env.DATABASE_URI || process.env.POSTGRES_URL || '').replace('sslmode=require', 'sslmode=no-verify'),
+      connectionString: (process.env.DATABASE_URI || process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL || '').replace('sslmode=require', 'sslmode=no-verify'),
       ssl: { rejectUnauthorized: false },
     },
   }),
@@ -274,13 +275,13 @@ export default buildConfig({
   },
 
   plugins: [
-    vercelBlobStorage({
-      enabled: !!process.env.BLOB_READ_WRITE_TOKEN,
-      collections: {
-        media: true,
-      },
-      token: process.env.BLOB_READ_WRITE_TOKEN || '',
-    }),
+    // Only include Vercel Blob plugin when token is configured (avoids importMap warnings)
+    ...(process.env.BLOB_READ_WRITE_TOKEN
+      ? [vercelBlobStorage({
+          collections: { media: true },
+          token: process.env.BLOB_READ_WRITE_TOKEN,
+        })]
+      : []),
   ],
 
   upload: {
