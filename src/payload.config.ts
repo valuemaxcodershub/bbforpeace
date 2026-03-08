@@ -207,20 +207,21 @@ export default buildConfig({
       titleSuffix: '- BBFORPEACE Admin',
       icons: [{ url: '/images/logo.jpg' }],
     },
-    components: {
-      actions: ['/src/components/admin/AdminActions#AdminActions'],
-      Nav: '/src/components/admin/CustomNav#CustomNav',
-      afterNavLinks: ['/src/components/admin/NavOpenDefault#NavOpenDefault'],
-      views: {
-        dashboard: {
-          Component: '/src/components/admin/CustomDashboard#CustomDashboard',
-        },
-      },
-      graphics: {
-        Logo: '/src/components/admin/Logo#Logo',
-        Icon: '/src/components/admin/Icon#Icon',
-      },
-    },
+    // Custom components temporarily disabled for debugging
+    // components: {
+    //   actions: ['/src/components/admin/AdminActions#AdminActions'],
+    //   Nav: '/src/components/admin/CustomNav#CustomNav',
+    //   afterNavLinks: ['/src/components/admin/NavOpenDefault#NavOpenDefault'],
+    //   views: {
+    //     dashboard: {
+    //       Component: '/src/components/admin/CustomDashboard#CustomDashboard',
+    //     },
+    //   },
+    //   graphics: {
+    //     Logo: '/src/components/admin/Logo#Logo',
+    //     Icon: '/src/components/admin/Icon#Icon',
+    //   },
+    // },
   },
 
   editor: lexicalEditor({}),
