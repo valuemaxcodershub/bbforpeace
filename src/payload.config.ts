@@ -37,6 +37,7 @@ import { ContactUsPageSettings } from './payload/globals/ContactUsPageSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+const isProduction = process.env.NODE_ENV === 'production'
 
 const isEmptyValue = (value: unknown): boolean => {
   if (value === undefined || value === null) return true
@@ -206,21 +207,14 @@ export default buildConfig({
       titleSuffix: '- BBFORPEACE Admin',
       icons: [{ url: '/images/logo.jpg' }],
     },
-    // Custom components temporarily disabled for debugging
-    // components: {
-    //   actions: ['/src/components/admin/AdminActions#AdminActions'],
-    //   Nav: '/src/components/admin/CustomNav#CustomNav',
-    //   afterNavLinks: ['/src/components/admin/NavOpenDefault#NavOpenDefault'],
-    //   views: {
-    //     dashboard: {
-    //       Component: '/src/components/admin/CustomDashboard#CustomDashboard',
-    //     },
-    //   },
-    //   graphics: {
-    //     Logo: '/src/components/admin/Logo#Logo',
-    //     Icon: '/src/components/admin/Icon#Icon',
-    //   },
-    // },
+    // Keep advanced admin overrides disabled while recovering deployment.
+    // Branding components are safe and restore BB4Peace identity in admin UI.
+    components: {
+      graphics: {
+        Logo: '/src/components/admin/Logo#Logo',
+        Icon: '/src/components/admin/Icon#Icon',
+      },
+    },
   },
 
   editor: lexicalEditor({}),
@@ -257,13 +251,21 @@ export default buildConfig({
     ContactUsPageSettings,
   ],
 
-  // PostgreSQL — use direct connection (non-pooling) for DDL support (push: true)
-  // Supabase pooler (port 6543) doesn't support CREATE TABLE; direct (port 5432) does
+  // In production serverless, avoid schema push and prefer pooled runtime connections.
+  // Use local/session URL in development for DDL when push is enabled.
+  // Recommended env setup:
+  // - Production POSTGRES_URL => Supabase transaction pooler (port 6543)
+  // - Local DATABASE_URI => Supabase session pooler (port 5432)
   db: postgresAdapter({
-    push: true,
+    push: !isProduction,
     pool: {
-      connectionString: (process.env.DATABASE_URI || process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL || '').replace('sslmode=require', 'sslmode=no-verify'),
+      connectionString: (
+        isProduction
+          ? (process.env.POSTGRES_URL || process.env.DATABASE_URI || process.env.POSTGRES_URL_NON_POOLING || '')
+          : (process.env.DATABASE_URI || process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL || '')
+      ).replace('sslmode=require', 'sslmode=no-verify'),
       ssl: { rejectUnauthorized: false },
+      max: isProduction ? 1 : 10,
     },
   }),
 
@@ -286,6 +288,10 @@ export default buildConfig({
 
   // Auto-create super admin on first run - ensures login form shows instead of registration
   onInit: async (payload) => {
+    // Avoid expensive startup writes on serverless production cold starts.
+    const shouldRunStartupInit = !isProduction || process.env.RUN_STARTUP_INIT === 'true'
+    if (!shouldRunStartupInit) return
+
     try {
       // Check if any users exist
       const existingUsers = await payload.find({
