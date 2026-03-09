@@ -4,6 +4,15 @@ import { Facebook, Twitter, Instagram, Youtube, Linkedin, Mail, Phone, MapPin } 
 import { getPayload } from 'payload'
 import config from '@payload-config'
 
+async function getPayloadWithTimeout(timeoutMs = 12000) {
+  return await Promise.race([
+    getPayload({ config }),
+    new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error(`Payload init timeout after ${timeoutMs}ms`)), timeoutMs)
+    }),
+  ])
+}
+
 const quickLinks = [
   { name: 'Home', href: '/' },
   { name: 'About Us', href: '/about' },
@@ -38,7 +47,7 @@ export async function Footer() {
   let contactData: Record<string, string> = {}
 
   try {
-    const payload = await getPayload({ config })
+    const payload = await getPayloadWithTimeout()
     const [social, footer, contact] = await Promise.all([
       payload.findGlobal({ slug: 'social-media-settings' }),
       payload.findGlobal({ slug: 'footer-settings' }),

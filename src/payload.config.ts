@@ -304,9 +304,8 @@ export default buildConfig({
 
   // Auto-create super admin on first run - ensures login form shows instead of registration
   onInit: async (payload) => {
-    // Avoid expensive startup writes on serverless production cold starts.
-    const shouldRunStartupInit = !isProduction || process.env.RUN_STARTUP_INIT === 'true'
-    if (!shouldRunStartupInit) return
+    // Never run startup writes on production serverless cold starts.
+    if (isProduction) return
 
     try {
       // Check if any users exist
