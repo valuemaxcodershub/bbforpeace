@@ -19,12 +19,27 @@ import Script from 'next/script'
 
 export const revalidate = 60
 
+async function getPayloadWithTimeout(timeoutMs = 12000) {
+  return await Promise.race([
+    getPayload({ config }),
+    new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error(`Payload init timeout after ${timeoutMs}ms`)), timeoutMs)
+    }),
+  ])
+}
+
 export default async function HomePage() {
-  const payload = await getPayload({ config })
+  let payload: Awaited<ReturnType<typeof getPayload>> | null = null
+  try {
+    payload = await getPayloadWithTimeout()
+  } catch (error) {
+    console.error('Failed to initialize payload for homepage:', error)
+  }
 
   // Fetch home page settings from CMS
   let hs: Record<string, any> = {}
   try {
+    if (!payload) throw new Error('Payload unavailable')
     hs = (await payload.findGlobal({ slug: 'home-page-settings' })) as Record<string, any>
   } catch (error) {
     console.error('Failed to fetch home page settings:', error)
@@ -33,12 +48,14 @@ export default async function HomePage() {
   // Fetch partners from partners-settings global
   let partnersData: any = null
   try {
+    if (!payload) throw new Error('Payload unavailable')
     partnersData = await payload.findGlobal({ slug: 'partners-settings' })
   } catch {}
 
   // Fetch recent posts from posts collection
   let recentPostsDocs: any[] = []
   try {
+    if (!payload) throw new Error('Payload unavailable')
     const { docs } = await payload.find({
       collection: 'posts',
       where: { status: { equals: 'published' } },
@@ -52,6 +69,7 @@ export default async function HomePage() {
   // Fetch recent publications from publications collection
   let recentPubsDocs: any[] = []
   try {
+    if (!payload) throw new Error('Payload unavailable')
     const { docs } = await payload.find({
       collection: 'publications',
       sort: '-year',

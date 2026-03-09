@@ -39,6 +39,18 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 const isProduction = process.env.NODE_ENV === 'production'
 
+const normalizeConnectionString = (raw: string): string => {
+  const base = raw.replace('sslmode=require', 'sslmode=no-verify')
+
+  // Vercel serverless should use Supabase transaction pooler in production.
+  // If session pooler (5432) is accidentally configured, rewrite to 6543.
+  if (isProduction && base.includes('.pooler.supabase.com:5432/')) {
+    return base.replace('.pooler.supabase.com:5432/', '.pooler.supabase.com:6543/')
+  }
+
+  return base
+}
+
 const isEmptyValue = (value: unknown): boolean => {
   if (value === undefined || value === null) return true
   if (typeof value === 'string') return value.trim().length === 0
@@ -259,13 +271,17 @@ export default buildConfig({
   db: postgresAdapter({
     push: !isProduction,
     pool: {
-      connectionString: (
+      connectionString: normalizeConnectionString(
+        (
         isProduction
           ? (process.env.POSTGRES_URL || process.env.DATABASE_URI || process.env.POSTGRES_URL_NON_POOLING || '')
           : (process.env.DATABASE_URI || process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL || '')
-      ).replace('sslmode=require', 'sslmode=no-verify'),
+        )
+      ),
       ssl: { rejectUnauthorized: false },
       max: isProduction ? 1 : 10,
+      connectionTimeoutMillis: isProduction ? 10000 : 30000,
+      idleTimeoutMillis: 10000,
     },
   }),
 
