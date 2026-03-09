@@ -223,9 +223,15 @@ export default buildConfig({
       titleSuffix: '- BBFORPEACE Admin',
       icons: [{ url: '/images/logo.jpg' }],
     },
-    // Keep advanced admin overrides disabled while recovering deployment.
-    // Branding components are safe and restore BB4Peace identity in admin UI.
     components: {
+      actions: ['/src/components/admin/AdminActions#AdminActions'],
+      Nav: '/src/components/admin/CustomNav#CustomNav',
+      afterNavLinks: ['/src/components/admin/NavOpenDefault#NavOpenDefault'],
+      views: {
+        dashboard: {
+          Component: '/src/components/admin/CustomDashboard#CustomDashboard',
+        },
+      },
       graphics: {
         Logo: '/src/components/admin/Logo#Logo',
         Icon: '/src/components/admin/Icon#Icon',
