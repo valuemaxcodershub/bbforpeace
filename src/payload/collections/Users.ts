@@ -101,19 +101,17 @@ export const Users: CollectionConfig = {
   ],
   hooks: {
     afterLogin: [
-      async ({ req, user }) => {
-        // Update last login time
-        try {
-          await req.payload.update({
+      ({ req, user }) => {
+        void req.payload
+          .update({
             collection: 'users',
             id: user.id,
             data: {
               lastLogin: new Date().toISOString(),
             },
           })
-        } catch (e) {
-          // Silent fail - don't block login
-        }
+          .catch(() => undefined)
+
         return user
       },
     ],
