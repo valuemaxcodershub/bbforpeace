@@ -66,11 +66,24 @@ export async function GET() {
     const config = (await import('@payload-config')).default
     const payload = await getPayload({ config })
     checks.payload = `connected in ${Date.now() - payloadStart}ms`
+
+    // Test actual user query (same as login does)
+    const userQueryStart = Date.now()
+    try {
+      const users = await payload.find({ collection: 'users', limit: 1 })
+      checks.userQuery = `ok in ${Date.now() - userQueryStart}ms, found ${users.docs.length} users`
+    } catch (error: any) {
+      checks.userQuery = `error in ${Date.now() - userQueryStart}ms: ${error?.message || String(error)}`
+    }
+
     checks.status = 'ok'
   } catch (error: any) {
     checks.payload = `error in ${Date.now() - payloadStart}ms: ${error?.message || String(error)}`
     checks.status = 'error'
   }
+
+  // Show NEXT_PUBLIC_SITE_URL - important for CORS/CSRF
+  checks.siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'NOT SET (defaults to localhost:3000)'
 
   return NextResponse.json(checks, { status: checks.status === 'ok' ? 200 : 500 })
 }
