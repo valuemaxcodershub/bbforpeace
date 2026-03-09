@@ -1,33 +1,74 @@
 import { NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
+export const maxDuration = 60
 
 export async function GET() {
   const checks: Record<string, any> = {
     status: 'checking',
+    timestamp: new Date().toISOString(),
     env: {
       DATABASE_URI: !!process.env.DATABASE_URI,
       POSTGRES_URL: !!process.env.POSTGRES_URL,
+      POSTGRES_URL_NON_POOLING: !!process.env.POSTGRES_URL_NON_POOLING,
       PAYLOAD_SECRET: !!process.env.PAYLOAD_SECRET,
-      NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'not set',
+      NODE_ENV: process.env.NODE_ENV,
     },
     connectionString: 'not checked',
+    rawDb: 'not checked',
     payload: 'not checked',
   }
 
-  const connStr = process.env.DATABASE_URI || process.env.POSTGRES_URL || ''
-  checks.connectionString = connStr
-    ? `${connStr.substring(0, 30)}...${connStr.substring(connStr.length - 30)}`
-    : 'MISSING - no DATABASE_URI or POSTGRES_URL'
+  // Show connection string (masked) that Payload would use
+  const isProduction = process.env.NODE_ENV === 'production'
+  const connStr = isProduction
+    ? (process.env.POSTGRES_URL || process.env.DATABASE_URI || process.env.POSTGRES_URL_NON_POOLING || '')
+    : (process.env.DATABASE_URI || process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL || '')
 
+  if (connStr) {
+    // Show host:port only (mask credentials)
+    const match = connStr.match(/@([^/]+)\//)
+    checks.connectionString = match ? match[1] : 'present but unparseable'
+    checks.connectionStringLength = connStr.length
+    checks.connectionStringHas6543 = connStr.includes(':6543')
+    checks.connectionStringHas5432 = connStr.includes(':5432')
+  } else {
+    checks.connectionString = 'MISSING - no DATABASE_URI or POSTGRES_URL'
+  }
+
+  // Test raw pg connection directly (bypass Payload)
+  const rawStart = Date.now()
+  try {
+    const { Pool } = await import('pg')
+    // Apply same normalization as payload.config.ts
+    let normalized = connStr.replace('sslmode=require', 'sslmode=no-verify')
+    if (normalized.includes('.pooler.supabase.com:6543/')) {
+      normalized = normalized.replace('.pooler.supabase.com:6543/', '.pooler.supabase.com:5432/')
+    }
+    const pool = new Pool({
+      connectionString: normalized,
+      ssl: { rejectUnauthorized: false },
+      max: 1,
+      connectionTimeoutMillis: 15000,
+    })
+    const result = await pool.query('SELECT now() as time, current_user as user')
+    checks.rawDb = `ok in ${Date.now() - rawStart}ms`
+    checks.rawDbUser = result.rows[0].user
+    await pool.end()
+  } catch (error: any) {
+    checks.rawDb = `error in ${Date.now() - rawStart}ms: ${error?.message || String(error)}`
+  }
+
+  // Test Payload init
+  const payloadStart = Date.now()
   try {
     const { getPayload } = await import('payload')
     const config = (await import('@payload-config')).default
     const payload = await getPayload({ config })
-    checks.payload = 'connected'
+    checks.payload = `connected in ${Date.now() - payloadStart}ms`
     checks.status = 'ok'
   } catch (error: any) {
-    checks.payload = `error: ${error?.message || String(error)}`
+    checks.payload = `error in ${Date.now() - payloadStart}ms: ${error?.message || String(error)}`
     checks.status = 'error'
   }
 
