@@ -6,6 +6,10 @@ import { generatePageMetadata, RootPage } from '@payloadcms/next/views'
 
 import { importMap } from '../importMap'
 
+// Extend Vercel serverless function timeout for admin (default 10s is too short
+// for Supabase cold starts + bcrypt password hashing during login)
+export const maxDuration = 60
+
 type Args = {
   params: Promise<{
     segments: string[]

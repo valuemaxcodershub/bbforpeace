@@ -7,6 +7,9 @@ import { BackToTop } from '@/components/ui/BackToTop'
 // Force dynamic rendering - CMS content is always fresh, no build-time DB needed
 export const dynamic = 'force-dynamic'
 
+// Extend Vercel function timeout for Supabase cold starts
+export const maxDuration = 60
+
 const inter = Inter({
   variable: '--font-inter',
   subsets: ['latin'],
