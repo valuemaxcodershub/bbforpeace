@@ -82,8 +82,11 @@ export async function GET() {
     checks.status = 'error'
   }
 
-  // Show NEXT_PUBLIC_SITE_URL - important for CORS/CSRF
-  checks.siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'NOT SET (defaults to localhost:3000)'
+  // Show resolved site URL - important for CORS/CSRF
+  checks.siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'NOT SET'
+  checks.vercelUrl = process.env.VERCEL_URL || 'NOT SET'
+  checks.resolvedUrl = process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
 
   return NextResponse.json(checks, { status: checks.status === 'ok' ? 200 : 500 })
 }

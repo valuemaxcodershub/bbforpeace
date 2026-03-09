@@ -39,6 +39,11 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 const isProduction = process.env.NODE_ENV === 'production'
 
+// Resolve site URL: explicit env var > Vercel auto-detection > localhost fallback
+const siteURL =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
+
 const normalizeConnectionString = (raw: string): string => {
   // Use session pooler (5432) for Supabase — it supports prepared statements
   // and lateral joins that Payload CMS requires. Transaction pooler (6543)
@@ -204,17 +209,13 @@ if (!payloadSecret && process.env.NODE_ENV === 'production') {
 }
 
 export default buildConfig({
-  serverURL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+  serverURL: siteURL,
 
   // CORS: restrict API access to known origins
-  cors: [
-    process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-  ].filter(Boolean) as string[],
+  cors: [siteURL].filter(Boolean) as string[],
 
   // CSRF: protect against cross-site request forgery
-  csrf: [
-    process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-  ].filter(Boolean) as string[],
+  csrf: [siteURL].filter(Boolean) as string[],
 
   admin: {
     user: Users.slug,
