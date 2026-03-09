@@ -40,12 +40,15 @@ const dirname = path.dirname(filename)
 const isProduction = process.env.NODE_ENV === 'production'
 
 const normalizeConnectionString = (raw: string): string => {
+  // Use session pooler (5432) for Supabase — it supports prepared statements
+  // and lateral joins that Payload CMS requires. Transaction pooler (6543)
+  // uses PgBouncer transaction mode which breaks these features.
+  // With max:1 pool size, session pooler client limits are not an issue.
   const base = raw.replace('sslmode=require', 'sslmode=no-verify')
 
-  // Vercel serverless should use Supabase transaction pooler in production.
-  // If session pooler (5432) is accidentally configured, rewrite to 6543.
-  if (isProduction && base.includes('.pooler.supabase.com:5432/')) {
-    return base.replace('.pooler.supabase.com:5432/', '.pooler.supabase.com:6543/')
+  // If transaction pooler (6543) is configured, rewrite to session pooler (5432)
+  if (base.includes('.pooler.supabase.com:6543/')) {
+    return base.replace('.pooler.supabase.com:6543/', '.pooler.supabase.com:5432/')
   }
 
   return base
@@ -279,9 +282,9 @@ export default buildConfig({
         )
       ),
       ssl: { rejectUnauthorized: false },
-      max: isProduction ? 1 : 10,
-      connectionTimeoutMillis: isProduction ? 10000 : 30000,
-      idleTimeoutMillis: 10000,
+      max: isProduction ? 2 : 10,
+      connectionTimeoutMillis: 30000,
+      idleTimeoutMillis: 20000,
     },
   }),
 
