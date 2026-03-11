@@ -59,10 +59,11 @@ export default async function PublicationsPage() {
     console.error('Failed to fetch publications:', error)
   }
 
-  const getImageUrl = (media: any) => {
-    if (!media) return '/images/_VEE7124 (1).jpg'
-    if (typeof media === 'object' && media.url) return media.url
-    return media
+  const safeImageUrl = (media: any) => {
+    if (!media) return '/images/_VEE7124%20(1).jpg'
+    const raw = typeof media === 'object' && media.url ? media.url : typeof media === 'string' ? media : ''
+    if (!raw) return '/images/_VEE7124%20(1).jpg'
+    return raw.includes(' ') || raw.includes('(') ? encodeURI(raw) : raw
   }
 
   const getFileUrl = (media: any) => {
@@ -75,7 +76,7 @@ export default async function PublicationsPage() {
     id: p.id,
     title: p.title,
     excerpt: p.excerpt || '',
-    coverImage: getImageUrl(p.coverImage),
+    coverImage: safeImageUrl(p.coverImage),
     category: p.category || 'research',
     year: p.year,
     downloadUrl: getFileUrl(p.file),

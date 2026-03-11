@@ -20,7 +20,8 @@ const eventsHero = {
   backgroundImage: '/images/_VEE6792.jpg',
 }
 
-export default async function EventsPage() {
+export default async function EventsPage({ searchParams }: { searchParams: Promise<{ filter?: string }> }) {
+  const { filter: activeFilter } = await searchParams
   const payload = await getPayload({ config })
 
   let upcomingEvents: any[] = []
@@ -36,10 +37,11 @@ export default async function EventsPage() {
     console.error('Failed to fetch events:', error)
   }
 
-  const getImageUrl = (media: any) => {
-    if (!media) return '/images/_VEE7124 (1).jpg'
-    if (typeof media === 'object' && media.url) return media.url
-    return media
+  const safeImageUrl = (media: any) => {
+    if (!media) return '/images/_VEE7124%20(1).jpg'
+    const raw = typeof media === 'object' && media.url ? media.url : typeof media === 'string' ? media : ''
+    if (!raw) return '/images/_VEE7124%20(1).jpg'
+    return raw.includes(' ') || raw.includes('(') ? encodeURI(raw) : raw
   }
 
   const normalize = (events: any[]) => {
@@ -48,7 +50,7 @@ export default async function EventsPage() {
       title: e.title,
       excerpt: e.excerpt || '',
       slug: e.slug,
-      featuredImage: getImageUrl(e.featuredImage),
+      featuredImage: safeImageUrl(e.featuredImage),
       location: e.location || '',
       startDate: e.startDate,
       endDate: e.endDate || null,
@@ -58,8 +60,26 @@ export default async function EventsPage() {
     }))
   }
 
-  const displayUpcoming = normalize(upcomingEvents)
-  const displayPast = normalize(pastEvents)
+  const allUpcoming = normalize(upcomingEvents)
+  const allPast = normalize(pastEvents)
+  const allEvents = [...allUpcoming, ...allPast]
+
+  // Filter based on search param
+  let displayUpcoming = allUpcoming
+  let displayPast = allPast
+  let showUpcoming = true
+  let showPast = true
+
+  if (activeFilter === 'Past') {
+    showUpcoming = false
+  } else if (activeFilter === 'Ongoing') {
+    displayUpcoming = allUpcoming.filter(e => e.type === 'Ongoing')
+    showPast = false
+  } else if (activeFilter === 'Upcoming') {
+    displayUpcoming = allUpcoming.filter(e => e.type === 'Upcoming')
+    showPast = false
+  }
+  // 'All' or no filter shows everything
 
   const featuredEvent = displayUpcoming.find((e: any) => e.isFeatured) || displayUpcoming[0]
   const otherUpcoming = displayUpcoming.filter((e: any) => e.id !== featuredEvent?.id)
@@ -87,18 +107,23 @@ export default async function EventsPage() {
               {/* Status Filters */}
               <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
                 <Filter className="w-5 h-5 text-gray-400 flex-shrink-0" />
-                {filters.map((filter) => (
-                  <button
-                    key={filter}
-                    className={`px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all ${
-                      filter === 'Upcoming'
-                        ? 'bg-primary-900 text-white shadow-lg shadow-primary-900/30'
-                        : 'bg-gray-100 text-gray-700 hover:bg-primary-100 hover:text-primary-900'
-                    }`}
-                  >
-                    {filter}
-                  </button>
-                ))}
+                {filters.map((filter) => {
+                  const isActive = filter === 'All' ? !activeFilter : activeFilter === filter
+                  const href = filter === 'All' ? '/events' : `/events?filter=${encodeURIComponent(filter)}`
+                  return (
+                    <Link
+                      key={filter}
+                      href={href}
+                      className={`px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all ${
+                        isActive
+                          ? 'bg-primary-900 text-white shadow-lg shadow-primary-900/30'
+                          : 'bg-gray-100 text-gray-700 hover:bg-primary-100 hover:text-primary-900'
+                      }`}
+                    >
+                      {filter}
+                    </Link>
+                  )
+                })}
               </div>
 
               {/* Event Type */}
@@ -112,7 +137,7 @@ export default async function EventsPage() {
         </section>
 
         {/* Featured Event */}
-        {featuredEvent && (
+        {showUpcoming && featuredEvent && (
           <section className="py-16 bg-white">
             <div className="container">
               <div className="max-w-5xl mx-auto">
@@ -192,7 +217,7 @@ export default async function EventsPage() {
         )}
 
         {/* More Upcoming Events */}
-        {otherUpcoming.length > 0 && (
+        {showUpcoming && otherUpcoming.length > 0 && (
           <section className="py-20 bg-gray-50">
             <div className="container">
               <div className="flex items-center mb-10" data-scroll="up">
@@ -243,6 +268,7 @@ export default async function EventsPage() {
         )}
 
         {/* Past Events */}
+        {showPast && displayPast.length > 0 && (
         <section className="py-20 bg-white">
           <div className="container">
             <div className="text-center mb-14" data-scroll="up">
@@ -301,6 +327,7 @@ export default async function EventsPage() {
             </div>
           </div>
         </section>
+        )}
 
         {/* CTA Section */}
         <section 

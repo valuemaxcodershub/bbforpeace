@@ -200,14 +200,23 @@ if (!payloadSecret && process.env.NODE_ENV === 'production') {
   throw new Error('PAYLOAD_SECRET environment variable is required in production. Generate one with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"')
 }
 
+// Build allowed origins list (site URL + Vercel preview URL if available)
+const allowedOrigins = [siteURL]
+if (process.env.VERCEL_URL && !siteURL.includes(process.env.VERCEL_URL)) {
+  allowedOrigins.push(`https://${process.env.VERCEL_URL}`)
+}
+if (process.env.VERCEL_PROJECT_PRODUCTION_URL && !siteURL.includes(process.env.VERCEL_PROJECT_PRODUCTION_URL)) {
+  allowedOrigins.push(`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`)
+}
+
 export default buildConfig({
   serverURL: siteURL,
 
   // CORS: restrict API access to known origins
-  cors: [siteURL].filter(Boolean) as string[],
+  cors: allowedOrigins.filter(Boolean) as string[],
 
   // CSRF: protect against cross-site request forgery
-  csrf: [siteURL].filter(Boolean) as string[],
+  csrf: allowedOrigins.filter(Boolean) as string[],
 
   admin: {
     user: Users.slug,

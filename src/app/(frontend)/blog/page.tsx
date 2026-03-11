@@ -55,10 +55,11 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
     console.error('Failed to fetch blog data:', error)
   }
 
-  const getImageUrl = (media: any) => {
-    if (!media) return '/images/_VEE7124 (1).jpg'
-    if (typeof media === 'object' && media.url) return media.url
-    return media
+  const safeImageUrl = (media: any) => {
+    if (!media) return '/images/_VEE7124%20(1).jpg'
+    const raw = typeof media === 'object' && media.url ? media.url : typeof media === 'string' ? media : ''
+    if (!raw) return '/images/_VEE7124%20(1).jpg'
+    return raw.includes(' ') || raw.includes('(') ? encodeURI(raw) : raw
   }
 
   // Build category list for filter
@@ -77,7 +78,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
     title: post.title,
     excerpt: post.excerpt || '',
     slug: post.slug,
-    featuredImage: getImageUrl(post.featuredImage),
+    featuredImage: safeImageUrl(post.featuredImage),
     category: getCategoryName(post.category),
     publishedAt: post.publishedAt || post.createdAt,
     readTime: `${Math.max(2, Math.ceil((post.excerpt?.length || 100) / 200))} min read`,

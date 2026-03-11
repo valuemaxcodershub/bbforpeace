@@ -22,15 +22,18 @@ export interface RecentActivitiesProps {
 }
 
 export function RecentActivities({ posts }: RecentActivitiesProps) {
-  const recentPosts = posts?.length ? posts.map(p => ({
-    id: p.id,
-    title: p.title,
-    excerpt: p.excerpt || '',
-    slug: p.slug,
-    featuredImage: typeof p.featuredImage === 'string' ? p.featuredImage : p.featuredImage?.url || '/images/PXL_20251008_095815014~2.jpg',
-    category: typeof p.category === 'string' ? p.category : p.category?.title || 'Update',
-    publishedAt: p.publishedAt || new Date().toISOString(),
-  })) : defaultPosts
+  const recentPosts = posts?.length ? posts.map(p => {
+    const rawUrl = typeof p.featuredImage === 'string' ? p.featuredImage : p.featuredImage?.url || '/images/PXL_20251008_095815014~2.jpg'
+    return {
+      id: p.id,
+      title: p.title,
+      excerpt: p.excerpt || '',
+      slug: p.slug,
+      featuredImage: rawUrl.includes(' ') || rawUrl.includes('(') ? encodeURI(rawUrl) : rawUrl,
+      category: typeof p.category === 'string' ? p.category : p.category?.name || p.category?.title || 'Update',
+      publishedAt: p.publishedAt || new Date().toISOString(),
+    }
+  }) : defaultPosts
   return (
     <section 
       className="py-24 relative overflow-hidden bg-fixed bg-cover bg-center"

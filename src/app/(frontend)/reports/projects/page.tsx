@@ -55,19 +55,23 @@ export default async function ProjectReportsPage() {
         depth: 1,
       })
 
-    projectReportsFromCms = result.docs.map((pub: any, idx: number) => ({
-      id: pub.id,
-      title: pub.title,
-      description: pub.excerpt || pub.description || '',
-      year: pub.year || new Date().getFullYear(),
-      category: pub.category || 'Program Report',
-      region: pub.region || 'Nigeria',
-      pages: pub.pages || 0,
-      coverImage: pub.coverImage && typeof pub.coverImage === 'object' ? pub.coverImage.url : '/images/_VEE7927.jpg',
-      downloadUrl: pub.file && typeof pub.file === 'object' ? pub.file.url : '#',
-      featured: Boolean(pub.isFeatured) || idx === 0,
-      color: pub.accentColor || 'blue',
-    }))
+    projectReportsFromCms = result.docs.map((pub: any, idx: number) => {
+      const rawCover = pub.coverImage && typeof pub.coverImage === 'object' ? pub.coverImage.url : '/images/_VEE7927.jpg'
+      const rawFile = pub.file && typeof pub.file === 'object' ? pub.file.url : '#'
+      return {
+        id: pub.id,
+        title: pub.title,
+        description: pub.excerpt || pub.description || '',
+        year: pub.year || new Date().getFullYear(),
+        category: pub.category || 'Program Report',
+        region: pub.region || 'Nigeria',
+        pages: pub.pages || 0,
+        coverImage: rawCover.includes(' ') || rawCover.includes('(') ? encodeURI(rawCover) : rawCover,
+        downloadUrl: rawFile.includes(' ') || rawFile.includes('(') ? encodeURI(rawFile) : rawFile,
+        featured: Boolean(pub.isFeatured) || idx === 0,
+        color: pub.accentColor || 'blue',
+      }
+    })
   } catch (error) {
     console.error('Failed to fetch project reports:', error)
   }

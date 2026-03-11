@@ -39,7 +39,10 @@ export default async function PressPage() {
       excerpt: post.excerpt || '',
       date: post.publishedAt || post.createdAt,
       slug: post.slug,
-      image: post.featuredImage && typeof post.featuredImage === 'object' ? post.featuredImage.url : '/images/_VEE7009 (1).jpg',
+      image: (() => {
+        const raw = post.featuredImage && typeof post.featuredImage === 'object' ? post.featuredImage.url : '/images/_VEE7009 (1).jpg'
+        return raw && (raw.includes(' ') || raw.includes('(')) ? encodeURI(raw) : raw
+      })(),
     }))
   } catch (error) {
     console.error('Failed to fetch press statements:', error)
