@@ -71,17 +71,7 @@ export default async function PublicationsPage() {
     return media
   }
 
-  // Fallback data
-  const defaultPubs = [
-    { id: '1', title: "Baseline Study on the Implementation of Nigeria's National Action Plan on Youth, Peace and Security", excerpt: 'A comprehensive baseline study assessing the implementation progress.', coverImage: '/images/_VEE7124 (1).jpg', category: 'research', year: 2024, downloadUrl: '/documents/BBFORPEACE-Baseline-Study-NAP-YPS.pdf', isFeatured: true },
-    { id: '2', title: 'Nigeria: Shrinking Civic Space in the Name of Security', excerpt: 'An in-depth analysis of how security-related policies are affecting civic space.', coverImage: '/images/_VEE6792.jpg', category: 'research', year: 2023, downloadUrl: '/documents/BBFORPEACE-Shrinking-Civic-Space.pdf' },
-    { id: '3', title: 'Complementarity of UNSCR 2250 and AU Continental Framework on Youth, Peace and Security', excerpt: 'Examining alignment between UNSCR 2250 and AU Continental Framework.', coverImage: '/images/_VEE7017 (19) (1).jpg', category: 'research', year: 2023, downloadUrl: '/documents/BBFORPEACE-UNSCR-2250-AU-Framework.pdf' },
-    { id: '4', title: 'Beyond #ENDSARS: Effecting Positive Change in Governance in Nigeria', excerpt: 'Exploring the aftermath of #EndSARS and pathways to governance transformation.', coverImage: '/images/_VEE7153 (6).jpg', category: 'report', year: 2021, downloadUrl: '/documents/BBFORPEACE-Beyond-EndSARS.pdf' },
-    { id: '5', title: 'Connecting and Amplifying Voices of Youth Building Peace in Nigeria', excerpt: 'Documentation of youth-led peacebuilding initiatives.', coverImage: '/images/_VEE7037 (1).jpg', category: 'report', year: 2022, downloadUrl: '/documents/BBFORPEACE-Youth-Voices-Peace.pdf' },
-    { id: '6', title: 'COVID-19 Pandemic: The Future of Peacebuilding in Nigeria', excerpt: "Analysis of the pandemic's impact on peacebuilding efforts.", coverImage: '/images/_VEE6887 (20).jpg', category: 'research', year: 2020, downloadUrl: '/documents/BBFORPEACE-COVID19-Peacebuilding.pdf' },
-  ]
-
-  const displayPubs = publications.length ? publications.map((p: any) => ({
+  const displayPubs = publications.map((p: any) => ({
     id: p.id,
     title: p.title,
     excerpt: p.excerpt || '',
@@ -90,7 +80,7 @@ export default async function PublicationsPage() {
     year: p.year,
     downloadUrl: getFileUrl(p.file),
     isFeatured: p.isFeatured || false,
-  })) : defaultPubs
+  }))
 
   const featuredPublication = displayPubs.find((p: any) => p.isFeatured) || displayPubs[0]
   const otherPublications = displayPubs.filter((p: any) => p.id !== featuredPublication?.id)

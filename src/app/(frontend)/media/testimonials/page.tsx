@@ -20,14 +20,7 @@ const testimonialsHero = {
   backgroundImage: '/images/_VEE7009 (1).jpg',
 }
 
-const defaultTestimonials = [
-  { id: '1', name: 'Amina Yusuf', role: 'Youth Peace Ambassador, Kaduna', quote: 'BBFORPEACE gave me the tools and confidence to become a peacebuilder in my community. Through their training programmes, I learned how to facilitate dialogue between conflicting groups and have since mediated over 12 community disputes.', image: '/images/_VEE6887 (20).jpg', rating: 5 },
-  { id: '2', name: 'Dr. Chukwuemeka Obi', role: 'Partner Organisation Director', quote: 'Working with BBFORPEACE has been transformative. Their grassroots approach to peacebuilding is exactly what Nigeria needs \u2014 youth-led, community-driven, and deeply impactful. They are among the most effective NGOs we have partnered with.', image: '/images/_VEE7017 (19) (1).jpg', rating: 5 },
-  { id: '3', name: 'Fatima Bello', role: 'Programme Beneficiary, Abuja', quote: "Before joining the BBFORPEACE women and youth empowerment programme, I felt voiceless. Today, I sit on my community's peace council and advocate for women's inclusion in governance. This organisation changed my life.", image: '/images/_VEE7037 (1).jpg', rating: 5 },
-  { id: '4', name: 'Ibrahim Musa', role: 'Community Leader, Plateau State', quote: 'The peacebuilding workshops organised by BBFORPEACE brought together youths from different ethnic and religious backgrounds in our community. For the first time in years, we saw real dialogue and understanding emerge.', image: '/images/_VEE7943.jpg', rating: 5 },
-  { id: '5', name: 'Grace Adeyemi', role: 'University Student & Volunteer', quote: 'Volunteering with BBFORPEACE during their campus peace education campaign opened my eyes to the power of youth engagement. The mentorship I received has shaped my career aspirations in conflict resolution.', image: '/images/PXL_20251007_092308643.jpg', rating: 5 },
-  { id: '6', name: 'Alhaji Sani Garba', role: 'Traditional Ruler, Niger State', quote: "BBFORPEACE's approach of combining traditional conflict resolution methods with modern peacebuilding techniques is remarkable. They respect our culture while introducing innovative strategies for lasting peace.", image: '/images/PXL_20251008_095815014~2.jpg', rating: 5 },
-]
+
 
 function StarRating({ count }: { count: number }) {
   return (
@@ -84,12 +77,10 @@ export default async function TestimonialsPage() {
     order: item.order || 0,
   }))
 
-  const testimonials = testimonialsFromCms.length
-    ? [...testimonialsFromCms].sort((left, right) => {
-        if (left.isFeatured === right.isFeatured) return left.order - right.order
-        return left.isFeatured ? -1 : 1
-      })
-    : defaultTestimonials
+  const testimonials = [...testimonialsFromCms].sort((left, right) => {
+    if (left.isFeatured === right.isFeatured) return left.order - right.order
+    return left.isFeatured ? -1 : 1
+  })
 
   return (
     <>

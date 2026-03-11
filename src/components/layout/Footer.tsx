@@ -55,10 +55,10 @@ export async function Footer() {
         depth: 0,
       }),
     ])
-    socialData = social as Record<string, string>
-    footerData = footer as Record<string, string>
-    contactData = contact as Record<string, string>
-    generalData = general as Record<string, any>
+    socialData = social as unknown as Record<string, string>
+    footerData = footer as unknown as Record<string, string>
+    contactData = contact as unknown as Record<string, string>
+    generalData = general as unknown as Record<string, any>
     programmeLinks = programmes.docs.map((programme: any) => ({
       name: programme.title,
       href: '/programmes',

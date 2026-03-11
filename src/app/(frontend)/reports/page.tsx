@@ -62,19 +62,14 @@ export default async function AnnualReportsPage() {
   const sectionHeading = reportsSettings.annualSectionHeading || 'Impact & Accountability'
   const sectionDescription = reportsSettings.annualSectionDescription || 'Download our comprehensive annual reports documenting our achievements, financial stewardship, and commitment to transparency.'
 
-  const defaultReports = [
-    { id: 'annual-2025', year: 2025, title: '2025 Annual Report', excerpt: "Consolidating Peace: Advancing the Implementation of Youth and Women Peace and Security Agenda. This report documents BBFORPEACE's strategic efforts in consolidating peace across West Africa.", coverImage: '/images/reports/2025 annual report.PNG', downloadUrl: '/documents/BBFORPEACE ANNUAL REPORT 2025.pdf' },
-    { id: 'annual-2024', year: 2024, title: '2024 Annual Report', excerpt: "Building Resilient Communities: Strengthening Youth-Led Peacebuilding in Nigeria. The 2024 Annual Report showcases BBFORPEACE's transformative work.", coverImage: '/images/reports/2024 annual report.PNG', downloadUrl: '/documents/BBFORPEACE ANNUAL REPORT 2024.pdf' },
-  ]
-
-  const displayReports = reports.length ? reports.map((r: any) => ({
+  const displayReports = reports.map((r: any) => ({
     id: r.id,
     year: r.year,
     title: r.title,
     excerpt: r.excerpt || '',
     coverImage: getImageUrl(r.coverImage),
     downloadUrl: getFileUrl(r.file),
-  })) : defaultReports
+  }))
   return (
     <>
       <PageHero

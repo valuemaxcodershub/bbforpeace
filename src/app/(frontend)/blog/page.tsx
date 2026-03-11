@@ -64,18 +64,8 @@ export default async function BlogPage() {
     return cat
   }
 
-  // Fallback posts when CMS is empty
-  const defaultPosts = [
-    { id: '1', title: 'Youth Peace Summit 2024: Building Bridges Across Communities', excerpt: 'Over 500 young people gathered for a three-day summit focused on dialogue and understanding.', slug: 'youth-peace-summit-2024', featuredImage: '/images/_VEE7124 (1).jpg', category: 'Events', publishedAt: '2024-01-15', readTime: '5 min read' },
-    { id: '2', title: 'New Partnership with GPPAC West Africa Strengthened', excerpt: 'BBFORPEACE continues its role as GPPAC West Africa Regional Secretariat.', slug: 'gppac-partnership', featuredImage: '/images/_VEE7037 (1).jpg', category: 'News', publishedAt: '2024-01-10', readTime: '4 min read' },
-    { id: '3', title: 'Community Dialogue Series Launches in Northern Nigeria', excerpt: 'Our new dialogue series brings together diverse communities for meaningful conversations.', slug: 'community-dialogue-series', featuredImage: '/images/_VEE7017 (19) (1).jpg', category: 'Programs', publishedAt: '2024-01-05', readTime: '3 min read' },
-    { id: '4', title: 'Peace Education Workshop for Teachers', excerpt: 'Training educators to integrate peace education into their classrooms.', slug: 'peace-education-workshop', featuredImage: '/images/_VEE7153 (6).jpg', category: 'Training', publishedAt: '2024-01-01', readTime: '6 min read' },
-    { id: '5', title: 'National Youth Development Award 2025', excerpt: 'BBFORPEACE receives recognition from the Federal Ministry of Youth Development.', slug: 'national-youth-award', featuredImage: '/images/PXL_20251008_122828933.jpg', category: 'Awards', publishedAt: '2023-12-28', readTime: '3 min read' },
-    { id: '6', title: 'Volunteer Spotlight: Meet Our Peace Champions', excerpt: 'Celebrating the dedication and impact of our volunteer network across 36 states.', slug: 'volunteer-spotlight', featuredImage: '/images/_VEE6887 (20).jpg', category: 'Stories', publishedAt: '2023-12-20', readTime: '4 min read' },
-  ]
-
   // Normalize CMS posts to a consistent shape
-  const displayPosts = posts.length ? posts.map((post: any) => ({
+  const displayPosts = posts.map((post: any) => ({
     id: post.id,
     title: post.title,
     excerpt: post.excerpt || '',
@@ -84,9 +74,9 @@ export default async function BlogPage() {
     category: getCategoryName(post.category),
     publishedAt: post.publishedAt || post.createdAt,
     readTime: `${Math.max(2, Math.ceil((post.excerpt?.length || 100) / 200))} min read`,
-  })) : defaultPosts
+  }))
 
-  const displayCategories = categories.length ? categoryNames : ['All', 'News', 'Events', 'Programs', 'Training', 'Stories', 'Awards']
+  const displayCategories = categoryNames
   return (
     <>
       <PageHero
@@ -135,6 +125,7 @@ export default async function BlogPage() {
         </section>
 
         {/* Featured Post */}
+        {displayPosts.length > 0 && (
         <section className="py-16">
           <div className="container">
             <div className="max-w-5xl mx-auto">
@@ -186,6 +177,7 @@ export default async function BlogPage() {
             </div>
           </div>
         </section>
+        )}
 
         {/* Posts Grid */}
         <section className="py-16 bg-gray-50">

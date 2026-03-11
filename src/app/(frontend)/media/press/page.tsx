@@ -5,41 +5,6 @@ import { Calendar, ArrowRight } from 'lucide-react'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 
-const defaultPressStatements = [
-  {
-    id: '1',
-    title: 'BBFORPEACE Receives National Youth Development Award 2025',
-    excerpt: 'The Federal Ministry of Youth Development recognizes Building Blocks for Peace Foundation with the prestigious National Youth Development Award for outstanding contributions to youth empowerment and peacebuilding in Nigeria.',
-    date: '2025-10-08',
-    slug: 'national-youth-award-2025',
-    image: '/images/PXL_20251008_122828933.jpg',
-  },
-  {
-    id: '2',
-    title: 'Launch of West Africa Youth Protection Advocacy Network (WAYPAN)',
-    excerpt: 'BBFORPEACE announces the establishment of WAYPAN, a regional youth-led initiative to respond to shrinking civic space across West Africa and promote youth leadership in governance.',
-    date: '2025-09-15',
-    slug: 'waypan-launch',
-    image: '/images/PXL_20251007_092308643.jpg',
-  },
-  {
-    id: '3',
-    title: 'Statement on the Importance of Youth Inclusion in Climate Security Discussions',
-    excerpt: 'As climate change continues to exacerbate resource conflicts across the Sahel, BBFORPEACE calls for meaningful inclusion of young people in climate security policy frameworks.',
-    date: '2025-08-20',
-    slug: 'climate-security-youth-inclusion',
-    image: '/images/_VEE7856.jpg',
-  },
-  {
-    id: '4',
-    title: 'BBFORPEACE Commemorates International Youth Day 2025',
-    excerpt: 'On this year\'s International Youth Day, we celebrate the resilience and contributions of young peacebuilders across Nigeria and West Africa.',
-    date: '2025-08-12',
-    slug: 'international-youth-day-2025',
-    image: '/images/_VEE6887 (20).jpg',
-  },
-]
-
 export const metadata = {
   title: 'Press Statements | BBFORPEACE',
   description: 'Official press statements and announcements from Building Blocks for Peace Foundation.',
@@ -68,21 +33,16 @@ export default async function PressPage() {
       }),
     ])
 
-    if (postsResult.docs.length > 0) {
-      pressStatements = postsResult.docs.map((post: any) => ({
-        id: post.id,
-        title: post.title,
-        excerpt: post.excerpt || '',
-        date: post.publishedAt || post.createdAt,
-        slug: post.slug,
-        image: post.featuredImage && typeof post.featuredImage === 'object' ? post.featuredImage.url : '/images/_VEE7009 (1).jpg',
-      }))
-    } else {
-      pressStatements = defaultPressStatements
-    }
+    pressStatements = postsResult.docs.map((post: any) => ({
+      id: post.id,
+      title: post.title,
+      excerpt: post.excerpt || '',
+      date: post.publishedAt || post.createdAt,
+      slug: post.slug,
+      image: post.featuredImage && typeof post.featuredImage === 'object' ? post.featuredImage.url : '/images/_VEE7009 (1).jpg',
+    }))
   } catch (error) {
     console.error('Failed to fetch press statements:', error)
-    pressStatements = defaultPressStatements
   }
 
   const getImageUrl = (media: any) => {

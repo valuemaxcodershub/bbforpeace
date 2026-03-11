@@ -42,20 +42,7 @@ export default async function EventsPage() {
     return media
   }
 
-  // Fallback data
-  const defaultUpcoming = [
-    { id: '1', title: 'Youth Peace Forum 2025', excerpt: 'Annual gathering of young peacebuilders from across Nigeria for dialogue and skills building.', slug: 'youth-peace-forum-2025', featuredImage: '/images/_VEE7124 (1).jpg', location: 'Abuja, Nigeria', startDate: '2025-03-15', endDate: '2025-03-17', type: 'Conference', maxAttendees: 500, isFeatured: true },
-    { id: '2', title: 'Community Dialogue Workshop', excerpt: 'Learn facilitation skills for leading community dialogue sessions.', slug: 'community-dialogue-workshop', featuredImage: '/images/_VEE7017 (19) (1).jpg', location: 'Lagos, Nigeria', startDate: '2025-02-28', type: 'Workshop', maxAttendees: 50 },
-    { id: '3', title: 'Peace Education Training', excerpt: 'Training for educators on integrating peace education into curriculum.', slug: 'peace-education-training', featuredImage: '/images/_VEE7153 (6).jpg', location: 'Online (Zoom)', startDate: '2025-02-20', endDate: '2025-02-22', type: 'Training', maxAttendees: 100 },
-  ]
-  const defaultPast = [
-    { id: '4', title: 'International Day of Peace Celebration 2024', excerpt: 'Commemorating the UN International Day of Peace with community activities.', slug: 'international-peace-day-2024', featuredImage: '/images/_VEE6887 (20).jpg', location: 'Abuja, Nigeria', startDate: '2024-09-21', type: 'Event' },
-    { id: '5', title: 'Youth Summit on Conflict Resolution', excerpt: 'Training young leaders in conflict resolution and mediation techniques.', slug: 'youth-summit-conflict-resolution', featuredImage: '/images/_VEE7037 (1).jpg', location: 'Kaduna, Nigeria', startDate: '2024-08-10', endDate: '2024-08-12', type: 'Summit' },
-    { id: '6', title: 'WANEP Nigeria Annual Conference', excerpt: 'Best Young Peacebuilding Organisation Award ceremony.', slug: 'wanep-conference-2023', featuredImage: '/images/PXL_20251008_122828933.jpg', location: 'Lagos, Nigeria', startDate: '2023-12-15', type: 'Conference' },
-  ]
-
-  const normalize = (events: any[], defaults: any[]) => {
-    if (!events.length) return defaults
+  const normalize = (events: any[]) => {
     return events.map((e: any) => ({
       id: e.id,
       title: e.title,
@@ -71,8 +58,8 @@ export default async function EventsPage() {
     }))
   }
 
-  const displayUpcoming = normalize(upcomingEvents, defaultUpcoming)
-  const displayPast = normalize(pastEvents, defaultPast)
+  const displayUpcoming = normalize(upcomingEvents)
+  const displayPast = normalize(pastEvents)
 
   const featuredEvent = displayUpcoming.find((e: any) => e.isFeatured) || displayUpcoming[0]
   const otherUpcoming = displayUpcoming.filter((e: any) => e.id !== featuredEvent?.id)
