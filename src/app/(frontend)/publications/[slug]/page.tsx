@@ -246,10 +246,10 @@ export default async function PublicationDetailPage({ params }: Props) {
                             <span>{pub.author}</span>
                           </div>
                         )}
-                        {pub.downloadCount > 0 && (
+                        {(pub.downloadCount ?? 0) > 0 && (
                           <div className="flex items-center gap-2 text-sm text-gray-600">
                             <Download className="w-4 h-4 text-gray-400" />
-                            <span>{pub.downloadCount.toLocaleString()} downloads</span>
+                            <span>{pub.downloadCount!.toLocaleString()} downloads</span>
                           </div>
                         )}
                       </div>
