@@ -13,8 +13,6 @@ import {
   Tag,
   User,
   ArrowLeft,
-  Share2,
-  ChevronRight,
 } from 'lucide-react'
 
 interface Props {
@@ -204,7 +202,7 @@ export default async function BlogPostPage({ params }: Props) {
   const publishedDate = post.publishedAt || post.createdAt
   const readTime = `${Math.max(2, Math.ceil((post.excerpt?.length || 100) / 200))} min read`
 
-  const normalizedRelated = relatedPosts.map((p: any, i: number) => ({
+  const normalizedRelated = relatedPosts.map((p: any) => ({
     id: String(p.id),
     title: p.title,
     excerpt: p.excerpt || '',

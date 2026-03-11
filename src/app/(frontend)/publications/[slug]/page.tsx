@@ -6,15 +6,13 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { PageHero } from '@/components/layout'
 import { PublicationCard } from '@/components/cards'
-import { formatDate } from '@/lib/utils'
+
 import {
   Download,
   FileText,
   Calendar,
   User,
   ArrowLeft,
-  BookOpen,
-  ExternalLink,
 } from 'lucide-react'
 
 interface Props {
@@ -171,7 +169,7 @@ export default async function PublicationDetailPage({ params }: Props) {
   const categoryLabel = categoryLabels[pub.category] || pub.category
   const relatedPubs = await getRelatedPublications(pub.category, pub.id)
 
-  const normalizedRelated = relatedPubs.map((p: any, i: number) => ({
+  const normalizedRelated = relatedPubs.map((p: any) => ({
     id: String(p.id),
     title: p.title,
     excerpt: p.excerpt || '',

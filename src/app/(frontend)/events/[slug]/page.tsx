@@ -10,10 +10,8 @@ import {
   Calendar,
   MapPin,
   Users,
-  Clock,
   ExternalLink,
   ArrowLeft,
-  Tag,
 } from 'lucide-react'
 
 interface Props {
