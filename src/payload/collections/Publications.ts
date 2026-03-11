@@ -119,6 +119,35 @@ export const Publications: CollectionConfig = {
       type: 'text',
     },
     {
+      name: 'region',
+      type: 'text',
+      admin: {
+        condition: (_, siblingData) => siblingData?.subMenu === 'project-report',
+      },
+    },
+    {
+      name: 'pages',
+      type: 'number',
+      min: 1,
+      admin: {
+        condition: (_, siblingData) => siblingData?.subMenu === 'project-report',
+      },
+    },
+    {
+      name: 'accentColor',
+      type: 'select',
+      defaultValue: 'blue',
+      options: [
+        { label: 'Blue', value: 'blue' },
+        { label: 'Emerald', value: 'emerald' },
+        { label: 'Purple', value: 'purple' },
+        { label: 'Amber', value: 'amber' },
+      ],
+      admin: {
+        condition: (_, siblingData) => siblingData?.subMenu === 'project-report',
+      },
+    },
+    {
       name: 'downloadCount',
       type: 'number',
       defaultValue: 0,

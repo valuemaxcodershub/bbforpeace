@@ -10,16 +10,6 @@ export const EventPageSettings: GlobalConfig = {
     {
       type: 'tabs',
       tabs: [
-        /* ─── Page Header ─── */
-        {
-          label: 'Page Header',
-          fields: [
-            { name: 'title', type: 'text', defaultValue: 'Events', label: 'Page Title' },
-            { name: 'subtitle', type: 'text', defaultValue: 'Join Us', label: 'Page Subtitle' },
-            { name: 'description', type: 'textarea', defaultValue: 'Join our workshops, conferences, and community events. Learn, connect, and contribute to building peace.', label: 'Page Description' },
-            { name: 'backgroundImage', type: 'upload', relationTo: 'media', label: 'Background Image', admin: { description: 'Hero background image for the events page' } },
-          ],
-        },
         {
           label: 'Past Events',
           fields: [

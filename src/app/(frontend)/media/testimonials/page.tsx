@@ -12,6 +12,14 @@ export const metadata: Metadata = {
     'Hear from community members, partners, and youth leaders about the impact of Building Blocks for Peace Foundation.',
 }
 
+const testimonialsHero = {
+  title: 'Testimonials',
+  subtitle: 'Voices of Impact',
+  description:
+    'Hear from community members, partners, and youth leaders about the transformative impact of our peacebuilding work.',
+  backgroundImage: '/images/_VEE7009 (1).jpg',
+}
+
 const defaultTestimonials = [
   { id: '1', name: 'Amina Yusuf', role: 'Youth Peace Ambassador, Kaduna', quote: 'BBFORPEACE gave me the tools and confidence to become a peacebuilder in my community. Through their training programmes, I learned how to facilitate dialogue between conflicting groups and have since mediated over 12 community disputes.', image: '/images/_VEE6887 (20).jpg', rating: 5 },
   { id: '2', name: 'Dr. Chukwuemeka Obi', role: 'Partner Organisation Director', quote: 'Working with BBFORPEACE has been transformative. Their grassroots approach to peacebuilding is exactly what Nigeria needs \u2014 youth-led, community-driven, and deeply impactful. They are among the most effective NGOs we have partnered with.', image: '/images/_VEE7017 (19) (1).jpg', rating: 5 },
@@ -33,10 +41,22 @@ function StarRating({ count }: { count: number }) {
 
 export default async function TestimonialsPage() {
   let mediaSettings: any = {}
+  let testimonialDocs: any[] = []
 
   try {
     const payload = await getPayload({ config })
-    mediaSettings = await payload.findGlobal({ slug: 'media-page-settings' }) as any
+    const [pageSettings, testimonialResult] = await Promise.all([
+      payload.findGlobal({ slug: 'media-page-settings' }),
+      payload.find({
+        collection: 'testimonials',
+        where: { status: { equals: 'published' } },
+        sort: 'order',
+        limit: 50,
+        depth: 1,
+      }),
+    ])
+    mediaSettings = pageSettings as any
+    testimonialDocs = testimonialResult.docs
   } catch (error) {
     console.error('Failed to fetch media settings:', error)
   }
@@ -47,39 +67,40 @@ export default async function TestimonialsPage() {
     return media
   }
 
-  // Page header from CMS
-  const heroTitle = mediaSettings.testimonialsTitle || 'Testimonials'
-  const heroSubtitle = mediaSettings.testimonialsSubtitle || 'Voices of Impact'
-  const heroDescription = mediaSettings.testimonialsDescription || 'Hear from community members, partners, and youth leaders about the transformative impact of our peacebuilding work.'
-  const heroBg = getImageUrl(mediaSettings.testimonialsBackgroundImage) || '/images/_VEE7009 (1).jpg'
   const sectionHeading = mediaSettings.testimonialsSectionHeading || 'Stories of Transformation'
   const sectionDescription = mediaSettings.testimonialsSectionDescription || 'Every voice tells a story of hope, change, and the power of youth-led peacebuilding.'
   const ctaHeading = mediaSettings.testimonialsCtaHeading || 'Have a Story to Tell?'
   const ctaDescription = mediaSettings.testimonialsCtaDescription || "If our work has impacted your life or community, we'd love to hear from you. Share your experience and inspire others to join the movement for peace."
   const ctaButtonText = mediaSettings.testimonialsCtaButtonText || 'Share Your Testimonial'
 
-  // Map CMS testimonials or use defaults
-  const testimonials = mediaSettings.testimonials && mediaSettings.testimonials.length > 0
-    ? mediaSettings.testimonials.map((t: any, idx: number) => ({
-        id: t.id || String(idx + 1),
-        name: t.name,
-        role: t.role,
-        quote: t.quote,
-        image: getImageUrl(t.image) || '/images/_VEE7009 (1).jpg',
-        rating: t.rating || 5,
-      }))
+  const testimonialsFromCms = testimonialDocs.map((item: any, idx: number) => ({
+    id: item.id || String(idx + 1),
+    name: item.name,
+    role: item.role,
+    quote: item.quote,
+    image: getImageUrl(item.image) || '/images/_VEE7009 (1).jpg',
+    rating: item.rating || 5,
+    isFeatured: Boolean(item.isFeatured),
+    order: item.order || 0,
+  }))
+
+  const testimonials = testimonialsFromCms.length
+    ? [...testimonialsFromCms].sort((left, right) => {
+        if (left.isFeatured === right.isFeatured) return left.order - right.order
+        return left.isFeatured ? -1 : 1
+      })
     : defaultTestimonials
 
   return (
     <>
       <PageHero
-        title={heroTitle}
-        subtitle={heroSubtitle}
-        description={heroDescription}
-        backgroundImage={heroBg}
+        title={testimonialsHero.title}
+        subtitle={testimonialsHero.subtitle}
+        description={testimonialsHero.description}
+        backgroundImage={testimonialsHero.backgroundImage}
         breadcrumbs={[
           { label: 'Home', href: '/' },
-          { label: 'Media', href: '/blog' },
+          { label: 'Media', href: '/media' },
           { label: 'Testimonials' },
         ]}
       />

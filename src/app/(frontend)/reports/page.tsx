@@ -17,6 +17,14 @@ export const metadata = {
   description: 'Access BBFORPEACE annual reports documenting our impact, achievements, and commitment to transparency in youth-led peacebuilding across West Africa.',
 }
 
+const annualReportsHero = {
+  title: 'Annual Reports',
+  subtitle: 'Transparency & Accountability',
+  description:
+    'Comprehensive documentation of our journey, impact, and commitment to transforming communities through youth-led peacebuilding.',
+  backgroundImage: '/images/PXL_20251023_124331635.MP~2.jpg',
+}
+
 export default async function AnnualReportsPage() {
   const payload = await getPayload({ config })
 
@@ -51,17 +59,6 @@ export default async function AnnualReportsPage() {
     return media
   }
 
-  const getHeroImageUrl = (media: any) => {
-    if (!media) return '/images/PXL_20251023_124331635.MP~2.jpg'
-    if (typeof media === 'object' && media.url) return media.url
-    return media
-  }
-
-  // Page header from CMS
-  const heroTitle = reportsSettings.annualTitle || 'Annual Reports'
-  const heroSubtitle = reportsSettings.annualSubtitle || 'Transparency & Accountability'
-  const heroDescription = reportsSettings.annualDescription || 'Comprehensive documentation of our journey, impact, and commitment to transforming communities through youth-led peacebuilding.'
-  const heroBg = getHeroImageUrl(reportsSettings.annualBackgroundImage)
   const sectionHeading = reportsSettings.annualSectionHeading || 'Impact & Accountability'
   const sectionDescription = reportsSettings.annualSectionDescription || 'Download our comprehensive annual reports documenting our achievements, financial stewardship, and commitment to transparency.'
 
@@ -81,10 +78,10 @@ export default async function AnnualReportsPage() {
   return (
     <>
       <PageHero
-        title={heroTitle}
-        subtitle={heroSubtitle}
-        description={heroDescription}
-        backgroundImage={heroBg}
+        title={annualReportsHero.title}
+        subtitle={annualReportsHero.subtitle}
+        description={annualReportsHero.description}
+        backgroundImage={annualReportsHero.backgroundImage}
         breadcrumbs={[
           { label: 'Home', href: '/' },
           { label: 'Annual Reports', href: '/reports' },

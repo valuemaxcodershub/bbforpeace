@@ -159,6 +159,11 @@ export default async function HomePage() {
         })) : undefined}
       />
       <PartnersSection
+        heading={(partnersData as any)?.heading}
+        subheading={(partnersData as any)?.subheading}
+        description={(partnersData as any)?.description}
+        ctaText={(partnersData as any)?.ctaText}
+        ctaLinkLabel={(partnersData as any)?.ctaLinkLabel}
         partners={(partnersData as any)?.items}
       />
       <NewsletterSection

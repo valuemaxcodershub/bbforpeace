@@ -12,22 +12,26 @@ export const metadata: Metadata = {
     'Discover upcoming events, workshops, and conferences from Building Blocks for Peace Foundation.',
 }
 
+const eventsHero = {
+  title: 'Events',
+  subtitle: 'Join Us',
+  description:
+    'Join our workshops, conferences, and community events. Learn, connect, and contribute to building peace.',
+  backgroundImage: '/images/_VEE6792.jpg',
+}
+
 export default async function EventsPage() {
   const payload = await getPayload({ config })
 
   let upcomingEvents: any[] = []
   let pastEvents: any[] = []
-  let eventSettings: any = {}
-
   try {
-    const [upcomingResult, pastResult, pageSettings] = await Promise.all([
+    const [upcomingResult, pastResult] = await Promise.all([
       payload.find({ collection: 'events', where: { status: { in: ['upcoming', 'ongoing'] } }, sort: 'startDate', limit: 10, depth: 1 }),
       payload.find({ collection: 'events', where: { status: { equals: 'completed' } }, sort: '-startDate', limit: 10, depth: 1 }),
-      payload.findGlobal({ slug: 'event-page-settings' }),
     ])
     upcomingEvents = upcomingResult.docs
     pastEvents = pastResult.docs
-    eventSettings = pageSettings as any
   } catch (error) {
     console.error('Failed to fetch events:', error)
   }
@@ -37,12 +41,6 @@ export default async function EventsPage() {
     if (typeof media === 'object' && media.url) return media.url
     return media
   }
-
-  // Page header from CMS
-  const heroTitle = eventSettings.title || 'Events'
-  const heroSubtitle = eventSettings.subtitle || 'Join Us'
-  const heroDescription = eventSettings.description || 'Join our workshops, conferences, and community events. Learn, connect, and contribute to building peace.'
-  const heroBg = getImageUrl(eventSettings.backgroundImage) || '/images/_VEE6792.jpg'
 
   // Fallback data
   const defaultUpcoming = [
@@ -85,10 +83,10 @@ export default async function EventsPage() {
   return (
     <>
       <PageHero
-        title={heroTitle}
-        subtitle={heroSubtitle}
-        description={heroDescription}
-        backgroundImage={heroBg}
+        title={eventsHero.title}
+        subtitle={eventsHero.subtitle}
+        description={eventsHero.description}
+        backgroundImage={eventsHero.backgroundImage}
         breadcrumbs={[
           { label: 'Home', href: '/' },
           { label: 'Events', href: '/events' },

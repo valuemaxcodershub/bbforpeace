@@ -32,6 +32,14 @@ export const metadata: Metadata = {
   description: 'Learn about Building Blocks for Peace Foundation - a youth-led peacebuilding NGO working to create sustainable peace through knowledge-sharing, policy advocacy, partnerships and programs.',
 }
 
+const aboutHero = {
+  title: 'About Us',
+  subtitle: 'Who We Are',
+  description:
+    'A youth-led organization bridging grassroots action, policy advocacy, and regional networking for sustainable peace.',
+  backgroundImage: '/images/_VEE7009 (1).jpg',
+}
+
 export default async function AboutPage() {
   const payload = await getPayload({ config })
 
@@ -57,11 +65,6 @@ export default async function AboutPage() {
   }
 
   // Defaults
-  const pageTitle = as.title || 'About Us'
-  const pageSubtitle = as.subtitle || 'Who We Are'
-  const pageDesc = as.description || 'A youth-led organization bridging grassroots action, policy advocacy, and regional networking for sustainable peace.'
-  const bgImage = (typeof as.backgroundImage === 'object' && as.backgroundImage?.url) || '/images/_VEE7009 (1).jpg'
-  
   const storyP1 = as.storyParagraph1 || 'Building Blocks for Peace (BBFORPEACE) Foundation is a non-governmental organization working on Conflict Prevention, Prevention of Violent Extremism, Peacebuilding and Sustainable Development in Nigeria.'
   const storyP2 = as.storyParagraph2 || 'Founded by Rafiu Adeniran Lawal, BBFORPEACE began with the Nigeria Youth 4 Peace Initiative in 2016 — a movement of young people dissatisfied with the increasing participation of youth in violent extremism and their exclusion from decision-making processes.'
   const storyP3 = as.storyParagraph3 || 'Through our Youth4Peace initiative, we have trained and empowered over 5,000 youth and children with support from several local and international stakeholders.'
@@ -167,10 +170,10 @@ export default async function AboutPage() {
   return (
     <>
       <PageHero
-        title={pageTitle}
-        subtitle={pageSubtitle}
-        description={pageDesc}
-        backgroundImage={bgImage}
+        title={aboutHero.title}
+        subtitle={aboutHero.subtitle}
+        description={aboutHero.description}
+        backgroundImage={aboutHero.backgroundImage}
         breadcrumbs={[{ label: 'About Us' }]}
       />
 

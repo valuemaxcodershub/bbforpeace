@@ -18,5 +18,35 @@ export const FooterSettings: GlobalConfig = {
       type: 'text',
       defaultValue: '© 2026 Building Blocks for Peace Foundation. All Rights Reserved.',
     },
+    {
+      name: 'quickLinksTitle',
+      type: 'text',
+      defaultValue: 'Quick Links',
+    },
+    {
+      name: 'programmesTitle',
+      type: 'text',
+      defaultValue: 'Programmes',
+    },
+    {
+      name: 'contactTitle',
+      type: 'text',
+      defaultValue: 'Contact',
+    },
+    {
+      name: 'developedByText',
+      type: 'text',
+      defaultValue: 'Developed by',
+    },
+    {
+      name: 'privacyLabel',
+      type: 'text',
+      defaultValue: 'Privacy Policy',
+    },
+    {
+      name: 'termsLabel',
+      type: 'text',
+      defaultValue: 'Terms of Service',
+    },
   ],
 }

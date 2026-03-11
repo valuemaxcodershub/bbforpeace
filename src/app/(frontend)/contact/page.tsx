@@ -11,6 +11,14 @@ export const metadata: Metadata = {
     'Get in touch with Building Blocks for Peace Foundation. We welcome inquiries, partnership opportunities, and feedback.',
 }
 
+const contactHero = {
+  title: 'Contact Us',
+  subtitle: 'Get in Touch',
+  description:
+    "Have a question or want to collaborate? We'd love to hear from you. Reach out and let's build peace together.",
+  backgroundImage: '/images/_VEE6887 (20).jpg',
+}
+
 export default async function ContactPage() {
   const payload = await getPayload({ config })
 
@@ -33,12 +41,6 @@ export default async function ContactPage() {
     if (typeof media === 'object' && media.url) return media.url
     return media
   }
-
-  // Page header
-  const heroTitle = pageSettings?.headerTitle || 'Contact Us'
-  const heroSubtitle = pageSettings?.headerSubtitle || 'Get in Touch'
-  const heroDescription = pageSettings?.intro || "Have a question or want to collaborate? We'd love to hear from you. Reach out and let's build peace together."
-  const heroBg = getImageUrl(pageSettings?.backgroundImage) || '/images/_VEE6887 (20).jpg'
 
   // Contact info
   const email = contactGlobal?.contactEmail || 'info@bbforpeace.org'
@@ -76,10 +78,10 @@ export default async function ContactPage() {
   return (
     <>
       <PageHero
-        title={heroTitle}
-          subtitle={heroSubtitle}
-          description={heroDescription}
-          backgroundImage={heroBg}
+        title={contactHero.title}
+          subtitle={contactHero.subtitle}
+          description={contactHero.description}
+          backgroundImage={contactHero.backgroundImage}
           breadcrumbs={[
             { label: 'Home', href: '/' },
             { label: 'Contact', href: '/contact' },

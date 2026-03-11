@@ -9,13 +9,36 @@ export const metadata: Metadata = {
   description: 'Explore our photo and video gallery capturing moments of impact, community engagement, and youth empowerment across Nigeria and West Africa.',
 }
 
+const galleryHero: GalleryHero = {
+  title: 'Gallery',
+  subtitle: 'Media',
+  description:
+    'Capturing moments of impact, community engagement, and youth empowerment across Nigeria and West Africa.',
+  backgroundImage: '/images/_VEE7124.jpg',
+  photoTabTitle: 'Photos',
+  videoTabTitle: 'Videos',
+  youtubeChannelUrl: 'https://www.youtube.com/@bbforpeace',
+}
+
 export default async function GalleryPage() {
   const payload = await getPayload({ config })
 
   let settings: any = {}
+  let galleryItems: any[] = []
 
   try {
-    settings = await payload.findGlobal({ slug: 'media-page-settings' })
+    const [pageSettings, galleryResult] = await Promise.all([
+      payload.findGlobal({ slug: 'media-page-settings' }),
+      payload.find({
+        collection: 'gallery-items',
+        where: { status: { equals: 'published' } },
+        sort: 'order',
+        limit: 100,
+        depth: 1,
+      }),
+    ])
+    settings = pageSettings
+    galleryItems = galleryResult.docs
   } catch (error) {
     console.error('Failed to fetch gallery settings:', error)
   }
@@ -26,35 +49,29 @@ export default async function GalleryPage() {
     return media
   }
 
-  // Build hero data from CMS
   const hero: Partial<GalleryHero> = {
-    title: settings.galleryTitle || 'Gallery',
-    subtitle: settings.gallerySubtitle || 'Media',
-    description: settings.galleryDescription || 'Capturing moments of impact, community engagement, and youth empowerment across Nigeria and West Africa.',
-    backgroundImage: getImageUrl(settings.galleryBackgroundImage) || '/images/_VEE7124.jpg',
+    ...galleryHero,
     photoTabTitle: settings.photoTabTitle || 'Photos',
     videoTabTitle: settings.videoTabTitle || 'Videos',
     youtubeChannelUrl: settings.youtubeChannelUrl || 'https://www.youtube.com/@bbforpeace',
   }
 
-  // Map CMS gallery images to the shape the client component expects
-  const images: GalleryImage[] = settings.galleryImages?.length
-    ? settings.galleryImages.map((item: any, idx: number) => ({
-        id: String(item.id || idx + 1),
-        src: getImageUrl(item.image) || '/images/_VEE6516 (1).jpg',
-        title: item.title || 'Gallery Image',
-        category: item.category || 'Events',
-      }))
-    : []
+  const images: GalleryImage[] = galleryItems
+    .filter((item: any) => item.mediaType === 'photo')
+    .map((item: any, idx: number) => ({
+      id: String(item.id || idx + 1),
+      src: getImageUrl(item.image) || '/images/_VEE6516 (1).jpg',
+      title: item.title || 'Gallery Image',
+      category: item.category || 'Events',
+    }))
 
-  // Map CMS gallery videos
-  const videos: GalleryVideo[] = settings.galleryVideos?.length
-    ? settings.galleryVideos.map((item: any, idx: number) => ({
-        id: item.youtubeId || '',
-        title: item.title || 'Video',
-        category: item.category || 'Impact',
-      }))
-    : []
+  const videos: GalleryVideo[] = galleryItems
+    .filter((item: any) => item.mediaType === 'video' && item.youtubeId)
+    .map((item: any) => ({
+      id: item.youtubeId,
+      title: item.title || 'Video',
+      category: item.category || 'Impact',
+    }))
 
   return (
     <GalleryContent

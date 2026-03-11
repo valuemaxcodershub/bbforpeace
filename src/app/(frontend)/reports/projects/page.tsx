@@ -11,106 +11,13 @@ export const metadata: Metadata = {
   description: 'Access comprehensive documentation from our peacebuilding programs, research initiatives, and regional interventions across West Africa.',
 }
 
-// Project Reports Data
-const projectReports = [
-  {
-    id: '1',
-    title: 'West Africa Peace and Security Dialogue (WAPSeD) 2025 Report',
-    description: 'Comprehensive documentation of the regional convening that brought together youth leaders, policymakers, and civil society organizations to address security challenges.',
-    year: 2025,
-    category: 'Regional Program',
-    region: 'West Africa',
-    pages: 64,
-    coverImage: '/images/PXL_20251007_102503598.MP.jpg',
-    downloadUrl: '/documents/BBFORPEACE-WAPSeD-2025-Report.pdf',
-    featured: true,
-    color: 'blue',
-  },
-  {
-    id: '2',
-    title: 'Youth Protection Advocacy Network (WAYPAN) Inception Report',
-    description: 'Documentation of the establishment and early activities of our West African regional youth protection initiative.',
-    year: 2024,
-    category: 'Program Report',
-    region: 'West Africa',
-    pages: 42,
-    coverImage: '/images/PXL_20251008_094037931.jpg',
-    downloadUrl: '/documents/BBFORPEACE-WAYPAN-Inception-Report.pdf',
-    color: 'emerald',
-  },
-  {
-    id: '3',
-    title: 'Peace Education in Schools: A Three-Year Impact Study',
-    description: 'Research findings on the effectiveness of peace education curriculum integration in partner schools across Northern Nigeria.',
-    year: 2024,
-    category: 'Research',
-    region: 'Nigeria',
-    pages: 56,
-    coverImage: '/images/_VEE7915 (1).jpg',
-    downloadUrl: '/documents/BBFORPEACE-Peace-Education-Impact-Study.pdf',
-    color: 'purple',
-  },
-  {
-    id: '4',
-    title: 'Climate Security and Youth Engagement Report',
-    description: 'Analysis of climate-related security risks and documentation of youth-led responses in conflict-affected communities.',
-    year: 2023,
-    category: 'Research',
-    region: 'Nigeria',
-    pages: 38,
-    coverImage: '/images/_VEE7856.jpg',
-    downloadUrl: '/documents/BBFORPEACE-Climate-Security-Report.pdf',
-    color: 'purple',
-  },
-  {
-    id: '5',
-    title: 'Governance and Accountability Program Report 2023',
-    description: 'Annual activities and outcomes of our governance strengthening and civic engagement programs.',
-    year: 2023,
-    category: 'Program Report',
-    region: 'Nigeria',
-    pages: 48,
-    coverImage: '/images/_VEE7178.jpg',
-    downloadUrl: '/documents/BBFORPEACE-Governance-Accountability-2023.pdf',
-    color: 'emerald',
-  },
-  {
-    id: '6',
-    title: 'Champions of Peace Network Assessment Report',
-    description: 'Evaluation of the Champions of Peace youth and women network across Nigerian states.',
-    year: 2023,
-    category: 'Program Report',
-    region: 'Nigeria',
-    pages: 44,
-    coverImage: '/images/_VEE7037 (1).jpg',
-    downloadUrl: '/documents/BBFORPEACE-Champions-of-Peace-Assessment.pdf',
-    color: 'emerald',
-  },
-  {
-    id: '7',
-    title: 'Community Dialogue Facilitation: Methodology Report',
-    description: 'Documentation of our community dialogue approach, including facilitation techniques and conflict transformation methods.',
-    year: 2022,
-    category: 'Toolkit',
-    region: 'Nigeria',
-    pages: 32,
-    coverImage: '/images/_VEE6525.jpg',
-    downloadUrl: '/documents/BBFORPEACE-Community-Dialogue-Methodology.pdf',
-    color: 'amber',
-  },
-  {
-    id: '8',
-    title: 'Youth Peacebuilding Capacity Assessment: FCT and Plateau State',
-    description: 'Baseline assessment of youth peacebuilding capacities in the Federal Capital Territory and Plateau State.',
-    year: 2022,
-    category: 'Research',
-    region: 'Nigeria',
-    pages: 36,
-    coverImage: '/images/_VEE6792.jpg',
-    downloadUrl: '/documents/BBFORPEACE-Youth-Capacity-Assessment.pdf',
-    color: 'purple',
-  },
-]
+const projectReportsHero = {
+  title: 'Project Reports',
+  subtitle: 'Documentation & Research',
+  description:
+    'Access comprehensive documentation from our peacebuilding programs, research initiatives, and regional interventions across West Africa.',
+  backgroundImage: '/images/_VEE7927.jpg',
+}
 
 const colorMap = {
   blue: {
@@ -139,55 +46,33 @@ export default async function ProjectReportsPage() {
   const payload = await getPayload({ config })
 
   let projectReportsFromCms: any[] = []
-  let reportsSettings: any = {}
-
   try {
-    const [result, pageSettings] = await Promise.all([
-      payload.find({
+    const result = await payload.find({
         collection: 'publications',
         where: { subMenu: { equals: 'project-report' } },
         sort: '-year',
         limit: 20,
         depth: 1,
-      }),
-      payload.findGlobal({ slug: 'reports-settings' }),
-    ])
-    reportsSettings = pageSettings as any
+      })
 
-    if (result.docs.length > 0) {
-      const colorCycle = ['blue', 'emerald', 'purple', 'amber']
-      projectReportsFromCms = result.docs.map((pub: any, idx: number) => ({
-        id: pub.id,
-        title: pub.title,
-        description: pub.excerpt || pub.description || '',
-        year: pub.year || new Date().getFullYear(),
-        category: pub.category || 'Program Report',
-        region: 'Nigeria',
-        pages: 0,
-        coverImage: pub.coverImage && typeof pub.coverImage === 'object' ? pub.coverImage.url : '/images/_VEE7927.jpg',
-        downloadUrl: pub.file && typeof pub.file === 'object' ? pub.file.url : '#',
-        featured: idx === 0,
-        color: colorCycle[idx % colorCycle.length],
-      }))
-    }
+    projectReportsFromCms = result.docs.map((pub: any, idx: number) => ({
+      id: pub.id,
+      title: pub.title,
+      description: pub.excerpt || pub.description || '',
+      year: pub.year || new Date().getFullYear(),
+      category: pub.category || 'Program Report',
+      region: pub.region || 'Nigeria',
+      pages: pub.pages || 0,
+      coverImage: pub.coverImage && typeof pub.coverImage === 'object' ? pub.coverImage.url : '/images/_VEE7927.jpg',
+      downloadUrl: pub.file && typeof pub.file === 'object' ? pub.file.url : '#',
+      featured: Boolean(pub.isFeatured) || idx === 0,
+      color: pub.accentColor || 'blue',
+    }))
   } catch (error) {
     console.error('Failed to fetch project reports:', error)
   }
 
-  const getImageUrl = (media: any) => {
-    if (!media) return '/images/_VEE7927.jpg'
-    if (typeof media === 'object' && media.url) return media.url
-    return media
-  }
-
-  // Page header from CMS
-  const heroTitle = reportsSettings.projectTitle || 'Project Reports'
-  const heroSubtitle = reportsSettings.projectSubtitle || 'Documentation & Research'
-  const heroDescription = reportsSettings.projectDescription || 'Access comprehensive documentation from our peacebuilding programs, research initiatives, and regional interventions.'
-  const heroBg = getImageUrl(reportsSettings.projectBackgroundImage) || '/images/_VEE7927.jpg'
-
-  // Use CMS data or hardcoded fallback
-  const displayReports = projectReportsFromCms.length > 0 ? projectReportsFromCms : projectReports
+  const displayReports = projectReportsFromCms
 
   const featuredReport = displayReports.find(r => r.featured)
   const otherReports = displayReports.filter(r => !r.featured)
@@ -201,10 +86,10 @@ export default async function ProjectReportsPage() {
   return (
     <>
       <PageHero
-        title={heroTitle}
-        subtitle={heroSubtitle}
-        description={heroDescription}
-        backgroundImage={heroBg}
+        title={projectReportsHero.title}
+        subtitle={projectReportsHero.subtitle}
+        description={projectReportsHero.description}
+        backgroundImage={projectReportsHero.backgroundImage}
         breadcrumbs={[
           { label: 'Home', href: '/' },
           { label: 'Annual Reports', href: '/reports' },

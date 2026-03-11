@@ -12,16 +12,23 @@ export const metadata: Metadata = {
     'Read the latest news, stories, and updates from Building Blocks for Peace Foundation. Stay informed about our peacebuilding activities across Nigeria.',
 }
 
+const blogHero = {
+  title: 'Blog & Activities',
+  subtitle: 'Latest News',
+  description:
+    'Stay updated with the latest news, stories, and insights from our peacebuilding work across Nigeria.',
+  backgroundImage: '/images/_VEE6792.jpg',
+}
+
 export default async function BlogPage() {
   const payload = await getPayload({ config })
 
-  // Fetch posts, categories, and page settings from CMS in parallel
+  // Fetch posts and categories from CMS in parallel
   let posts: any[] = []
   let categories: any[] = []
-  let mediaSettings: any = {}
 
   try {
-    const [postsResult, categoriesResult, pageSettings] = await Promise.all([
+    const [postsResult, categoriesResult] = await Promise.all([
       payload.find({ 
         collection: 'posts', 
         where: { status: { equals: 'published' }, subMenu: { equals: 'blog' } },
@@ -34,11 +41,9 @@ export default async function BlogPage() {
         limit: 50,
         sort: 'name',
       }),
-      payload.findGlobal({ slug: 'media-page-settings' }),
     ])
     posts = postsResult.docs
     categories = categoriesResult.docs
-    mediaSettings = pageSettings as any
   } catch (error) {
     console.error('Failed to fetch blog data:', error)
   }
@@ -48,12 +53,6 @@ export default async function BlogPage() {
     if (typeof media === 'object' && media.url) return media.url
     return media
   }
-
-  // Page header from CMS
-  const heroTitle = mediaSettings.blogHeading || 'Blog & Activities'
-  const heroSubtitle = mediaSettings.blogSubtitle || 'Latest News'
-  const heroDescription = mediaSettings.blogDescription || 'Stay updated with the latest news, stories, and insights from our peacebuilding work across Nigeria.'
-  const heroBg = getImageUrl(mediaSettings.blogBackgroundImage) || '/images/_VEE6792.jpg'
 
   // Build category list for filter
   const categoryNames = ['All', ...categories.map((c: any) => c.name)]
@@ -91,10 +90,10 @@ export default async function BlogPage() {
   return (
     <>
       <PageHero
-        title={heroTitle}
-        subtitle={heroSubtitle}
-        description={heroDescription}
-        backgroundImage={heroBg}
+        title={blogHero.title}
+        subtitle={blogHero.subtitle}
+        description={blogHero.description}
+        backgroundImage={blogHero.backgroundImage}
         breadcrumbs={[
           { label: 'Home', href: '/' },
           { label: 'Blog', href: '/blog' },

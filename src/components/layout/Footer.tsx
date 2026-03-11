@@ -4,6 +4,15 @@ import { Facebook, Twitter, Instagram, Youtube, Linkedin, Mail, Phone, MapPin } 
 import { getPayload } from 'payload'
 import config from '@payload-config'
 
+const quickLinks = [
+  { name: 'Home', href: '/' },
+  { name: 'About Us', href: '/about' },
+  { name: 'Programmes', href: '/programmes' },
+  { name: 'Media', href: '/blog' },
+  { name: 'Reports', href: '/publications' },
+  { name: 'Contact', href: '/contact' },
+]
+
 async function getPayloadWithTimeout(timeoutMs = 12000) {
   return await Promise.race([
     getPayload({ config }),
@@ -12,23 +21,6 @@ async function getPayloadWithTimeout(timeoutMs = 12000) {
     }),
   ])
 }
-
-const quickLinks = [
-  { name: 'Home', href: '/' },
-  { name: 'About Us', href: '/about' },
-  { name: 'Programmes', href: '/programmes' },
-  { name: 'Media', href: '/blog' },
-  { name: 'Reports', href: '/publications' },
-  { name: 'Contact', href: '/contact' },
-  { name: 'Donate', href: '/donate' },
-]
-
-const programmes = [
-  { name: 'Youth & Women Peace Security', href: '/programmes/youth-women-peace-security' },
-  { name: 'Conflict Management', href: '/programmes/conflict-management' },
-  { name: 'Governance & Accountability', href: '/programmes/governance-accountability' },
-  { name: 'Peace Education', href: '/programmes/peace-education' },
-]
 
 const iconMap: Record<string, typeof Twitter> = {
   twitter: Twitter,
@@ -45,17 +37,32 @@ export async function Footer() {
   let socialData: Record<string, string> = {}
   let footerData: Record<string, string> = {}
   let contactData: Record<string, string> = {}
+  let generalData: Record<string, any> = {}
+  let programmeLinks: Array<{ name: string; href: string }> = []
 
   try {
     const payload = await getPayloadWithTimeout()
-    const [social, footer, contact] = await Promise.all([
+    const [social, footer, contact, general, programmes] = await Promise.all([
       payload.findGlobal({ slug: 'social-media-settings' }),
       payload.findGlobal({ slug: 'footer-settings' }),
       payload.findGlobal({ slug: 'contact-settings' }),
+      payload.findGlobal({ slug: 'general-settings' }),
+      payload.find({
+        collection: 'programmes',
+        where: { status: { equals: 'active' } },
+        sort: 'order',
+        limit: 4,
+        depth: 0,
+      }),
     ])
     socialData = social as Record<string, string>
     footerData = footer as Record<string, string>
     contactData = contact as Record<string, string>
+    generalData = general as Record<string, any>
+    programmeLinks = programmes.docs.map((programme: any) => ({
+      name: programme.title,
+      href: '/programmes',
+    }))
   } catch (error) {
     console.error('Failed to fetch footer settings:', error)
   }
@@ -76,6 +83,18 @@ export async function Footer() {
   const footerText =
     footerData.footerText ||
     'A movement of young people committed to advocating for meaningful youth engagement in peacebuilding.'
+  const siteName = generalData.siteName || 'Building Blocks for Peace'
+  const siteTagline = generalData.siteTagline || 'Empowering Communities for Peace'
+  const logoUrl = generalData.logo?.url || '/images/logo.jpg'
+  const logoAlt = generalData.logoAlt || generalData.logo?.alt || siteName
+  const quickLinksTitle = footerData.quickLinksTitle || 'Quick Links'
+  const programmesTitle = footerData.programmesTitle || 'Programmes'
+  const contactTitle = footerData.contactTitle || 'Contact'
+  const developedByText = footerData.developedByText || 'Developed by'
+  const privacyLabel = footerData.privacyLabel || 'Privacy Policy'
+  const termsLabel = footerData.termsLabel || 'Terms of Service'
+  const copyrightText =
+    footerData.copyrightText || `© ${currentYear} ${siteName}. All Rights Reserved.`
 
   return (
     <footer className="bg-gray-900 text-white">
@@ -89,15 +108,15 @@ export async function Footer() {
             <div className="flex items-center gap-3 mb-5">
               <div className="relative w-12 h-12 rounded-full overflow-hidden">
                 <Image
-                  src="/images/logo.jpg"
-                  alt="Building Blocks for Peace Logo"
+                  src={logoUrl}
+                  alt={logoAlt}
                   fill
                   className="object-cover"
                 />
               </div>
               <div>
-                <span className="block font-bold">Building Blocks for Peace</span>
-                <span className="block text-[10px] text-gray-400">— Empowering Communities for Peace</span>
+                <span className="block font-bold">{siteName}</span>
+                <span className="block text-[10px] text-gray-400">— {siteTagline}</span>
               </div>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-3">
@@ -123,7 +142,7 @@ export async function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-semibold mb-5">Quick Links</h4>
+            <h4 className="font-semibold mb-5">{quickLinksTitle}</h4>
             <ul className="space-y-2.5">
               {quickLinks.map((link) => (
                 <li key={link.name}>
@@ -137,9 +156,9 @@ export async function Footer() {
 
           {/* Programmes */}
           <div>
-            <h4 className="font-semibold mb-5">Programmes</h4>
+            <h4 className="font-semibold mb-5">{programmesTitle}</h4>
             <ul className="space-y-2.5">
-              {programmes.map((link) => (
+              {(programmeLinks.length ? programmeLinks : [{ name: 'Programmes', href: '/programmes' }]).map((link) => (
                 <li key={link.name}>
                   <Link href={link.href} className="text-gray-400 hover:text-white transition-colors text-sm">
                     {link.name}
@@ -151,7 +170,7 @@ export async function Footer() {
 
           {/* Contact Info */}
           <div>
-            <h4 className="font-semibold mb-5">Contact</h4>
+            <h4 className="font-semibold mb-5">{contactTitle}</h4>
             <ul className="space-y-3">
               <li className="flex items-start gap-3 text-gray-400 text-sm">
                 <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
@@ -179,7 +198,7 @@ export async function Footer() {
         <div className="container py-5">
           <div className="flex flex-col md:flex-row justify-between items-center gap-3 text-sm">
             <p className="text-gray-500 flex items-center gap-1 flex-wrap justify-center md:justify-start">
-              © {currentYear} BBFORPEACE. Developed by{' '}
+              {copyrightText.replace(/^©\s*\d{4}\s*/i, '© ')} {developedByText}{' '}
               <a 
                 href="https://valuemaxonline.com/" 
                 target="_blank" 
@@ -191,10 +210,10 @@ export async function Footer() {
             </p>
             <div className="flex gap-5">
               <Link href="/privacy" className="text-gray-500 hover:text-white transition-colors">
-                Privacy Policy
+                {privacyLabel}
               </Link>
               <Link href="/terms" className="text-gray-500 hover:text-white transition-colors">
-                Terms of Service
+                {termsLabel}
               </Link>
             </div>
           </div>

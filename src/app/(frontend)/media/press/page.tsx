@@ -45,14 +45,20 @@ export const metadata = {
   description: 'Official press statements and announcements from Building Blocks for Peace Foundation.',
 }
 
+const pressHero = {
+  title: 'Press Statements',
+  subtitle: 'Media',
+  description:
+    'Official announcements, press releases, and statements from Building Blocks for Peace Foundation.',
+  backgroundImage: '/images/_VEE7009 (1).jpg',
+}
+
 export default async function PressPage() {
   const payload = await getPayload({ config })
 
   let pressStatements: any[] = []
-  let mediaSettings: any = {}
-
   try {
-    const [postsResult, pageSettings] = await Promise.all([
+    const [postsResult] = await Promise.all([
       payload.find({
         collection: 'posts',
         where: { subMenu: { equals: 'press-statement' }, status: { equals: 'published' } },
@@ -60,9 +66,7 @@ export default async function PressPage() {
         limit: 20,
         depth: 1,
       }),
-      payload.findGlobal({ slug: 'media-page-settings' }),
     ])
-    mediaSettings = pageSettings as any
 
     if (postsResult.docs.length > 0) {
       pressStatements = postsResult.docs.map((post: any) => ({
@@ -87,18 +91,13 @@ export default async function PressPage() {
     return media
   }
 
-  // Page header from CMS
-  const heroTitle = mediaSettings.pressHeading || 'Press Statements'
-  const heroSubtitle = mediaSettings.pressSubtitle || 'Media'
-  const heroDescription = mediaSettings.pressDescription || 'Official announcements, press releases, and statements from Building Blocks for Peace Foundation.'
-  const heroBg = getImageUrl(mediaSettings.pressBackgroundImage) || '/images/_VEE7009 (1).jpg'
   return (
     <>
       <PageHero
-        title={heroTitle}
-        subtitle={heroSubtitle}
-        description={heroDescription}
-        backgroundImage={heroBg}
+        title={pressHero.title}
+        subtitle={pressHero.subtitle}
+        description={pressHero.description}
+        backgroundImage={pressHero.backgroundImage}
         breadcrumbs={[
           { label: 'Home', href: '/' },
           { label: 'Media', href: '/media' },

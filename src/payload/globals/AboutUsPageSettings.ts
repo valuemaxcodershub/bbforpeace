@@ -10,16 +10,6 @@ export const AboutUsPageSettings: GlobalConfig = {
     {
       type: 'tabs',
       tabs: [
-        /* ─── Page Header ─── */
-        {
-          label: 'Page header',
-          fields: [
-            { name: 'title', type: 'text', defaultValue: 'About Us' },
-            { name: 'subtitle', type: 'text', defaultValue: 'Who We Are' },
-            { name: 'description', type: 'textarea', defaultValue: 'A youth-led organization bridging grassroots action, policy advocacy, and regional networking for sustainable peace.' },
-            { name: 'backgroundImage', type: 'upload', relationTo: 'media', label: 'Background Image' },
-          ],
-        },
         /* ─── Our Story ─── */
         {
           label: 'Our Story',

@@ -13,6 +13,26 @@ export const PartnersSettings: GlobalConfig = {
       defaultValue: 'Our Partners',
     },
     {
+      name: 'subheading',
+      type: 'text',
+      defaultValue: 'Working Together for Peace',
+    },
+    {
+      name: 'description',
+      type: 'textarea',
+      defaultValue: 'We collaborate with international organizations, foundations, and networks to amplify our impact across communities.',
+    },
+    {
+      name: 'ctaText',
+      type: 'text',
+      defaultValue: 'Want to partner with us?',
+    },
+    {
+      name: 'ctaLinkLabel',
+      type: 'text',
+      defaultValue: 'Become a Partner',
+    },
+    {
       name: 'items',
       type: 'array',
       fields: [

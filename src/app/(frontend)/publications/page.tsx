@@ -32,14 +32,20 @@ export const metadata = {
   description: 'Access research papers, policy briefs, reports, and educational resources on peacebuilding and conflict resolution from BBFORPEACE.',
 }
 
+const publicationsHero = {
+  title: 'Publications',
+  subtitle: 'Knowledge Hub',
+  description:
+    'Access our research papers, policy briefs, reports, and educational resources on peacebuilding and conflict resolution.',
+  backgroundImage: '/images/_VEE7037 (1).jpg',
+}
+
 export default async function PublicationsPage() {
   const payload = await getPayload({ config })
 
   let publications: any[] = []
-  let reportsSettings: any = {}
-
   try {
-    const [result, pageSettings] = await Promise.all([
+    const [result] = await Promise.all([
       payload.find({
         collection: 'publications',
         where: { subMenu: { equals: 'publication' } },
@@ -47,10 +53,8 @@ export default async function PublicationsPage() {
         limit: 20,
         depth: 1,
       }),
-      payload.findGlobal({ slug: 'reports-settings' }),
     ])
     publications = result.docs
-    reportsSettings = pageSettings as any
   } catch (error) {
     console.error('Failed to fetch publications:', error)
   }
@@ -66,12 +70,6 @@ export default async function PublicationsPage() {
     if (typeof media === 'object' && media.url) return media.url
     return media
   }
-
-  // Page header from CMS
-  const heroTitle = reportsSettings.publicationsTitle || 'Publications'
-  const heroSubtitle = reportsSettings.publicationsSubtitle || 'Knowledge Hub'
-  const heroDescription = reportsSettings.publicationsDescription || 'Access our research papers, policy briefs, reports, and educational resources on peacebuilding and conflict resolution.'
-  const heroBg = getImageUrl(reportsSettings.publicationsBackgroundImage) || '/images/_VEE7037 (1).jpg'
 
   // Fallback data
   const defaultPubs = [
@@ -100,10 +98,10 @@ export default async function PublicationsPage() {
   return (
     <>
       <PageHero
-        title={heroTitle}
-        subtitle={heroSubtitle}
-        description={heroDescription}
-        backgroundImage={heroBg}
+        title={publicationsHero.title}
+        subtitle={publicationsHero.subtitle}
+        description={publicationsHero.description}
+        backgroundImage={publicationsHero.backgroundImage}
         breadcrumbs={[
           { label: 'Home', href: '/' },
           { label: 'Publications', href: '/publications' },

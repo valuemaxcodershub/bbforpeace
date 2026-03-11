@@ -17,6 +17,8 @@ import { Categories } from './payload/collections/Categories'
 import { Tags } from './payload/collections/Tags'
 import { Subscribers } from './payload/collections/Subscribers'
 import { Programmes } from './payload/collections/Programmes'
+import { GalleryItems } from './payload/collections/GalleryItems'
+import { Testimonials } from './payload/collections/Testimonials'
 
 // Globals
 import { SiteSettings } from './payload/globals/SiteSettings'
@@ -117,8 +119,6 @@ const globalPrefillDefaults: Record<string, Record<string, unknown>> = {
     publicationsHeading: 'Publications',
   },
   'about-us-page-settings': {
-    title: 'About Us',
-    subtitle: 'Who We Are',
     story:
       'Building Blocks for Peace (BBFORPEACE) Foundation is a non-governmental organization working on conflict prevention, prevention of violent extremism, peacebuilding and sustainable development in Nigeria. Founded by Rafiu Adeniran Lawal through the Nigeria Youth 4 Peace Initiative in 2016, we have trained and empowered over 5,000 youth and children as peace champions.',
     vision:
@@ -133,8 +133,6 @@ const globalPrefillDefaults: Record<string, Record<string, unknown>> = {
     boardHeading: 'Board of Trustees',
   },
   'programme-page-settings': {
-    title: 'Programmes',
-    subtitle: 'Our Interventions',
     section1Title: 'Peace Education & Youth Empowerment',
     section1Content:
       'Integrating peace education into school curricula and empowering young people with leadership skills, conflict resolution techniques, and advocacy training.',
@@ -160,34 +158,28 @@ const globalPrefillDefaults: Record<string, Record<string, unknown>> = {
       'Join our upcoming workshops, conferences, and community events to learn, connect, and contribute to building peace.',
   },
   'media-page-settings': {
-    blogHeading: 'Blog & Activities',
     blogNote:
       'Stay updated with the latest news, stories, and insights from our peacebuilding work across Nigeria. Use Posts to create articles and Categories/Tags to structure them.',
-    pressHeading: 'Press Statement',
     pressNote:
       'Official announcements, press releases, and statements from Building Blocks for Peace Foundation. Create press entries via Posts and set the press category.',
+    testimonialsSectionHeading: 'Stories of Transformation',
+    testimonialsSectionDescription:
+      'Every voice tells a story of hope, change, and the power of youth-led peacebuilding.',
+    testimonialsCtaHeading: 'Have a Story to Tell?',
+    testimonialsCtaDescription:
+      "If our work has impacted your life or community, we'd love to hear from you. Share your experience and inspire others to join the movement for peace.",
+    testimonialsCtaButtonText: 'Share Your Testimonial',
     photoTabTitle: 'Photos',
     videoTabTitle: 'Videos',
   },
   'reports-settings': {
-    publicationsHeading: 'Publications',
-    publicationsDescription:
-      'Access our research papers, policy briefs, reports, and educational resources on peacebuilding and conflict resolution.',
-    annualReports: [
-      { title: 'BBFORPEACE Annual Report 2025', year: 2025, fileUrl: '/documents/BBFORPEACE ANNUAL REPORT 2025.pdf' },
-      { title: 'BBFORPEACE Annual Report 2024', year: 2024, fileUrl: '/documents/BBFORPEACE ANNUAL REPORT 2024.pdf' },
-    ],
-    projectHeading: 'Project Reports',
-    projectDescription:
-      'Access comprehensive documentation from our peacebuilding programs, research initiatives, and regional interventions across West Africa.',
-    strategicTitle: 'Strategic Plan 2026-2030',
-    strategicDescription:
-      'A practical roadmap for building resilient, peaceful and inclusive communities across Africa through five interlinked strategic pillars.',
+    annualSectionHeading: 'Impact & Accountability',
+    annualSectionDescription:
+      'Download our comprehensive annual reports documenting our achievements, financial stewardship, and commitment to transparency.',
   },
   'contact-us-page-settings': {
-    headerTitle: 'Contact Us',
-    headerSubtitle: 'Get in Touch',
-    intro: "Have a question or want to collaborate? We'd love to hear from you. Reach out and let's build peace together.",
+    officeHours: 'Mon - Fri: 9:00 AM - 5:00 PM',
+    website: 'bbforpeace.org',
   },
   'partners-settings': {
     heading: 'Our Partners',
@@ -250,6 +242,8 @@ export default buildConfig({
     Team,
     Partners,
     Programmes,
+    GalleryItems,
+    Testimonials,
     Categories,
     Tags,
     Subscribers,

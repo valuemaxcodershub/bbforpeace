@@ -11,10 +11,22 @@ const defaultPartners = [
 ]
 
 export interface PartnersSectionProps {
+  heading?: string
+  subheading?: string
+  description?: string
+  ctaText?: string
+  ctaLinkLabel?: string
   partners?: { name: string; logo?: { url?: string } | string | null }[]
 }
 
-export function PartnersSection({ partners: partnersProp }: PartnersSectionProps) {
+export function PartnersSection({
+  heading = 'Our Partners',
+  subheading = 'Working Together for Peace',
+  description = 'We collaborate with international organizations, foundations, and networks to amplify our impact across communities.',
+  ctaText = 'Want to partner with us?',
+  ctaLinkLabel = 'Become a Partner',
+  partners: partnersProp,
+}: PartnersSectionProps) {
   const partners = partnersProp?.length ? partnersProp.map((p, i) => ({
     id: String(i + 1),
     name: p.name,
@@ -35,14 +47,20 @@ export function PartnersSection({ partners: partnersProp }: PartnersSectionProps
         <div className="text-center mb-12" data-scroll="up">
           <span className="inline-flex items-center gap-2 justify-center text-accent-gold text-sm font-semibold uppercase tracking-widest mb-4">
             <span className="w-8 h-[2px] bg-accent-gold" />
-            Our Partners
+            {heading}
             <span className="w-8 h-[2px] bg-accent-gold" />
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Working <span className="text-accent-gold">Together</span> for Peace
+            {subheading.includes('Together') ? (
+              <>
+                {subheading.replace('Together', '')}<span className="text-accent-gold">Together</span>
+              </>
+            ) : (
+              subheading
+            )}
           </h2>
           <p className="text-gray-300 max-w-xl mx-auto">
-            We collaborate with international organizations, foundations, and networks to amplify our impact across communities.
+            {description}
           </p>
         </div>
       </div>
@@ -77,12 +95,12 @@ export function PartnersSection({ partners: partnersProp }: PartnersSectionProps
 
       {/* Partner CTA */}
       <div className="container relative z-10 mt-12 text-center" data-scroll="up">
-        <p className="text-gray-400 text-sm mb-4">Want to partner with us?</p>
+        <p className="text-gray-400 text-sm mb-4">{ctaText}</p>
         <a
           href="/contact"
           className="inline-flex items-center gap-2 text-accent-gold font-semibold hover:text-yellow-400 transition-colors"
         >
-          Become a Partner
+          {ctaLinkLabel}
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
           </svg>

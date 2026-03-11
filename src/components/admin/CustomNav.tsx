@@ -57,7 +57,6 @@ const menuConfig: MenuItem[] = [
     label: 'About us page',
     icon: Info,
     children: [
-      { label: 'header', href: '/admin/globals/about-us-page-settings', icon: Circle },
       { label: 'our story', href: '/admin/globals/about-us-page-settings', icon: Circle },
       { label: 'vision and Mission', href: '/admin/globals/about-us-page-settings', icon: Circle },
       { label: 'our core values and unique positioning', href: '/admin/globals/about-us-page-settings', icon: Circle },
@@ -68,7 +67,8 @@ const menuConfig: MenuItem[] = [
     label: 'Programme page',
     icon: Layers,
     children: [
-      { label: 'section by section tabs', href: '/admin/globals/programme-page-settings', icon: Circle },
+      { label: 'page content and cta', href: '/admin/globals/programme-page-settings', icon: Circle },
+      { label: 'programme items', href: '/admin/collections/programmes', icon: Circle },
     ],
   },
   {
@@ -84,9 +84,10 @@ const menuConfig: MenuItem[] = [
     label: 'Media Page',
     icon: Image,
     children: [
-      { label: 'Blog', href: '/admin/collections/posts', icon: Circle },
-      { label: 'press stetement', href: '/admin/collections/posts', icon: Circle },
-      { label: 'Gallery (photo and video tab)', href: '/admin/collections/media', icon: Circle },
+      { label: 'Blog posts', href: '/admin/collections/posts', icon: Circle },
+      { label: 'press statement', href: '/admin/collections/posts', icon: Circle },
+      { label: 'gallery items', href: '/admin/collections/gallery-items', icon: Circle },
+      { label: 'testimonials', href: '/admin/collections/testimonials', icon: Circle },
       { label: 'Post category', href: '/admin/collections/categories', icon: Circle },
     ],
   },
@@ -95,15 +96,16 @@ const menuConfig: MenuItem[] = [
     icon: FileText,
     children: [
       { label: 'Publications', href: '/admin/collections/publications', icon: Circle },
-      { label: 'Annual Reports', href: '/admin/globals/reports-settings', icon: Circle },
-      { label: 'Project Report', href: '/admin/globals/reports-settings', icon: Circle },
-      { label: 'Strategic Plan', href: '/admin/globals/reports-settings', icon: Circle },
+      { label: 'Annual report items', href: '/admin/collections/publications', icon: Circle },
+      { label: 'Project report items', href: '/admin/collections/publications', icon: Circle },
+      { label: 'Strategic plan items', href: '/admin/collections/publications', icon: Circle },
+      { label: 'annual reports page content', href: '/admin/globals/reports-settings', icon: Circle },
     ],
   },
   {
     label: 'Contact us page',
     icon: Phone,
-    children: [{ label: 'Contact us settings', href: '/admin/globals/contact-us-page-settings', icon: Circle }],
+    children: [{ label: 'Contact page content', href: '/admin/globals/contact-us-page-settings', icon: Circle }],
   },
   {
     label: 'user',

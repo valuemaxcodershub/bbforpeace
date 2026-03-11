@@ -11,25 +11,6 @@ export const ContactUsPageSettings: GlobalConfig = {
       type: 'tabs',
       tabs: [
         {
-          label: 'Page Header',
-          fields: [
-            { name: 'headerTitle', type: 'text', defaultValue: 'Contact Us' },
-            { name: 'headerSubtitle', type: 'text', defaultValue: 'Get in Touch' },
-            {
-              name: 'intro',
-              type: 'textarea',
-              defaultValue:
-                "Have a question or want to collaborate? We'd love to hear from you. Reach out and let's build peace together.",
-            },
-            {
-              name: 'backgroundImage',
-              type: 'upload',
-              relationTo: 'media',
-              admin: { description: 'Hero background image for the contact page' },
-            },
-          ],
-        },
-        {
           label: 'Office Details',
           fields: [
             { name: 'officeHours', type: 'text', defaultValue: 'Mon - Fri: 9:00 AM - 5:00 PM' },

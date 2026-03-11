@@ -11,15 +11,6 @@ export const ProgrammePageSettings: GlobalConfig = {
       type: 'tabs',
       tabs: [
         {
-          label: 'Page Header',
-          fields: [
-            { name: 'title', type: 'text', defaultValue: 'Our Programmes' },
-            { name: 'subtitle', type: 'text', defaultValue: 'Strategic Initiatives' },
-            { name: 'description', type: 'textarea', defaultValue: 'Five interlinked impact areas guiding our work toward sustainable peace in Nigeria and West Africa.' },
-            { name: 'backgroundImage', type: 'upload', relationTo: 'media' },
-          ],
-        },
-        {
           label: 'Overview',
           fields: [
             { name: 'overviewBadge', type: 'text', defaultValue: '2026 - 2030 Strategy' },

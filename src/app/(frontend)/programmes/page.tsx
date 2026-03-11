@@ -22,6 +22,14 @@ export const metadata: Metadata = {
     'Explore our peacebuilding programmes focused on youth empowerment, community dialogue, peace education, and conflict resolution.',
 }
 
+const programmesHero = {
+  title: 'Our Programmes',
+  subtitle: 'Strategic Initiatives',
+  description:
+    'Five interlinked impact areas guiding our work toward sustainable peace in Nigeria and West Africa.',
+  backgroundImage: '/images/_VEE7009 (1).jpg',
+}
+
 export default async function ProgrammesPage() {
   const payload = await getPayload({ config })
 
@@ -39,10 +47,6 @@ export default async function ProgrammesPage() {
     console.error('Failed to fetch programmes data:', error)
   }
 
-  const pageTitle = settings.title || 'Our Programmes'
-  const pageSubtitle = settings.subtitle || 'Strategic Initiatives'
-  const pageDesc = settings.description || 'Five interlinked impact areas guiding our work toward sustainable peace in Nigeria and West Africa.'
-  const bgImage = typeof settings.backgroundImage === 'object' ? settings.backgroundImage?.url : (settings.backgroundImage || '/images/_VEE7009 (1).jpg')
   const overviewBadge = settings.overviewBadge || '2026 - 2030 Strategy'
   const overviewHeading = settings.overviewHeading || 'Strategic Pillars'
   const ctaBadge = settings.ctaBadge || 'Get Involved'
@@ -77,10 +81,10 @@ export default async function ProgrammesPage() {
   return (
     <>
       <PageHero
-        title={pageTitle}
-        subtitle={pageSubtitle}
-        description={pageDesc}
-        backgroundImage={bgImage}
+        title={programmesHero.title}
+        subtitle={programmesHero.subtitle}
+        description={programmesHero.description}
+        backgroundImage={programmesHero.backgroundImage}
         breadcrumbs={[
           { label: 'Home', href: '/' },
           { label: 'Programmes', href: '/programmes' },
