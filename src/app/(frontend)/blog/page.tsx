@@ -20,7 +20,8 @@ const blogHero = {
   backgroundImage: '/images/_VEE6792.jpg',
 }
 
-export default async function BlogPage() {
+export default async function BlogPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
+  const { category: activeCategory } = await searchParams
   const payload = await getPayload({ config })
 
   // Fetch posts and categories from CMS in parallel
@@ -28,10 +29,16 @@ export default async function BlogPage() {
   let categories: any[] = []
 
   try {
+    // Build query — optionally filter by category
+    const postsWhere: any = { status: { equals: 'published' }, subMenu: { equals: 'blog' } }
+    if (activeCategory) {
+      postsWhere['category.name'] = { equals: activeCategory }
+    }
+
     const [postsResult, categoriesResult] = await Promise.all([
       payload.find({ 
         collection: 'posts', 
-        where: { status: { equals: 'published' }, subMenu: { equals: 'blog' } },
+        where: postsWhere,
         sort: '-publishedAt',
         limit: 20,
         depth: 2,
@@ -107,18 +114,23 @@ export default async function BlogPage() {
               {/* Categories */}
               <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
                 <Filter className="w-5 h-5 text-gray-400 flex-shrink-0" />
-                {displayCategories.map((category) => (
-                  <button
-                    key={category}
-                    className={`px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all ${
-                      category === 'All'
-                        ? 'bg-primary-900 text-white shadow-lg shadow-primary-900/30'
-                        : 'bg-gray-100 text-gray-700 hover:bg-primary-100 hover:text-primary-900'
-                    }`}
-                  >
-                    {category}
-                  </button>
-                ))}
+                {displayCategories.map((category) => {
+                  const isActive = category === 'All' ? !activeCategory : activeCategory === category
+                  const href = category === 'All' ? '/blog' : `/blog?category=${encodeURIComponent(category)}`
+                  return (
+                    <Link
+                      key={category}
+                      href={href}
+                      className={`px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all ${
+                        isActive
+                          ? 'bg-primary-900 text-white shadow-lg shadow-primary-900/30'
+                          : 'bg-gray-100 text-gray-700 hover:bg-primary-100 hover:text-primary-900'
+                      }`}
+                    >
+                      {category}
+                    </Link>
+                  )
+                })}
               </div>
             </div>
           </div>
