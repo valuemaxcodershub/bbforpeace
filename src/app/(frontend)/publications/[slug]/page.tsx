@@ -121,14 +121,14 @@ function RichTextNode({ node }: { node: any }) {
     case 'paragraph':
       return <p className="mb-4 leading-relaxed">{children}</p>
     case 'heading': {
-      const Tag = (`h${node.tag?.replace('h', '') || '2'}`) as keyof JSX.IntrinsicElements
+      const HeadingTag = (`h${node.tag?.replace('h', '') || '2'}`) as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
       const cls: Record<string, string> = {
         h1: 'text-3xl font-bold mt-8 mb-4',
         h2: 'text-2xl font-bold mt-8 mb-3',
         h3: 'text-xl font-semibold mt-6 mb-3',
         h4: 'text-lg font-semibold mt-4 mb-2',
       }
-      return <Tag className={cls[node.tag] || 'text-lg font-semibold mt-4 mb-2'}>{children}</Tag>
+      return <HeadingTag className={cls[node.tag] || 'text-lg font-semibold mt-4 mb-2'}>{children}</HeadingTag>
     }
     case 'list':
       if (node.listType === 'number') {
