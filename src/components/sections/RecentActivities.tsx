@@ -16,7 +16,7 @@ export interface RecentActivitiesProps {
     excerpt?: string | null
     slug: string
     featuredImage?: { url?: string } | string | null
-    category?: { title?: string } | string | null
+    category?: { name?: string; title?: string } | string | null
     publishedAt?: string | null
   }[]
 }
