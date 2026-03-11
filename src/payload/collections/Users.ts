@@ -7,7 +7,7 @@ const isSuperAdmin: Access = ({ req: { user } }) => {
 
 const isSuperAdminOrSelf: Access = ({ req: { user }, id }) => {
   if (user?.role === 'super-admin') return true
-  return user?.id === String(id)
+  return String(user?.id) === String(id)
 }
 
 const isAdminOrAbove: Access = ({ req: { user } }) => {
