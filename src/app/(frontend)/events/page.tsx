@@ -62,11 +62,10 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
 
   const allUpcoming = normalize(upcomingEvents)
   const allPast = normalize(pastEvents)
-  const allEvents = [...allUpcoming, ...allPast]
 
   // Filter based on search param
   let displayUpcoming = allUpcoming
-  let displayPast = allPast
+  const displayPast = allPast
   let showUpcoming = true
   let showPast = true
 
