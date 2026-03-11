@@ -349,7 +349,7 @@ export default buildConfig({
 
       for (const [slug, defaults] of Object.entries(globalPrefillDefaults)) {
         try {
-          const currentGlobal = await payload.findGlobal({ slug })
+          const currentGlobal = await payload.findGlobal({ slug: slug as any })
           const mergedData = mergeWithDefaults(currentGlobal, defaults) as Record<string, unknown>
           // Only update fields present in our defaults to avoid validation errors
           // on upload/relationship fields (e.g. heroSlides images) that aren't in defaults
@@ -358,7 +358,7 @@ export default buildConfig({
             safeData[key] = mergedData[key]
           }
           await payload.updateGlobal({
-            slug,
+            slug: slug as any,
             data: safeData,
           })
         } catch (globalError) {
