@@ -1,5 +1,6 @@
 'use client'
 
+import { useAuth } from '@payloadcms/ui'
 import {
   Settings,
   Home,
@@ -7,9 +8,15 @@ import {
   Newspaper,
   FileBarChart2,
   Users,
+  Image,
+  FileText,
+  BookOpen,
+  ClipboardList,
   ArrowRight,
   type LucideIcon,
 } from 'lucide-react'
+
+type UserRole = 'super-admin' | 'admin' | 'editor'
 
 type DashboardItem = {
   label: string
@@ -19,7 +26,7 @@ type DashboardItem = {
   accent: string
 }
 
-const dashboardItems: DashboardItem[] = [
+const superAdminItems: DashboardItem[] = [
   {
     label: 'Global Settings',
     description: 'General, SEO, social, footer and menu',
@@ -64,7 +71,57 @@ const dashboardItems: DashboardItem[] = [
   },
 ]
 
+const editorItems: DashboardItem[] = [
+  {
+    label: 'Blog Posts',
+    description: 'Create and manage blog articles',
+    href: '/admin/collections/posts?where%5Bor%5D%5B0%5D%5Band%5D%5B0%5D%5BsubMenu%5D%5Bequals%5D=blog',
+    icon: Newspaper,
+    accent: '#14b8a6',
+  },
+  {
+    label: 'Press Statements',
+    description: 'Manage press releases and statements',
+    href: '/admin/collections/posts?where%5Bor%5D%5B0%5D%5Band%5D%5B0%5D%5BsubMenu%5D%5Bequals%5D=press-statement',
+    icon: FileText,
+    accent: '#6366f1',
+  },
+  {
+    label: 'Gallery',
+    description: 'Manage gallery images and media',
+    href: '/admin/collections/gallery-items',
+    icon: Image,
+    accent: '#3b82f6',
+  },
+  {
+    label: 'Publications',
+    description: 'Manage publications and resources',
+    href: '/admin/collections/publications?where%5Bor%5D%5B0%5D%5Band%5D%5B0%5D%5BsubMenu%5D%5Bequals%5D=publication',
+    icon: BookOpen,
+    accent: '#8b5cf6',
+  },
+  {
+    label: 'Annual Reports',
+    description: 'Manage annual report documents',
+    href: '/admin/collections/publications?where%5Bor%5D%5B0%5D%5Band%5D%5B0%5D%5BsubMenu%5D%5Bequals%5D=annual-report',
+    icon: FileBarChart2,
+    accent: '#f59e0b',
+  },
+  {
+    label: 'Project Reports',
+    description: 'Manage project report documents',
+    href: '/admin/collections/publications?where%5Bor%5D%5B0%5D%5Band%5D%5B0%5D%5BsubMenu%5D%5Bequals%5D=project-report',
+    icon: ClipboardList,
+    accent: '#ec4899',
+  },
+]
+
 export function DashboardStats() {
+  const { user } = useAuth()
+  const userRole = (user as any)?.role as UserRole | undefined
+  const isSuperAdmin = userRole === 'super-admin'
+  const items = isSuperAdmin ? superAdminItems : editorItems
+
   return (
     <section className="bb-dash">
       {/* Welcome banner */}
@@ -72,7 +129,9 @@ export function DashboardStats() {
         <div className="bb-dash__welcome-text">
           <h1 className="bb-dash__heading">Welcome back 👋</h1>
           <p className="bb-dash__subheading">
-            Manage your website content with quick access to every section.
+            {isSuperAdmin
+              ? 'Manage your website content with quick access to every section.'
+              : 'Manage your content with quick access to your sections.'}
           </p>
         </div>
         <div className="bb-dash__welcome-badge">
@@ -82,7 +141,7 @@ export function DashboardStats() {
 
       {/* Cards grid */}
       <div className="bb-dash__grid">
-        {dashboardItems.map((item) => {
+        {items.map((item) => {
           const Icon = item.icon
           return (
             <a key={item.label} href={item.href} className="bb-dash-card">
