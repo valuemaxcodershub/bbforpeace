@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight, Globe, Shield, Users, Sparkles, Target, Megaphone, Heart } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { getMediaUrl } from '@/lib/utils'
 
 const iconMap: Record<string, LucideIcon> = {
   Users, Globe, Shield, Target, Megaphone, Heart,
@@ -28,7 +29,7 @@ export function InitiativesSection({
 }: InitiativesSectionProps) {
   const initiatives = initiativesProp?.length ? initiativesProp.map(i => ({
     ...i,
-    image: typeof i.image === 'string' ? i.image : i.image?.url || '/images/_VEE7927.jpg',
+    image: getMediaUrl(i.image, '/images/_VEE7927.jpg'),
   })) : defaultInitiatives
   return (
     <section className="py-24 bg-gradient-to-br from-gray-50 via-white to-gray-50 overflow-hidden">

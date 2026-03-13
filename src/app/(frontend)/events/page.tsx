@@ -5,6 +5,7 @@ import { PageHero } from '@/components/layout'
 import { Calendar, MapPin, Filter, Clock, Users, ArrowRight, Sparkles } from 'lucide-react'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { getMediaUrl } from '@/lib/utils'
 
 export const metadata: Metadata = {
   title: 'Events | BBFORPEACE',
@@ -37,20 +38,13 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
     console.error('Failed to fetch events:', error)
   }
 
-  const safeImageUrl = (media: any) => {
-    if (!media) return '/images/_VEE7124%20(1).jpg'
-    const raw = typeof media === 'object' && media.url ? media.url : typeof media === 'string' ? media : ''
-    if (!raw) return '/images/_VEE7124%20(1).jpg'
-    return raw.includes(' ') || raw.includes('(') ? encodeURI(raw) : raw
-  }
-
   const normalize = (events: any[]) => {
     return events.map((e: any) => ({
       id: e.id,
       title: e.title,
       excerpt: e.excerpt || '',
       slug: e.slug,
-      featuredImage: safeImageUrl(e.featuredImage),
+      featuredImage: getMediaUrl(e.featuredImage),
       location: e.location || '',
       startDate: e.startDate,
       endDate: e.endDate || null,

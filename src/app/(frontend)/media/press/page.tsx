@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Calendar, ArrowRight } from 'lucide-react'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { getMediaUrl } from '@/lib/utils'
 
 export const metadata = {
   title: 'Press Statements | BBFORPEACE',
@@ -39,19 +40,10 @@ export default async function PressPage() {
       excerpt: post.excerpt || '',
       date: post.publishedAt || post.createdAt,
       slug: post.slug,
-      image: (() => {
-        const raw = post.featuredImage && typeof post.featuredImage === 'object' ? post.featuredImage.url : '/images/_VEE7009 (1).jpg'
-        return raw && (raw.includes(' ') || raw.includes('(')) ? encodeURI(raw) : raw
-      })(),
+      image: getMediaUrl(post.featuredImage, '/images/_VEE7009 (1).jpg'),
     }))
   } catch (error) {
     console.error('Failed to fetch press statements:', error)
-  }
-
-  const getImageUrl = (media: any) => {
-    if (!media) return '/images/_VEE7009 (1).jpg'
-    if (typeof media === 'object' && media.url) return media.url
-    return media
   }
 
   return (

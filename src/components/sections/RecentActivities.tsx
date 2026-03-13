@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight, Calendar } from 'lucide-react'
+import { getMediaUrl } from '@/lib/utils'
 
 // Default placeholder data used when no posts are available
 const defaultPosts = [
@@ -23,13 +24,12 @@ export interface RecentActivitiesProps {
 
 export function RecentActivities({ posts }: RecentActivitiesProps) {
   const recentPosts = posts?.length ? posts.map(p => {
-    const rawUrl = typeof p.featuredImage === 'string' ? p.featuredImage : p.featuredImage?.url || '/images/PXL_20251008_095815014~2.jpg'
     return {
       id: p.id,
       title: p.title,
       excerpt: p.excerpt || '',
       slug: p.slug,
-      featuredImage: rawUrl.includes(' ') || rawUrl.includes('(') ? encodeURI(rawUrl) : rawUrl,
+      featuredImage: getMediaUrl(p.featuredImage, '/images/PXL_20251008_095815014~2.jpg'),
       category: typeof p.category === 'string' ? p.category : p.category?.name || p.category?.title || 'Update',
       publishedAt: p.publishedAt || new Date().toISOString(),
     }

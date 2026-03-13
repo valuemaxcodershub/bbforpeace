@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { PageHero } from '@/components/layout'
-import { formatDate } from '@/lib/utils'
+import { formatDate, getMediaUrl } from '@/lib/utils'
 import {
   Calendar,
   MapPin,
@@ -62,12 +62,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: { card: 'summary_large_image' },
   }
-}
-
-function getImageUrl(media: any): string {
-  if (!media) return '/images/_VEE7124 (1).jpg'
-  if (typeof media === 'object' && media.url) return media.url
-  return String(media)
 }
 
 const statusConfig: Record<string, { label: string; bg: string; text: string }> = {
@@ -155,7 +149,7 @@ export default async function EventDetailPage({ params }: Props) {
   const event = await getEvent(slug)
   if (!event) notFound()
 
-  const featuredImage = getImageUrl(event.featuredImage)
+  const featuredImage = getMediaUrl(event.featuredImage)
   const status = statusConfig[event.status] || statusConfig.upcoming
   const upcomingEvents = await getUpcomingEvents(event.id)
 
@@ -283,7 +277,7 @@ export default async function EventDetailPage({ params }: Props) {
                             <div className="flex gap-3">
                               <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 relative">
                                 <Image
-                                  src={getImageUrl(e.featuredImage)}
+                                  src={getMediaUrl(e.featuredImage)}
                                   alt={e.title}
                                   fill
                                   className="object-cover"

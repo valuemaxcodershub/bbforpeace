@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight, Download, Sparkles } from 'lucide-react'
+import { getMediaUrl } from '@/lib/utils'
 
 // Default fallback data
 const defaultPublications = [
@@ -25,8 +26,8 @@ export function PublicationsSection({ publications: pubsProp }: PublicationsSect
   const publications = pubsProp?.length ? pubsProp.map(p => ({
     id: p.id,
     title: p.title,
-    coverImage: typeof p.coverImage === 'string' ? p.coverImage : p.coverImage?.url || '/images/PXL_20251023_124331635.MP~2.jpg',
-    downloadUrl: typeof p.file === 'string' ? p.file : p.file?.url || '#',
+    coverImage: getMediaUrl(p.coverImage, '/images/PXL_20251023_124331635.MP~2.jpg'),
+    downloadUrl: getMediaUrl(p.file, '#'),
     year: p.year || new Date().getFullYear(),
     type: p.category || 'Report',
   })) : defaultPublications

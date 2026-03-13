@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight, Target, Eye, CheckCircle, Play } from 'lucide-react'
+import { getMediaUrl } from '@/lib/utils'
 
 // Default fallback data
 const defaultHighlights = [
@@ -66,12 +67,8 @@ export function AboutPreview({
   }
 
   // Process images
-  const mainImage = typeof images?.mainImage === 'string' 
-    ? images.mainImage 
-    : images?.mainImage?.url || '/images/_VEE7009 (1).jpg'
-  const secondaryImage = typeof images?.secondaryImage === 'string'
-    ? images.secondaryImage
-    : images?.secondaryImage?.url || '/images/_VEE7153 (6).jpg'
+  const mainImage = getMediaUrl(images?.mainImage, '/images/_VEE7009 (1).jpg')
+  const secondaryImage = getMediaUrl(images?.secondaryImage, '/images/_VEE7153 (6).jpg')
 
   return (
     <section className="py-20 bg-gray-50">

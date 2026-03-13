@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { getMediaUrl } from '@/lib/utils'
 import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react'
 
 // Slide transition effects - WOW slider inspired
@@ -221,7 +222,7 @@ export function HeroSection({
   // Only use CMS slides if they have actual content
   const heroSlides = (slides && slides.length > 0 && slides[0]?.image)
     ? slides.map(slide => ({
-        image: typeof slide.image === 'string' ? slide.image : slide.image?.url || defaultSlides[0].image,
+        image: getMediaUrl(slide.image, defaultSlides[0].image),
         description: slide.description,
       }))
     : defaultSlides

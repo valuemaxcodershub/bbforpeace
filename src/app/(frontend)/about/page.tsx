@@ -12,6 +12,7 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { getMediaUrl } from '@/lib/utils'
 
 const coreValueIconMap: Record<string, LucideIcon> = {
   Shield, Users, Lightbulb, Handshake, Heart, UserCheck,
@@ -79,10 +80,10 @@ export default async function AboutPage() {
   ]
 
   const storyImages = [
-    (typeof as.storyImage1 === 'object' && as.storyImage1?.url) || '/images/_VEE6792.jpg',
-    (typeof as.storyImage2 === 'object' && as.storyImage2?.url) || '/images/_VEE7124 (1).jpg',
-    (typeof as.storyImage3 === 'object' && as.storyImage3?.url) || '/images/_VEE7037 (1).jpg',
-    (typeof as.storyImage4 === 'object' && as.storyImage4?.url) || '/images/PXL_20251008_122828933.jpg',
+    getMediaUrl(as.storyImage1, '/images/_VEE6792.jpg'),
+    getMediaUrl(as.storyImage2, '/images/_VEE7124 (1).jpg'),
+    getMediaUrl(as.storyImage3, '/images/_VEE7037 (1).jpg'),
+    getMediaUrl(as.storyImage4, '/images/PXL_20251008_122828933.jpg'),
   ]
 
   const visionText = as.vision || 'A peaceful, just and inclusive Africa where youth, women and men lead resilient communities, accountable governance, and sustainable development.'
@@ -137,7 +138,7 @@ export default async function AboutPage() {
   const partners = (partnersData as any)?.items?.length ? (partnersData as any).items.map((p: any) => ({
     name: p.name,
     description: p.description || '',
-    logo: (typeof p.logo === 'object' && p.logo?.url) || '/images/partners/gppac.jfif',
+    logo: getMediaUrl(p.logo, '/images/partners/gppac.jfif'),
   })) : [
     { name: 'GPPAC', description: 'Global Partnership for Prevention of Armed Conflict', logo: '/images/partners/gppac.jfif' },
     { name: 'WANEP', description: 'West Africa Network for Peacebuilding', logo: '/images/partners/wanep.png' },
@@ -440,7 +441,7 @@ export default async function AboutPage() {
                   'from-violet-200 to-purple-300',
                   'from-amber-200 to-orange-300',
                 ]
-                const photoUrl = (typeof member.photo === 'object' && member.photo?.url) || '/images/ourteam/placeholder.jpg'
+                const photoUrl = getMediaUrl(member.photo, '/images/ourteam/placeholder.jpg')
                 return (
                 <div key={idx} className="group text-center" data-scroll="scale" data-delay={idx * 100}>
                   <div className="relative mb-6">
@@ -480,7 +481,7 @@ export default async function AboutPage() {
             <div className="max-w-6xl mx-auto">
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {displayBoard.map((member: any, idx: number) => {
-                  const photoUrl = (typeof member.photo === 'object' && member.photo?.url) || '/images/board/placeholder.jpg'
+                  const photoUrl = getMediaUrl(member.photo, '/images/board/placeholder.jpg')
                   return (
                   <BoardMemberCard
                     key={idx}

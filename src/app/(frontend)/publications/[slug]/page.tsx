@@ -6,6 +6,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { PageHero } from '@/components/layout'
 import { PublicationCard } from '@/components/cards'
+import { getMediaUrl } from '@/lib/utils'
 
 import {
   Download,
@@ -63,18 +64,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: { card: 'summary_large_image' },
   }
-}
-
-function getImageUrl(media: any): string {
-  if (!media) return '/images/_VEE7124 (1).jpg'
-  if (typeof media === 'object' && media.url) return media.url
-  return String(media)
-}
-
-function getFileUrl(media: any): string | null {
-  if (!media) return null
-  if (typeof media === 'object' && media.url) return media.url
-  return String(media)
 }
 
 const categoryLabels: Record<string, string> = {
@@ -164,8 +153,8 @@ export default async function PublicationDetailPage({ params }: Props) {
   const pub = await getPublication(slug)
   if (!pub) notFound()
 
-  const coverImage = getImageUrl(pub.coverImage)
-  const fileUrl = getFileUrl(pub.file)
+  const coverImage = getMediaUrl(pub.coverImage)
+  const fileUrl = getMediaUrl(pub.file, '#')
   const categoryLabel = categoryLabels[pub.category] || pub.category
   const relatedPubs = await getRelatedPublications(pub.category, pub.id)
 
@@ -174,7 +163,7 @@ export default async function PublicationDetailPage({ params }: Props) {
     title: p.title,
     excerpt: p.excerpt || '',
     slug: p.slug,
-    coverImage: getImageUrl(p.coverImage),
+    coverImage: getMediaUrl(p.coverImage),
     category: p.category,
     year: p.year,
     downloadCount: p.downloadCount || 0,

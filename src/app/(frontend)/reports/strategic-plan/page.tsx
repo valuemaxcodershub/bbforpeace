@@ -5,6 +5,7 @@ import { PageHero } from '@/components/layout'
 import { ArrowRight, Calendar, Download, Eye, Sparkles, Target } from 'lucide-react'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { getMediaUrl } from '@/lib/utils'
 
 export const metadata: Metadata = {
   title: 'Strategic Plan 2026-2030 | BBFORPEACE',
@@ -50,20 +51,14 @@ export default async function StrategicPlanPage() {
     console.error('Failed to fetch strategic plans:', error)
   }
 
-  const getImageUrl = (media: any) => {
-    if (!media) return null
-    if (typeof media === 'object' && media.url) return media.url
-    return media
-  }
-
   const displayPlans = plans.length
     ? plans.map((plan: any, idx: number) => ({
         id: plan.id,
         title: plan.title,
         excerpt: plan.excerpt || plan.description || '',
         year: plan.year || new Date().getFullYear(),
-        coverImage: getImageUrl(plan.coverImage) || '/images/reports/2025 annual report.PNG',
-        fileUrl: typeof plan.file === 'object' && plan.file?.url ? plan.file.url : '#',
+        coverImage: getMediaUrl(plan.coverImage, '/images/reports/2025 annual report.PNG'),
+        fileUrl: getMediaUrl(plan.file, '#'),
         isFeatured: Boolean(plan.isFeatured) || idx === 0,
       }))
     : defaultPlans

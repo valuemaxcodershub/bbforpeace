@@ -9,6 +9,7 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { getMediaUrl } from '@/lib/utils'
 
 const iconMap: Record<string, LucideIcon> = {
   BookOpen, Shield, Leaf, Globe, Heart, Users, Target,
@@ -53,12 +54,6 @@ export default async function ProgrammesPage() {
   const ctaHeading = settings.ctaHeading || 'Support Our Programmes'
   const ctaDescription = settings.ctaDescription || 'Your support helps us expand our reach and impact more communities. Join us as a partner, donor, or volunteer.'
 
-  const getImageUrl = (media: any) => {
-    if (!media) return '/images/_VEE7124 (1).jpg'
-    if (typeof media === 'object' && media.url) return media.url
-    return media
-  }
-
   // Fallback pillars when collection is empty
   const defaultPillars = [
     { id: 1, icon: 'BookOpen', title: 'Peace Education & Youth Empowerment', color: 'bg-blue-500', image: '/images/_VEE7124 (1).jpg', shortDescription: 'Integrating peace education into school curricula and empowering young people with leadership skills, conflict resolution techniques, and advocacy training.', objectives: [{ objective: 'Train educators in peace education methodologies' }, { objective: 'Establish youth peace clubs across communities' }, { objective: 'Develop localized peace education curriculum' }], achievements: [{ metric: '5,000+ youth trained' }, { metric: '75 youth peace clubs established' }, { metric: 'Curriculum adopted in 25+ schools' }] },
@@ -73,7 +68,7 @@ export default async function ProgrammesPage() {
     icon: p.icon || 'BookOpen',
     title: p.title,
     color: colorMap[idx % colorMap.length],
-    image: getImageUrl(p.featuredImage),
+    image: getMediaUrl(p.featuredImage),
     shortDescription: p.shortDescription || '',
     objectives: p.objectives || [],
     achievements: p.achievements || [],

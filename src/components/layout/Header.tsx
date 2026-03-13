@@ -1,6 +1,7 @@
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { HeaderClient } from './HeaderClient'
+import { getMediaUrl } from '@/lib/utils'
 
 const navigation = [
   { name: 'Home', href: '/' },
@@ -60,7 +61,7 @@ export async function Header() {
     const general = (generalSettings || {}) as Record<string, any>
     siteName = general.siteName || siteName
     siteTagline = general.siteTagline ? `--${general.siteTagline}` : siteTagline
-    logoUrl = general.logo?.url || logoUrl
+    logoUrl = getMediaUrl(general.logo, logoUrl)
     logoAlt = general.logoAlt || general.logo?.alt || general.siteName || logoAlt
   } catch (error) {
     console.error('Failed to fetch header settings:', error)

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Download, Eye, BookOpen, Calendar, ArrowRight, FileText, Sparkles } from 'lucide-react'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { getMediaUrl } from '@/lib/utils'
 
 const reportStyles = [
   { gradient: 'from-violet-600 to-indigo-700', badgeClass: 'bg-violet-600', textClass: 'text-violet-600', btnClass: 'bg-violet-600 hover:bg-violet-700' },
@@ -48,18 +49,6 @@ export default async function AnnualReportsPage() {
     console.error('Failed to fetch annual reports:', error)
   }
 
-  const safeImageUrl = (media: any) => {
-    if (!media) return '/images/reports/2025%20annual%20report.PNG'
-    const raw = typeof media === 'object' && media.url ? media.url : typeof media === 'string' ? media : ''
-    if (!raw) return '/images/reports/2025%20annual%20report.PNG'
-    return raw.includes(' ') || raw.includes('(') ? encodeURI(raw) : raw
-  }
-  const getFileUrl = (media: any) => {
-    if (!media) return '#'
-    if (typeof media === 'object' && media.url) return media.url
-    return media
-  }
-
   const sectionHeading = reportsSettings.annualSectionHeading || 'Impact & Accountability'
   const sectionDescription = reportsSettings.annualSectionDescription || 'Download our comprehensive annual reports documenting our achievements, financial stewardship, and commitment to transparency.'
 
@@ -68,8 +57,8 @@ export default async function AnnualReportsPage() {
     year: r.year,
     title: r.title,
     excerpt: r.excerpt || '',
-    coverImage: safeImageUrl(r.coverImage),
-    downloadUrl: getFileUrl(r.file),
+    coverImage: getMediaUrl(r.coverImage, '/images/reports/2025%20annual%20report.PNG'),
+    downloadUrl: getMediaUrl(r.file, '#'),
   }))
   return (
     <>

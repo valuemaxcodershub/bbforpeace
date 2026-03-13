@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { Facebook, Twitter, Instagram, Youtube, Linkedin, Mail, Phone, MapPin } from 'lucide-react'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { getMediaUrl } from '@/lib/utils'
 
 const quickLinks = [
   { name: 'Home', href: '/' },
@@ -85,7 +86,7 @@ export async function Footer() {
     'A movement of young people committed to advocating for meaningful youth engagement in peacebuilding.'
   const siteName = generalData.siteName || 'Building Blocks for Peace'
   const siteTagline = generalData.siteTagline || 'Empowering Communities for Peace'
-  const logoUrl = generalData.logo?.url || '/images/logo.jpg'
+  const logoUrl = getMediaUrl(generalData.logo, '/images/logo.jpg')
   const logoAlt = generalData.logoAlt || generalData.logo?.alt || siteName
   const quickLinksTitle = footerData.quickLinksTitle || 'Quick Links'
   const programmesTitle = footerData.programmesTitle || 'Programmes'

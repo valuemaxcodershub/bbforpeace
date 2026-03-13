@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { Award, Trophy, Star } from 'lucide-react'
+import { getMediaUrl } from '@/lib/utils'
 
 const defaultAwards = [
   { title: 'National Youth Development Award 2025', organization: 'Federal Ministry of Youth Development, Abuja', year: '2025', image: '/images/PXL_20251008_122828933.jpg', description: 'Recognized for outstanding contributions to youth empowerment and peacebuilding across Nigeria.' },
@@ -21,9 +22,9 @@ export function AwardsSection({
 }: AwardsSectionProps) {
   const awards = awardsProp?.length ? awardsProp.map(a => ({
     ...a,
-    image: typeof a.image === 'string' ? a.image : a.image?.url || '/images/PXL_20251008_122828933.jpg',
+    image: getMediaUrl(a.image, '/images/PXL_20251008_122828933.jpg'),
   })) : defaultAwards
-  const bgImage = typeof backgroundImage === 'string' ? backgroundImage : backgroundImage?.url || '/images/_VEE7153 (6).jpg'
+  const bgImage = getMediaUrl(backgroundImage, '/images/_VEE7153 (6).jpg')
   return (
     <section 
       className="py-24 relative overflow-hidden bg-fixed bg-cover bg-center"

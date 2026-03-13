@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
+import { getMediaUrl } from '@/lib/utils'
 
 // Default fallback data
 const defaultStats = [
@@ -73,7 +74,7 @@ export function ImpactStats({
   stats: statsProp,
 }: ImpactStatsProps) {
   const displayStats = statsProp?.length ? statsProp : defaultStats
-  const bgImage = typeof image === 'string' ? image : image?.url || '/images/_VEE7124 (1).jpg'
+  const bgImage = getMediaUrl(image, '/images/_VEE7124 (1).jpg')
   const displayHighlights = highlights?.length ? highlights : [{ text: 'Recognized by national bodies' }, { text: '2 National Awards' }]
 
   // Split heading into main + gold word (last word)

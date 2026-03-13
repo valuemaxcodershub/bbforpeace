@@ -1,5 +1,7 @@
 'use client'
 
+import { getMediaUrl } from '@/lib/utils'
+
 // Default partner organizations with local logos
 const defaultPartners = [
   { id: '1', name: 'GPPAC Foundation', logo: '/images/partners/gppac.jfif' },
@@ -30,7 +32,7 @@ export function PartnersSection({
   const partners = partnersProp?.length ? partnersProp.map((p, i) => ({
     id: String(i + 1),
     name: p.name,
-    logo: typeof p.logo === 'string' ? p.logo : p.logo?.url || '/images/partners/gppac.jfif',
+    logo: getMediaUrl(p.logo, '/images/partners/gppac.jfif'),
   })) : defaultPartners
   // Double the partners array for seamless infinite scroll
   const doubledPartners = [...partners, ...partners]

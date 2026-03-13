@@ -4,6 +4,7 @@ import { Mail, Phone, MapPin, Clock, Send, Globe, Facebook, Twitter, Linkedin, I
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { ContactForm } from '@/components/forms/ContactForm'
+import { getMediaUrl } from '@/lib/utils'
 
 export const metadata: Metadata = {
   title: 'Contact Us | BBFORPEACE',
@@ -34,12 +35,6 @@ export default async function ContactPage() {
     ])
   } catch (error) {
     console.error('Failed to fetch contact settings:', error)
-  }
-
-  const getImageUrl = (media: any) => {
-    if (!media) return null
-    if (typeof media === 'object' && media.url) return media.url
-    return media
   }
 
   // Contact info
@@ -74,7 +69,7 @@ export default async function ContactPage() {
   const mapHeading = pageSettings?.mapHeading || 'Visit Our Office'
   const mapAddress = pageSettings?.mapAddress || '256, 1st Avenue, FHA, Lugbe, Abuja, Nigeria'
   const mapLink = pageSettings?.mapLink || 'https://maps.google.com'
-  const mapBg = getImageUrl(pageSettings?.mapBackgroundImage) || '/images/PXL_20251023_124331635.MP~2.jpg'
+  const mapBg = getMediaUrl(pageSettings?.mapBackgroundImage, '/images/PXL_20251023_124331635.MP~2.jpg')
   return (
     <>
       <PageHero

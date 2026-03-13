@@ -3,6 +3,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import GalleryContent from './GalleryContent'
 import type { GalleryImage, GalleryVideo, GalleryHero } from './GalleryContent'
+import { getMediaUrl } from '@/lib/utils'
 
 export const metadata: Metadata = {
   title: 'Gallery | BBFORPEACE',
@@ -43,12 +44,6 @@ export default async function GalleryPage() {
     console.error('Failed to fetch gallery settings:', error)
   }
 
-  const getImageUrl = (media: any) => {
-    if (!media) return null
-    if (typeof media === 'object' && media.url) return media.url
-    return media
-  }
-
   const hero: Partial<GalleryHero> = {
     ...galleryHero,
     photoTabTitle: settings.photoTabTitle || 'Photos',
@@ -60,7 +55,7 @@ export default async function GalleryPage() {
     .filter((item: any) => item.mediaType === 'photo')
     .map((item: any, idx: number) => ({
       id: String(item.id || idx + 1),
-      src: getImageUrl(item.image) || '/images/_VEE6516 (1).jpg',
+      src: getMediaUrl(item.image, '/images/_VEE6516 (1).jpg'),
       title: item.title || 'Gallery Image',
       category: item.category || 'Events',
     }))

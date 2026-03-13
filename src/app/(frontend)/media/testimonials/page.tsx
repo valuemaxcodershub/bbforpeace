@@ -5,6 +5,7 @@ import { PageHero } from '@/components/layout'
 import { ArrowRight, MessageSquareQuote, Star } from 'lucide-react'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { getMediaUrl } from '@/lib/utils'
 
 export const metadata: Metadata = {
   title: 'Testimonials | BBFORPEACE',
@@ -54,12 +55,6 @@ export default async function TestimonialsPage() {
     console.error('Failed to fetch media settings:', error)
   }
 
-  const getImageUrl = (media: any) => {
-    if (!media) return null
-    if (typeof media === 'object' && media.url) return media.url
-    return media
-  }
-
   const sectionHeading = mediaSettings.testimonialsSectionHeading || 'Stories of Transformation'
   const sectionDescription = mediaSettings.testimonialsSectionDescription || 'Every voice tells a story of hope, change, and the power of youth-led peacebuilding.'
   const ctaHeading = mediaSettings.testimonialsCtaHeading || 'Have a Story to Tell?'
@@ -71,7 +66,7 @@ export default async function TestimonialsPage() {
     name: item.name,
     role: item.role,
     quote: item.quote,
-    image: getImageUrl(item.image) || '/images/_VEE7009 (1).jpg',
+    image: getMediaUrl(item.image, '/images/_VEE7009 (1).jpg'),
     rating: item.rating || 5,
     isFeatured: Boolean(item.isFeatured),
     order: item.order || 0,

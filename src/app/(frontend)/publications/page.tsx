@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Download, FileText, Calendar, ArrowRight, BookOpen, Eye, Sparkles, ExternalLink } from 'lucide-react'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { getMediaUrl } from '@/lib/utils'
 
 const getCategoryStyle = (category: string) => {
   switch (category) {
@@ -59,27 +60,14 @@ export default async function PublicationsPage() {
     console.error('Failed to fetch publications:', error)
   }
 
-  const safeImageUrl = (media: any) => {
-    if (!media) return '/images/_VEE7124%20(1).jpg'
-    const raw = typeof media === 'object' && media.url ? media.url : typeof media === 'string' ? media : ''
-    if (!raw) return '/images/_VEE7124%20(1).jpg'
-    return raw.includes(' ') || raw.includes('(') ? encodeURI(raw) : raw
-  }
-
-  const getFileUrl = (media: any) => {
-    if (!media) return '#'
-    if (typeof media === 'object' && media.url) return media.url
-    return media
-  }
-
   const displayPubs = publications.map((p: any) => ({
     id: p.id,
     title: p.title,
     excerpt: p.excerpt || '',
-    coverImage: safeImageUrl(p.coverImage),
+    coverImage: getMediaUrl(p.coverImage),
     category: p.category || 'research',
     year: p.year,
-    downloadUrl: getFileUrl(p.file),
+    downloadUrl: getMediaUrl(p.file, '#'),
     isFeatured: p.isFeatured || false,
   }))
 

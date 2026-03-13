@@ -5,6 +5,7 @@ import { Download, FileText, Calendar, ArrowRight, Globe, Target, Sparkles, MapP
 import type { Metadata } from 'next'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { getMediaUrl } from '@/lib/utils'
 
 export const metadata: Metadata = {
   title: 'Project Reports | BBFORPEACE',
@@ -56,8 +57,6 @@ export default async function ProjectReportsPage() {
       })
 
     projectReportsFromCms = result.docs.map((pub: any, idx: number) => {
-      const rawCover = pub.coverImage && typeof pub.coverImage === 'object' ? pub.coverImage.url : '/images/_VEE7927.jpg'
-      const rawFile = pub.file && typeof pub.file === 'object' ? pub.file.url : '#'
       return {
         id: pub.id,
         title: pub.title,
@@ -66,8 +65,8 @@ export default async function ProjectReportsPage() {
         category: pub.category || 'Program Report',
         region: pub.region || 'Nigeria',
         pages: pub.pages || 0,
-        coverImage: rawCover.includes(' ') || rawCover.includes('(') ? encodeURI(rawCover) : rawCover,
-        downloadUrl: rawFile.includes(' ') || rawFile.includes('(') ? encodeURI(rawFile) : rawFile,
+        coverImage: getMediaUrl(pub.coverImage, '/images/_VEE7927.jpg'),
+        downloadUrl: getMediaUrl(pub.file, '#'),
         featured: Boolean(pub.isFeatured) || idx === 0,
         color: pub.accentColor || 'blue',
       }

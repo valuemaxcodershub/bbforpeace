@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { ArrowRight, Users, Shield, Leaf, BookOpen, Scale, AlertTriangle, Target, Heart, Globe, Megaphone } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { getMediaUrl } from '@/lib/utils'
 
 const iconMap: Record<string, LucideIcon> = {
   Users, Shield, Leaf, BookOpen, Scale, AlertTriangle, Target, Heart, Globe, Megaphone,
@@ -32,7 +33,7 @@ export function ProgrammesSection({
   focusAreas,
 }: ProgrammesSectionProps) {
   const programmes = focusAreas?.length ? focusAreas : defaultProgrammes
-  const bgImage = typeof backgroundImage === 'string' ? backgroundImage : backgroundImage?.url || '/images/PXL_20251023_124331635.MP~2.jpg'
+  const bgImage = getMediaUrl(backgroundImage, '/images/PXL_20251023_124331635.MP~2.jpg')
 
   return (
     <section 

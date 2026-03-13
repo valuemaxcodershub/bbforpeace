@@ -50,3 +50,59 @@ export function absoluteUrl(path: string): string {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
   return `${baseUrl}${path.startsWith('/') ? path : `/${path}`}`
 }
+
+/**
+ * Extract a usable image URL from a Payload CMS media field.
+ * Handles:
+ *   - null/undefined → fallback
+ *   - string paths (e.g. '/images/photo.jpg') → encode if needed
+ *   - Payload media objects resolved at depth >= 1
+ *   - Payload API URLs (/api/media/file/...) that don't actually serve files
+ *     because static files live in public/images, not public/uploads
+ */
+export function getMediaUrl(media: unknown, fallback = '/images/_VEE7124%20(1).jpg'): string {
+  if (!media) return fallback
+
+  // If it's already a plain string path
+  if (typeof media === 'string') {
+    if (!media) return fallback
+    return safeEncode(media)
+  }
+
+  // If it's a Payload media object
+  if (typeof media === 'object' && media !== null) {
+    const obj = media as Record<string, unknown>
+    const url = typeof obj.url === 'string' ? obj.url : ''
+
+    // Payload generates URLs like https://host/api/media/file/FILENAME
+    // These don't work because files live in public/images/, not public/uploads/
+    // Fall back to the filename-based path
+    if (url.includes('/api/media/file/') || url.includes('/api/media/file%2F')) {
+      const filename = typeof obj.filename === 'string' ? obj.filename : ''
+      if (filename) {
+        // Direct images are in /images/, encode the path
+        return safeEncode('/images/' + filename)
+      }
+    }
+
+    // If url is a local path (starts with / but not /api/), use it directly
+    if (url && !url.includes('/api/media/file/')) {
+      return safeEncode(url)
+    }
+
+    // Last resort: try filename
+    const filename = typeof obj.filename === 'string' ? obj.filename : ''
+    if (filename) return safeEncode('/images/' + filename)
+  }
+
+  return fallback
+}
+
+function safeEncode(url: string): string {
+  if (!url) return url
+  // Don't double-encode: if it already has %20 or %28, it's already encoded
+  if (url.includes('%20') || url.includes('%28') || url.includes('%29')) return url
+  // Encode if it has spaces or parentheses
+  if (url.includes(' ') || url.includes('(') || url.includes(')')) return encodeURI(url)
+  return url
+}

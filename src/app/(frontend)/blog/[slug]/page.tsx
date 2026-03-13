@@ -6,7 +6,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { PageHero } from '@/components/layout'
 import { BlogCard } from '@/components/cards'
-import { formatDate } from '@/lib/utils'
+import { formatDate, getMediaUrl } from '@/lib/utils'
 import {
   Calendar,
   Clock,
@@ -68,12 +68,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: { card: 'summary_large_image' },
   }
-}
-
-function getImageUrl(media: any): string {
-  if (!media) return '/images/_VEE7124 (1).jpg'
-  if (typeof media === 'object' && media.url) return media.url
-  return String(media)
 }
 
 function getCategoryName(cat: any): string {
@@ -194,7 +188,7 @@ export default async function BlogPostPage({ params }: Props) {
   const categoryId = getCategoryId(post.category)
   const relatedPosts = categoryId ? await getRelatedPosts(categoryId, post.id) : []
 
-  const featuredImage = getImageUrl(post.featuredImage)
+  const featuredImage = getMediaUrl(post.featuredImage)
   const categoryName = getCategoryName(post.category)
   const authorName = post.author && typeof post.author === 'object'
     ? (post.author as any).name || 'BB4Peace Team'
@@ -207,7 +201,7 @@ export default async function BlogPostPage({ params }: Props) {
     title: p.title,
     excerpt: p.excerpt || '',
     slug: p.slug,
-    featuredImage: getImageUrl(p.featuredImage),
+    featuredImage: getMediaUrl(p.featuredImage),
     category: getCategoryName(p.category),
     publishedAt: p.publishedAt || p.createdAt,
   }))
@@ -274,7 +268,7 @@ export default async function BlogPostPage({ params }: Props) {
                       {item.type === 'image' && item.image && (
                         <div className="relative aspect-video">
                           <Image
-                            src={getImageUrl(item.image)}
+                            src={getMediaUrl(item.image)}
                             alt={item.caption || `Gallery image ${idx + 1}`}
                             fill
                             className="object-cover"
