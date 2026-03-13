@@ -1,6 +1,7 @@
 import { buildConfig } from 'payload'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import crypto from 'crypto'
@@ -244,7 +245,7 @@ export default buildConfig({
     Categories,
     Tags,
     Subscribers,
-  ],
+  ].map((col) => ({ ...col, admin: { ...col.admin, hideAPIURL: true } })),
 
   globals: [
     SiteSettings,
@@ -261,7 +262,7 @@ export default buildConfig({
     EventPageSettings,
     MediaPageSettings,
     ContactUsPageSettings,
-  ],
+  ].map((g) => ({ ...g, admin: { ...g.admin, hideAPIURL: true } })),
 
   // In production serverless, avoid schema push and prefer pooled runtime connections.
   // Use local/session URL in development for DDL when push is enabled.
@@ -292,13 +293,24 @@ export default buildConfig({
   },
 
   plugins: [
-    // Vercel Blob storage disabled until configured
-    // Re-enable when BLOB_READ_WRITE_TOKEN is set in Vercel dashboard
+    // Vercel Blob storage – enables media uploads on Vercel's read-only filesystem
+    ...(process.env.BLOB_READ_WRITE_TOKEN
+      ? [
+          vercelBlobStorage({
+            enabled: true,
+            clientUploads: true,   // Upload directly from browser → bypasses 4.5MB serverless limit
+            collections: {
+              media: true,
+            },
+            token: process.env.BLOB_READ_WRITE_TOKEN,
+          }),
+        ]
+      : []),
   ],
 
   upload: {
     limits: {
-      fileSize: 10000000, // 10MB max - prevents storage exhaustion attacks
+      fileSize: 25000000, // 25MB max – allows large PDFs and report documents
     },
   },
 

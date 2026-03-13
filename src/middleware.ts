@@ -67,9 +67,9 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // Rate limit admin login page
-  if (pathname.startsWith('/admin') && request.method === 'POST') {
-    const key = `admin:${ip}`
+  // Rate limit admin login attempts only (not all admin POSTs)
+  if (pathname === '/admin/login' && request.method === 'POST') {
+    const key = `admin-login:${ip}`
     if (isRateLimited(key, RATE_LIMITS.auth)) {
       return new NextResponse('Too many login attempts. Please try again later.', {
         status: 429,

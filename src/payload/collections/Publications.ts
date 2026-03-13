@@ -13,6 +13,9 @@ export const Publications: CollectionConfig = {
     defaultColumns: ['title', 'category', 'year', 'downloadCount'],
     description: 'Research papers, reports, and downloadable resources',
     group: 'Reports',
+    components: {
+      beforeListTable: ['@/components/admin/PublicationsListHeader'],
+    },
   },
   access: {
     read: () => true, // Public can read publications

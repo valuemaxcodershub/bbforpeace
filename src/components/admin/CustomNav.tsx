@@ -83,9 +83,9 @@ const menuConfig: MenuItem[] = [
     label: 'Event page',
     icon: CalendarDays,
     children: [
-      { label: 'past Event', href: '/admin/globals/event-page-settings', icon: Circle },
-      { label: 'Ongoing Event', href: '/admin/globals/event-page-settings', icon: Circle },
-      { label: 'Upcoming Evenet', href: '/admin/globals/event-page-settings', icon: Circle },
+      { label: 'Upcoming Events', href: '/admin/collections/events?where%5Bor%5D%5B0%5D%5Band%5D%5B0%5D%5Bstatus%5D%5Bequals%5D=upcoming', icon: Circle },
+      { label: 'Ongoing Events', href: '/admin/collections/events?where%5Bor%5D%5B0%5D%5Band%5D%5B0%5D%5Bstatus%5D%5Bequals%5D=ongoing', icon: Circle },
+      { label: 'Past Events', href: '/admin/collections/events?where%5Bor%5D%5B0%5D%5Band%5D%5B0%5D%5Bstatus%5D%5Bequals%5D=completed', icon: Circle },
     ],
   },
   {
@@ -100,13 +100,13 @@ const menuConfig: MenuItem[] = [
     ],
   },
   {
-    label: 'Reports',
+    label: 'Report',
     icon: FileText,
     children: [
-      { label: 'Publications', href: '/admin/collections/publications?where%5Bor%5D%5B0%5D%5Band%5D%5B0%5D%5BsubMenu%5D%5Bequals%5D=publication', icon: Circle },
-      { label: 'Annual report items', href: '/admin/collections/publications?where%5Bor%5D%5B0%5D%5Band%5D%5B0%5D%5BsubMenu%5D%5Bequals%5D=annual-report', icon: Circle },
-      { label: 'Project report items', href: '/admin/collections/publications?where%5Bor%5D%5B0%5D%5Band%5D%5B0%5D%5BsubMenu%5D%5Bequals%5D=project-report', icon: Circle },
-      { label: 'Strategic plan items', href: '/admin/collections/publications?where%5Bor%5D%5B0%5D%5Band%5D%5B0%5D%5BsubMenu%5D%5Bequals%5D=strategic-plan', icon: Circle },
+      { label: 'Publications Settings', href: '/admin/collections/publications?where%5Bor%5D%5B0%5D%5Band%5D%5B0%5D%5BsubMenu%5D%5Bequals%5D=publication', icon: Circle },
+      { label: 'Annual Report Settings', href: '/admin/collections/publications?where%5Bor%5D%5B0%5D%5Band%5D%5B0%5D%5BsubMenu%5D%5Bequals%5D=annual-report', icon: Circle },
+      { label: 'Project Report Settings', href: '/admin/collections/publications?where%5Bor%5D%5B0%5D%5Band%5D%5B0%5D%5BsubMenu%5D%5Bequals%5D=project-report', icon: Circle },
+      { label: 'Strategic Report Settings', href: '/admin/collections/publications?where%5Bor%5D%5B0%5D%5Band%5D%5B0%5D%5BsubMenu%5D%5Bequals%5D=strategic-plan', icon: Circle },
     ],
   },
   {

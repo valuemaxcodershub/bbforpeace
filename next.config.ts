@@ -4,6 +4,12 @@ import { withPayload } from '@payloadcms/next/withPayload'
 const nextConfig: NextConfig = {
   // Disable X-Powered-By header to avoid revealing tech stack
   poweredByHeader: false,
+  // Allow larger file uploads (reports, documents)
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '25mb',
+    },
+  },
   // Exclude problematic packages from server-side bundling
   serverExternalPackages: [
     'drizzle-kit',
