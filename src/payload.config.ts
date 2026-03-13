@@ -1,7 +1,6 @@
 import { buildConfig } from 'payload'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { postgresAdapter } from '@payloadcms/db-postgres'
-import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import crypto from 'crypto'
@@ -292,21 +291,7 @@ export default buildConfig({
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
 
-  plugins: [
-    // Vercel Blob storage – enables media uploads on Vercel's read-only filesystem
-    ...(process.env.BLOB_READ_WRITE_TOKEN
-      ? [
-          vercelBlobStorage({
-            enabled: true,
-            clientUploads: true,   // Upload directly from browser → bypasses 4.5MB serverless limit
-            collections: {
-              media: true,
-            },
-            token: process.env.BLOB_READ_WRITE_TOKEN,
-          }),
-        ]
-      : []),
-  ],
+  plugins: [],
 
   upload: {
     limits: {

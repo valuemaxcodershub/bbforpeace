@@ -53,12 +53,12 @@ export function PartnersSection({
             <span className="w-8 h-[2px] bg-accent-gold" />
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            {subheading.includes('Together') ? (
+            {subheading?.includes('Together') ? (
               <>
                 {subheading.replace('Together', '')}<span className="text-accent-gold">Together</span>
               </>
             ) : (
-              subheading
+              subheading || 'Building Peace Together'
             )}
           </h2>
           <p className="text-gray-300 max-w-xl mx-auto">
