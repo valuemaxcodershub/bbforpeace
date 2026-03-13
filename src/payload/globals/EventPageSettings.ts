@@ -35,7 +35,7 @@ export const EventPageSettings: GlobalConfig = {
           ],
         },
         {
-          label: 'Upcoming Evenet',
+          label: 'Upcoming Events',
           fields: [
             { name: 'upcomingHeading', type: 'text', defaultValue: 'Upcoming Events' },
             {

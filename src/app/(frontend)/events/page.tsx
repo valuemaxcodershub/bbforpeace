@@ -27,13 +27,16 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
 
   let upcomingEvents: any[] = []
   let pastEvents: any[] = []
+  let eps: Record<string, any> = {}
   try {
-    const [upcomingResult, pastResult] = await Promise.all([
+    const [upcomingResult, pastResult, eventPageSettings] = await Promise.all([
       payload.find({ collection: 'events', where: { status: { in: ['upcoming', 'ongoing'] } }, sort: 'startDate', limit: 10, depth: 1 }),
       payload.find({ collection: 'events', where: { status: { equals: 'completed' } }, sort: '-startDate', limit: 10, depth: 1 }),
+      payload.findGlobal({ slug: 'event-page-settings' }),
     ])
     upcomingEvents = upcomingResult.docs
     pastEvents = pastResult.docs
+    eps = eventPageSettings as Record<string, any>
   } catch (error) {
     console.error('Failed to fetch events:', error)
   }
@@ -48,7 +51,8 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
       location: e.location || '',
       startDate: e.startDate,
       endDate: e.endDate || null,
-      type: e.status === 'upcoming' ? 'Upcoming' : e.status === 'ongoing' ? 'Ongoing' : 'Event',
+      status: e.status || 'upcoming',
+      type: e.status === 'upcoming' ? 'Upcoming' : e.status === 'ongoing' ? 'Ongoing' : e.status === 'completed' ? 'Past' : 'Event',
       maxAttendees: e.maxAttendees || null,
       isFeatured: e.isFeatured || false,
     }))
@@ -217,7 +221,7 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
                 <div className="w-12 h-12 rounded-2xl bg-primary-100 flex items-center justify-center mr-4">
                   <Calendar className="w-6 h-6 text-primary-900" />
                 </div>
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-900">More Upcoming Events</h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900">{eps.upcomingHeading || 'Upcoming Events'}</h2>
               </div>
               
               <div className="max-w-5xl mx-auto">
@@ -270,7 +274,7 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
                 Archive
                 <span className="w-8 h-[2px] bg-primary-900" />
               </span>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Past Events</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900">{eps.pastHeading || 'Past Events'}</h2>
             </div>
             <div className="max-w-5xl mx-auto">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">

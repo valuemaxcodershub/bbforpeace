@@ -3,6 +3,9 @@ import { Inter, Poppins } from 'next/font/google'
 import { Header, Footer } from '@/components/layout'
 import { ScrollObserver } from '@/components/ui/ScrollObserver'
 import { BackToTop } from '@/components/ui/BackToTop'
+import { getPayload } from 'payload'
+import config from '@payload-config'
+import { getMediaUrl } from '@/lib/utils'
 
 // Force dynamic rendering - CMS content is always fresh, no build-time DB needed
 export const dynamic = 'force-dynamic'
@@ -23,67 +26,99 @@ const poppins = Poppins({
   display: 'swap',
 })
 
-export const metadata: Metadata = {
-  title: {
-    default: 'Building Blocks for Peace Foundation | Empowering Communities for Peace',
-    template: '%s | BB4Peace',
-  },
+// Hardcoded fallbacks if DB is unreachable
+const fallbackMeta = {
+  title: 'Building Blocks for Peace Foundation | Empowering Communities for Peace',
+  titleTemplate: '%s | BB4Peace',
   description:
     'Empowering Communities for Peace — Building Blocks for Peace Foundation is a youth-led peacebuilding NGO in Nigeria, working to create sustainable peace through education, dialogue, and community engagement.',
-  keywords: [
-    'peacebuilding',
-    'youth empowerment',
-    'Nigeria NGO',
-    'conflict resolution',
-    'peace education',
-    'community development',
-    'BB4Peace',
-    'Building Blocks for Peace',
-  ],
-  authors: [{ name: 'Building Blocks for Peace Foundation' }],
-  creator: 'BB4Peace',
-  publisher: 'Building Blocks for Peace Foundation',
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://bbforpeace.org'),
-  openGraph: {
-    type: 'website',
-    locale: 'en_NG',
-    url: '/',
-    siteName: 'Building Blocks for Peace Foundation',
-    title: 'Building Blocks for Peace Foundation | Youth-Led Peacebuilding NGO',
-    description:
-      'Youth-led peacebuilding NGO in Nigeria, working to create sustainable peace through education, dialogue, and community engagement.',
-    images: [
-      {
-        url: '/images/og-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Building Blocks for Peace Foundation',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Building Blocks for Peace Foundation',
-    description: 'Youth-led peacebuilding NGO in Nigeria',
-    images: ['/images/og-image.jpg'],
-    creator: '@bbforpeace',
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+  keywords:
+    'peacebuilding, youth empowerment, Nigeria NGO, conflict resolution, peace education, community development, BB4Peace, Building Blocks for Peace',
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  let seo: any = null
+  try {
+    const payload = await getPayload({ config })
+    seo = await payload.findGlobal({ slug: 'seo-settings' })
+  } catch {
+    // Fall back to hardcoded defaults
+  }
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bbforpeace.org'
+  const title = seo?.metaTitle || fallbackMeta.title
+  const titleTemplate = seo?.titleTemplate || fallbackMeta.titleTemplate
+  const description = seo?.metaDescription || fallbackMeta.description
+  const keywordsStr = seo?.keywords || fallbackMeta.keywords
+  const keywords = keywordsStr.split(',').map((k: string) => k.trim()).filter(Boolean)
+  const canonicalUrl = seo?.canonicalUrl || siteUrl
+
+  // Resolve OG image
+  const ogImageMedia = seo?.og?.image || seo?.ogImage
+  const ogImageUrl = ogImageMedia ? getMediaUrl(ogImageMedia) : '/images/og-image.jpg'
+
+  // Resolve Twitter image (falls back to OG image)
+  const twitterImageMedia = seo?.twitter?.image
+  const twitterImageUrl = twitterImageMedia ? getMediaUrl(twitterImageMedia) : ogImageUrl
+
+  const robotsIndex = seo?.robots?.index ?? true
+  const robotsFollow = seo?.robots?.follow ?? true
+
+  return {
+    title: {
+      default: title,
+      template: titleTemplate,
     },
-  },
-  icons: {
-    icon: '/images/logo.jpg',
-    shortcut: '/images/logo.jpg',
-    apple: '/images/logo.jpg',
-  },
+    description,
+    keywords,
+    authors: [{ name: 'Building Blocks for Peace Foundation' }],
+    creator: 'BB4Peace',
+    publisher: 'Building Blocks for Peace Foundation',
+    metadataBase: new URL(canonicalUrl),
+    openGraph: {
+      type: 'website',
+      locale: seo?.og?.locale || 'en_NG',
+      url: '/',
+      siteName: seo?.og?.siteName || 'Building Blocks for Peace Foundation',
+      title: seo?.og?.title || title,
+      description: seo?.og?.description || description,
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: 'Building Blocks for Peace Foundation',
+        },
+      ],
+    },
+    twitter: {
+      card: (seo?.twitter?.card as 'summary' | 'summary_large_image') || 'summary_large_image',
+      title: seo?.twitter?.title || 'Building Blocks for Peace Foundation',
+      description: seo?.twitter?.description || 'Youth-led peacebuilding NGO in Nigeria',
+      images: [twitterImageUrl],
+      creator: seo?.twitter?.handle || '@bbforpeace',
+    },
+    robots: {
+      index: robotsIndex,
+      follow: robotsFollow,
+      googleBot: {
+        index: robotsIndex,
+        follow: robotsFollow,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
+    verification: {
+      ...(seo?.verification?.google ? { google: seo.verification.google } : {}),
+      ...(seo?.verification?.bing ? { other: { 'msvalidate.01': seo.verification.bing } } : {}),
+    },
+    icons: {
+      icon: '/images/logo.jpg',
+      shortcut: '/images/logo.jpg',
+      apple: '/images/logo.jpg',
+    },
+  }
 }
 
 export default function FrontendLayout({

@@ -51,7 +51,7 @@ const dashboardItems: DashboardItem[] = [
   {
     label: 'Reports',
     description: 'Publications, annual, project and strategic plan',
-    href: '/admin/globals/reports-settings',
+    href: '/admin/collections/publications',
     icon: FileBarChart2,
     accent: '#f59e0b',
   },

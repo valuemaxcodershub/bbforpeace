@@ -34,7 +34,7 @@ import { AboutUsPageSettings } from './payload/globals/AboutUsPageSettings'
 import { ProgrammePageSettings } from './payload/globals/ProgrammePageSettings'
 import { EventPageSettings } from './payload/globals/EventPageSettings'
 import { MediaPageSettings } from './payload/globals/MediaPageSettings'
-import { ReportsSettings } from './payload/globals/ReportsSettings'
+// ReportsSettings removed - annual reports page content no longer needed in admin
 import { ContactUsPageSettings } from './payload/globals/ContactUsPageSettings'
 
 const filename = fileURLToPath(import.meta.url)
@@ -172,11 +172,7 @@ const globalPrefillDefaults: Record<string, Record<string, unknown>> = {
     photoTabTitle: 'Photos',
     videoTabTitle: 'Videos',
   },
-  'reports-settings': {
-    annualSectionHeading: 'Impact & Accountability',
-    annualSectionDescription:
-      'Download our comprehensive annual reports documenting our achievements, financial stewardship, and commitment to transparency.',
-  },
+
   'contact-us-page-settings': {
     officeHours: 'Mon - Fri: 9:00 AM - 5:00 PM',
     website: 'bbforpeace.org',
@@ -264,7 +260,6 @@ export default buildConfig({
     ProgrammePageSettings,
     EventPageSettings,
     MediaPageSettings,
-    ReportsSettings,
     ContactUsPageSettings,
   ],
 

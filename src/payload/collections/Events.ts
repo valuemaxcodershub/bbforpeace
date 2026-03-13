@@ -12,7 +12,7 @@ export const Events: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'startDate', 'location', 'status'],
     description: 'Upcoming and past events',
-    group: 'Event page',
+    group: 'Content',
   },
   access: {
     read: () => true, // Public can read events

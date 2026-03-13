@@ -30,27 +30,22 @@ export default async function AnnualReportsPage() {
   const payload = await getPayload({ config })
 
   let reports: any[] = []
-  let reportsSettings: any = {}
 
   try {
-    const [result, pageSettings] = await Promise.all([
-      payload.find({
-        collection: 'publications',
-        where: { subMenu: { equals: 'annual-report' } },
-        sort: '-year',
-        limit: 10,
-        depth: 1,
-      }),
-      payload.findGlobal({ slug: 'reports-settings' }),
-    ])
+    const result = await payload.find({
+      collection: 'publications',
+      where: { subMenu: { equals: 'annual-report' } },
+      sort: '-year',
+      limit: 10,
+      depth: 1,
+    })
     reports = result.docs
-    reportsSettings = pageSettings as any
   } catch (error) {
     console.error('Failed to fetch annual reports:', error)
   }
 
-  const sectionHeading = reportsSettings.annualSectionHeading || 'Impact & Accountability'
-  const sectionDescription = reportsSettings.annualSectionDescription || 'Download our comprehensive annual reports documenting our achievements, financial stewardship, and commitment to transparency.'
+  const sectionHeading = 'Impact & Accountability'
+  const sectionDescription = 'Download our comprehensive annual reports documenting our achievements, financial stewardship, and commitment to transparency.'
 
   const displayReports = reports.map((r: any) => ({
     id: r.id,

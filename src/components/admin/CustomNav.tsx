@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useAuth } from '@payloadcms/ui'
 import { useMemo, useState } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import {
@@ -19,11 +20,15 @@ import {
   Circle,
 } from 'lucide-react'
 
+type UserRole = 'super-admin' | 'admin' | 'editor'
+
 type MenuItem = {
   label: string
   href?: string
   children?: MenuItem[]
   icon?: LucideIcon
+  /** Which roles can see this item. Omit = everyone. */
+  roles?: UserRole[]
 }
 
 const menuConfig: MenuItem[] = [
@@ -31,6 +36,7 @@ const menuConfig: MenuItem[] = [
   {
     label: 'Global setting',
     icon: Settings,
+    roles: ['super-admin', 'admin'],
     children: [
       { label: 'Partners settings', href: '/admin/globals/partners-settings', icon: Circle },
       { label: 'Award setting', href: '/admin/globals/award-settings', icon: Circle },
@@ -44,6 +50,7 @@ const menuConfig: MenuItem[] = [
   {
     label: 'Home page',
     icon: House,
+    roles: ['super-admin', 'admin'],
     children: [
       { label: 'Hero section', href: '/admin/globals/home-page-settings', icon: Circle },
       { label: 'impact section', href: '/admin/globals/home-page-settings', icon: Circle },
@@ -56,6 +63,7 @@ const menuConfig: MenuItem[] = [
   {
     label: 'About us page',
     icon: Info,
+    roles: ['super-admin', 'admin'],
     children: [
       { label: 'our story', href: '/admin/globals/about-us-page-settings', icon: Circle },
       { label: 'vision and Mission', href: '/admin/globals/about-us-page-settings', icon: Circle },
@@ -84,8 +92,8 @@ const menuConfig: MenuItem[] = [
     label: 'Media Page',
     icon: Image,
     children: [
-      { label: 'Blog posts', href: '/admin/collections/posts', icon: Circle },
-      { label: 'press statement', href: '/admin/collections/posts', icon: Circle },
+      { label: 'Blog posts', href: '/admin/collections/posts?where%5Bor%5D%5B0%5D%5Band%5D%5B0%5D%5BsubMenu%5D%5Bequals%5D=blog', icon: Circle },
+      { label: 'press statement', href: '/admin/collections/posts?where%5Bor%5D%5B0%5D%5Band%5D%5B0%5D%5BsubMenu%5D%5Bequals%5D=press-statement', icon: Circle },
       { label: 'gallery items', href: '/admin/collections/gallery-items', icon: Circle },
       { label: 'testimonials', href: '/admin/collections/testimonials', icon: Circle },
       { label: 'Post category', href: '/admin/collections/categories', icon: Circle },
@@ -95,21 +103,22 @@ const menuConfig: MenuItem[] = [
     label: 'Reports',
     icon: FileText,
     children: [
-      { label: 'Publications', href: '/admin/collections/publications', icon: Circle },
-      { label: 'Annual report items', href: '/admin/collections/publications', icon: Circle },
-      { label: 'Project report items', href: '/admin/collections/publications', icon: Circle },
-      { label: 'Strategic plan items', href: '/admin/collections/publications', icon: Circle },
-      { label: 'annual reports page content', href: '/admin/globals/reports-settings', icon: Circle },
+      { label: 'Publications', href: '/admin/collections/publications?where%5Bor%5D%5B0%5D%5Band%5D%5B0%5D%5BsubMenu%5D%5Bequals%5D=publication', icon: Circle },
+      { label: 'Annual report items', href: '/admin/collections/publications?where%5Bor%5D%5B0%5D%5Band%5D%5B0%5D%5BsubMenu%5D%5Bequals%5D=annual-report', icon: Circle },
+      { label: 'Project report items', href: '/admin/collections/publications?where%5Bor%5D%5B0%5D%5Band%5D%5B0%5D%5BsubMenu%5D%5Bequals%5D=project-report', icon: Circle },
+      { label: 'Strategic plan items', href: '/admin/collections/publications?where%5Bor%5D%5B0%5D%5Band%5D%5B0%5D%5BsubMenu%5D%5Bequals%5D=strategic-plan', icon: Circle },
     ],
   },
   {
     label: 'Contact us page',
     icon: Phone,
+    roles: ['super-admin', 'admin'],
     children: [{ label: 'Contact page content', href: '/admin/globals/contact-us-page-settings', icon: Circle }],
   },
   {
     label: 'user',
     icon: Users,
+    roles: ['super-admin', 'admin'],
     children: [
       { label: 'Admin', href: '/admin/collections/users', icon: Circle },
       { label: 'Subscribers', href: '/admin/collections/subscribers', icon: Circle },
@@ -126,16 +135,27 @@ function isActivePath(currentPath: string, href?: string) {
 
 export function CustomNav() {
   const pathname = usePathname()
+  const { user } = useAuth()
+  const userRole = (user as any)?.role as UserRole | undefined
+
+  // Filter menu items based on user role
+  const visibleMenu = useMemo(() => {
+    if (!userRole) return menuConfig
+    return menuConfig.filter((item) => {
+      if (!item.roles) return true
+      return item.roles.includes(userRole)
+    })
+  }, [userRole])
 
   const defaultExpanded = useMemo(() => {
     const expanded = new Set<string>()
-    menuConfig.forEach((section) => {
+    visibleMenu.forEach((section) => {
       if (section.children?.some((child) => isActivePath(pathname, child.href))) {
         expanded.add(section.label)
       }
     })
     return expanded
-  }, [pathname])
+  }, [pathname, visibleMenu])
 
   const [expandedSections, setExpandedSections] = useState<Set<string>>(defaultExpanded)
 
@@ -150,7 +170,7 @@ export function CustomNav() {
 
   return (
     <aside className="bb-custom-nav">
-      {menuConfig.map((section) => {
+      {visibleMenu.map((section) => {
         const SectionIcon = section.icon || Circle
 
         if (!section.children) {

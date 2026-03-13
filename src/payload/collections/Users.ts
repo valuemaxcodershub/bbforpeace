@@ -14,9 +14,13 @@ const isAdminOrAbove: Access = ({ req: { user } }) => {
   return user?.role === 'super-admin' || user?.role === 'admin'
 }
 
-// Field-level access for super admin only
-const superAdminFieldAccess: FieldAccess = ({ req: { user } }) => {
-  return user?.role === 'super-admin'
+// Super admin can only edit these fields on OTHER users, not on themselves.
+// All other roles are completely blocked.
+const superAdminOnlyOthers: FieldAccess = ({ req: { user }, id }) => {
+  if (user?.role !== 'super-admin') return false
+  // If editing themselves, block
+  if (String(user?.id) === String(id)) return false
+  return true
 }
 
 export const Users: CollectionConfig = {
@@ -49,6 +53,20 @@ export const Users: CollectionConfig = {
     unlock: isAdminOrAbove,
   },
   fields: [
+    // Override the built-in email field to lock it down
+    {
+      name: 'email',
+      type: 'email',
+      required: true,
+      unique: true,
+      access: {
+        // Super admin can change email of other users only, not their own
+        update: superAdminOnlyOthers,
+      },
+      admin: {
+        description: 'Super admin: contact developer to change. Others: contact super admin.',
+      },
+    },
     {
       name: 'name',
       type: 'text',
@@ -65,11 +83,11 @@ export const Users: CollectionConfig = {
       defaultValue: 'editor',
       required: true,
       access: {
-        // Only super admins can change roles
-        update: superAdminFieldAccess,
+        // Super admin can change role of other users only, not their own
+        update: superAdminOnlyOthers,
       },
       admin: {
-        description: 'Super Admin: Full access | Admin: Manage content | Editor: Create/edit content only',
+        description: 'Super admin: contact developer to change. Others: contact super admin.',
       },
     },
     {
@@ -86,7 +104,7 @@ export const Users: CollectionConfig = {
         description: 'Inactive users cannot log in',
       },
       access: {
-        update: superAdminFieldAccess,
+        update: superAdminOnlyOthers,
       },
     },
     {
@@ -100,6 +118,25 @@ export const Users: CollectionConfig = {
     },
   ],
   hooks: {
+    beforeChange: [
+      ({ req, data, operation, originalDoc }) => {
+        // Block password changes: only super admin can change OTHER users' passwords
+        if (operation === 'update' && data.password) {
+          const user = req.user
+          if (!user) return data
+          const editingOwnRecord = String(user.id) === String(originalDoc?.id)
+
+          if (user.role === 'super-admin' && editingOwnRecord) {
+            // Super admin editing self — strip password change
+            delete data.password
+          } else if (user.role !== 'super-admin') {
+            // Non-super-admin — strip password change
+            delete data.password
+          }
+        }
+        return data
+      },
+    ],
     afterLogin: [
       ({ req, user }) => {
         void req.payload
