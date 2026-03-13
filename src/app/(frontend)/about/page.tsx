@@ -49,18 +49,24 @@ export default async function AboutPage() {
   let teamMembers: any[] = []
   let boardOfTrustees: any[] = []
   let partnersData: any = null
+  let awardData: any = null
+  let partnersDocs: any[] = []
 
   try {
-    const [aboutSettings, teamResult, boardResult, partners] = await Promise.all([
+    const [aboutSettings, teamResult, boardResult, partners, awards, partnersCollection] = await Promise.all([
       payload.findGlobal({ slug: 'about-us-page-settings' }),
       payload.find({ collection: 'team', where: { category: { equals: 'staff' }, isActive: { equals: true } }, sort: 'order', limit: 20, depth: 1 }),
       payload.find({ collection: 'team', where: { category: { equals: 'board' }, isActive: { equals: true } }, sort: 'order', limit: 20, depth: 1 }),
       payload.findGlobal({ slug: 'partners-settings' }),
+      payload.findGlobal({ slug: 'award-settings' }),
+      payload.find({ collection: 'partners', where: { isActive: { equals: true } }, sort: 'order', limit: 20, depth: 1 }),
     ])
     as = aboutSettings as Record<string, any>
     teamMembers = teamResult.docs
     boardOfTrustees = boardResult.docs
     partnersData = partners as any
+    awardData = awards as any
+    partnersDocs = partnersCollection.docs
   } catch (error) {
     console.error('Failed to fetch about page data:', error)
   }
@@ -115,7 +121,7 @@ export default async function AboutPage() {
     { title: 'Global Youth Networks', description: 'Active in United Network of Young Peacebuilders.' },
   ]
 
-  const aboutAwards = as.aboutAwards?.length ? as.aboutAwards : [
+  const aboutAwards = awardData?.awards?.length ? awardData.awards : as.aboutAwards?.length ? as.aboutAwards : [
     { title: 'National Youth Development Award', organization: 'Federal Ministry of Youth Development, Abuja', year: '2025' },
     { title: 'Best Young Peacebuilding Organisation', organization: 'West Africa Network for Peacebuilding (WANEP-Nigeria)', year: '2023' },
   ]
@@ -134,8 +140,8 @@ export default async function AboutPage() {
   const regionOfficeCity = as.regionOfficeCity || 'Makurdi, Benue State'
   const regionOfficeEmail = as.regionOfficeEmail || 'info@bbforpeace.org'
 
-  // Partners
-  const partners = (partnersData as any)?.items?.length ? (partnersData as any).items.map((p: any) => ({
+  // Partners - prefer collection data, fallback to hardcoded
+  const partners = partnersDocs.length ? partnersDocs.map((p: any) => ({
     name: p.name,
     description: p.description || '',
     logo: getMediaUrl(p.logo, '/images/partners/gppac.jfif'),

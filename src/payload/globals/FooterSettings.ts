@@ -34,11 +34,6 @@ export const FooterSettings: GlobalConfig = {
       defaultValue: 'Contact',
     },
     {
-      name: 'developedByText',
-      type: 'text',
-      defaultValue: 'Developed by',
-    },
-    {
       name: 'privacyLabel',
       type: 'text',
       defaultValue: 'Privacy Policy',

@@ -12,8 +12,7 @@ export const Partners: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ['name', 'website', 'order', 'isActive'],
     description: 'Partners and collaborating organizations',
-    group: 'About us page',
-    hidden: true,
+    group: 'Content',
   },
   access: {
     read: () => true, // Public can read partners
@@ -31,7 +30,6 @@ export const Partners: CollectionConfig = {
       name: 'logo',
       type: 'upload',
       relationTo: 'media',
-      required: true,
     },
     {
       name: 'website',

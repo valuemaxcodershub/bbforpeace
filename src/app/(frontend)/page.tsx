@@ -45,11 +45,30 @@ export default async function HomePage() {
     console.error('Failed to fetch home page settings:', error)
   }
 
-  // Fetch partners from partners-settings global
+  // Fetch partners settings (heading/subheading/description) + partners from collection
   let partnersData: any = null
+  let partnersDocs: any[] = []
   try {
     if (!payload) throw new Error('Payload unavailable')
-    partnersData = await payload.findGlobal({ slug: 'partners-settings' })
+    const [settings, { docs }] = await Promise.all([
+      payload.findGlobal({ slug: 'partners-settings' }),
+      payload.find({
+        collection: 'partners',
+        where: { isActive: { equals: true } },
+        sort: 'order',
+        limit: 20,
+        depth: 1,
+      }),
+    ])
+    partnersData = settings
+    partnersDocs = docs
+  } catch {}
+
+  // Fetch awards from award-settings global
+  let awardData: any = null
+  try {
+    if (!payload) throw new Error('Payload unavailable')
+    awardData = await payload.findGlobal({ slug: 'award-settings' })
   } catch {}
 
   // Fetch recent posts from posts collection
@@ -143,10 +162,10 @@ export default async function HomePage() {
         videos={hs.videos}
       />
       <AwardsSection
-        heading={hs.awardsHeading}
-        description={hs.awardsDescription}
-        backgroundImage={hs.awardsBackgroundImage}
-        awards={hs.awards}
+        heading={awardData?.heading || hs.awardsHeading}
+        description={awardData?.description || hs.awardsDescription}
+        backgroundImage={awardData?.backgroundImage || hs.awardsBackgroundImage}
+        awards={awardData?.awards?.length ? awardData.awards : hs.awards}
       />
       <PublicationsSection
         publications={recentPubsDocs.length ? recentPubsDocs.map((p: any) => ({
@@ -164,7 +183,10 @@ export default async function HomePage() {
         description={(partnersData as any)?.description}
         ctaText={(partnersData as any)?.ctaText}
         ctaLinkLabel={(partnersData as any)?.ctaLinkLabel}
-        partners={(partnersData as any)?.items}
+        partners={partnersDocs.length ? partnersDocs.map((p: any) => ({
+          name: p.name,
+          logo: p.logo,
+        })) : undefined}
       />
       <NewsletterSection
         heading={hs.newsletterHeading}

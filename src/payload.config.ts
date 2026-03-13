@@ -183,14 +183,6 @@ const globalPrefillDefaults: Record<string, Record<string, unknown>> = {
   },
   'partners-settings': {
     heading: 'Our Partners',
-    items: [
-      { name: 'GPPAC', description: 'Global Partnership for Prevention of Armed Conflict' },
-      { name: 'WANEP', description: 'West Africa Network for Peacebuilding' },
-      { name: 'British Council', description: 'Education & Cultural Relations' },
-      { name: 'MacArthur Foundation', description: 'Funding Partner' },
-      { name: 'Open Society Foundations', description: 'Civic Space Protection' },
-      { name: 'Ford Foundation', description: 'Social Justice Funding' },
-    ],
   },
 }
 
