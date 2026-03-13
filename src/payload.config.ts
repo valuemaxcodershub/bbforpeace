@@ -295,14 +295,16 @@ export default buildConfig({
   plugins: [
     // Vercel Blob storage – media uploads on Vercel's read-only filesystem
     // Requires BLOB_READ_WRITE_TOKEN env var on Vercel (Settings → Storage → Create Blob Store)
-    vercelBlobStorage({
-      enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
-      clientUploads: true,
-      collections: {
-        media: true,
-      },
-      token: process.env.BLOB_READ_WRITE_TOKEN || '',
-    }),
+    ...(process.env.BLOB_READ_WRITE_TOKEN
+      ? [
+          vercelBlobStorage({
+            collections: {
+              media: true,
+            },
+            token: process.env.BLOB_READ_WRITE_TOKEN,
+          }),
+        ]
+      : []),
   ],
 
   upload: {
