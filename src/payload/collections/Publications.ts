@@ -14,7 +14,7 @@ export const Publications: CollectionConfig = {
     description: 'Research papers, reports, and downloadable resources',
     group: 'Reports',
     components: {
-      beforeListTable: ['@/components/admin/PublicationsListHeader'],
+      beforeListTable: ['/src/components/admin/PublicationsListHeader#PublicationsListHeader'],
     },
   },
   access: {

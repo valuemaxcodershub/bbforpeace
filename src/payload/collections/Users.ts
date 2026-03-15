@@ -29,6 +29,8 @@ export const Users: CollectionConfig = {
     tokenExpiration: 3600, // 1 hour - limits window if token is compromised
     maxLoginAttempts: 3, // Lock after 3 failed attempts
     lockTime: 900000, // 15 minutes lockout
+    // Hide password change fields for non-super-admins editing other users
+    // The beforeChange hook also strips password server-side as a safety net
   },
   admin: {
     useAsTitle: 'email',
@@ -120,19 +122,22 @@ export const Users: CollectionConfig = {
   hooks: {
     beforeChange: [
       ({ req, data, operation, originalDoc }) => {
-        // Block password changes: only super admin can change OTHER users' passwords
-        if (operation === 'update' && data.password) {
+        // Block ALL password changes except super-admin changing OTHER users
+        if (data.password !== undefined || data['confirm-password'] !== undefined) {
           const user = req.user
-          if (!user) return data
-          const editingOwnRecord = String(user.id) === String(originalDoc?.id)
-
-          if (user.role === 'super-admin' && editingOwnRecord) {
-            // Super admin editing self — strip password change
+          if (!user || user.role !== 'super-admin') {
+            // Non-super-admin — always strip password
             delete data.password
-          } else if (user.role !== 'super-admin') {
-            // Non-super-admin — strip password change
-            delete data.password
+            delete data['confirm-password']
+            return data
           }
+          // Super-admin editing their own record — also strip
+          if (String(user.id) === String(originalDoc?.id)) {
+            delete data.password
+            delete data['confirm-password']
+            return data
+          }
+          // Super-admin editing OTHER user — allow password change
         }
         return data
       },

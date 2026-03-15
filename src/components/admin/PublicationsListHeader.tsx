@@ -1,6 +1,7 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
+import { useEffect } from 'react'
 
 const headingMap: Record<string, string> = {
   publication: 'Publications Settings',
@@ -30,20 +31,37 @@ export function PublicationsListHeader() {
   const heading = subMenu ? headingMap[subMenu] : null
   const description = subMenu ? descriptionMap[subMenu] : null
 
+  // Update breadcrumb text and page title
+  useEffect(() => {
+    if (!heading) return
+
+    // Update the breadcrumb last item
+    const breadcrumbLast = document.querySelector('.step-nav .step-nav__last')
+    if (breadcrumbLast && breadcrumbLast.textContent?.trim() === 'Publications') {
+      breadcrumbLast.textContent = heading
+    }
+
+    // Update browser tab title
+    document.title = `${heading} | BBforPeace CMS`
+  }, [heading])
+
   if (!heading) return null
 
-  // Render a custom header and use CSS to hide Payload's default one
   return (
     <>
-      {/* Inject a style tag to hide the default Payload heading for this view */}
       <style>{`
-        .pub-custom-header ~ .list-header,
-        .pub-custom-header ~ [class*="ListHeader"],
-        .pub-custom-header ~ [class*="list-header"] {
+        /* Hide default Payload heading when our custom header is present */
+        .collection-list--publications .list-header__title {
+          display: none !important;
+        }
+        .collection-list--publications .collection-list__sub-header {
           display: none !important;
         }
       `}</style>
-      <div className="pub-custom-header" style={{ marginBottom: '1rem' }}>
+      <div className="pub-custom-header" style={{
+        marginBottom: '0.5rem',
+        marginTop: '-1rem',
+      }}>
         <h1 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>{heading}</h1>
         {description && (
           <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: '0.25rem 0 0' }}>
