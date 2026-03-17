@@ -1,10 +1,12 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useAuth } from '@payloadcms/ui'
 
 export function AdminActions() {
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement | null>(null)
+  const { logOut } = useAuth()
 
   useEffect(() => {
     const onClickOutside = (event: MouseEvent) => {
@@ -38,9 +40,14 @@ export function AdminActions() {
             <a href="/admin/account" className="bb-admin-user__item" role="menuitem">
               Profile
             </a>
-            <a href="/admin/logout" className="bb-admin-user__item" role="menuitem">
+            <button
+              type="button"
+              onClick={() => { setIsOpen(false); logOut(); }}
+              className="bb-admin-user__item"
+              role="menuitem"
+            >
               Logout
-            </a>
+            </button>
           </div>
         )}
       </div>

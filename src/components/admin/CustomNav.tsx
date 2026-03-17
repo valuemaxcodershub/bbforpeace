@@ -124,7 +124,7 @@ const menuConfig: MenuItem[] = [
       { label: 'Subscribers', href: '/admin/collections/subscribers', icon: Circle },
     ],
   },
-  { label: 'Logout', href: '/admin/logout', icon: LogOut },
+  { label: 'Logout', href: '__logout__', icon: LogOut },
 ]
 
 function isActivePath(currentPath: string, href?: string) {
@@ -135,7 +135,7 @@ function isActivePath(currentPath: string, href?: string) {
 
 export function CustomNav() {
   const pathname = usePathname()
-  const { user } = useAuth()
+  const { user, logOut } = useAuth()
   const userRole = (user as any)?.role as UserRole | undefined
 
   // Filter menu items based on user role
@@ -174,6 +174,21 @@ export function CustomNav() {
         const SectionIcon = section.icon || Circle
 
         if (!section.children) {
+          if (section.href === '__logout__') {
+            return (
+              <button
+                key={section.label}
+                type="button"
+                onClick={() => logOut()}
+                className="bb-custom-nav__item"
+              >
+                <span className="bb-custom-nav__item-content">
+                  <SectionIcon className="bb-custom-nav__icon" size={15} />
+                  <span>{section.label}</span>
+                </span>
+              </button>
+            )
+          }
           return (
             <Link
               key={section.label}
