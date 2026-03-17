@@ -21,6 +21,9 @@ export const Media: CollectionConfig = {
   },
   upload: {
     staticDir: '../public/uploads',
+    // On Vercel, local filesystem is read-only. Disable local storage so uploads
+    // fail fast with an error instead of hanging when no cloud adapter is configured.
+    disableLocalStorage: !!process.env.VERCEL,
     mimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf'],
     imageSizes: [
       {
