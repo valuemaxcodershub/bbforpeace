@@ -135,7 +135,7 @@ function isActivePath(currentPath: string, href?: string) {
 
 export function CustomNav() {
   const pathname = usePathname()
-  const { user, logOut } = useAuth()
+  const { user } = useAuth()
   const userRole = (user as any)?.role as UserRole | undefined
 
   // Filter menu items based on user role
@@ -183,8 +183,8 @@ export function CustomNav() {
                 key={section.label}
                 type="button"
                 onClick={async () => {
-                  await logOut()
-                  window.location.href = '/admin'
+                  await fetch('/api/users/logout', { method: 'POST', credentials: 'include' })
+                  window.location.href = '/admin/login'
                 }}
                 className="bb-custom-nav__item"
               >

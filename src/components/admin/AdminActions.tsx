@@ -1,12 +1,10 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { useAuth } from '@payloadcms/ui'
 
 export function AdminActions() {
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement | null>(null)
-  const { logOut } = useAuth()
 
   useEffect(() => {
     const onClickOutside = (event: MouseEvent) => {
@@ -44,8 +42,8 @@ export function AdminActions() {
               type="button"
               onClick={async () => {
                 setIsOpen(false)
-                await logOut()
-                window.location.href = '/admin'
+                await fetch('/api/users/logout', { method: 'POST', credentials: 'include' })
+                window.location.href = '/admin/login'
               }}
               className="bb-admin-user__item"
               role="menuitem"
