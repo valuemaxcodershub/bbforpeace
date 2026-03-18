@@ -182,9 +182,8 @@ export function CustomNav() {
               <button
                 key={section.label}
                 type="button"
-                onClick={async () => {
-                  await fetch('/api/users/logout', { method: 'POST', credentials: 'include' })
-                  window.location.href = '/admin/login'
+                onClick={() => {
+                  window.location.href = '/api/auth/logout'
                 }}
                 className="bb-custom-nav__item"
               >

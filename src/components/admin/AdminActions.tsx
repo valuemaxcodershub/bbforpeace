@@ -40,10 +40,9 @@ export function AdminActions() {
             </a>
             <button
               type="button"
-              onClick={async () => {
+              onClick={() => {
                 setIsOpen(false)
-                await fetch('/api/users/logout', { method: 'POST', credentials: 'include' })
-                window.location.href = '/admin/login'
+                window.location.href = '/api/auth/logout'
               }}
               className="bb-admin-user__item"
               role="menuitem"
