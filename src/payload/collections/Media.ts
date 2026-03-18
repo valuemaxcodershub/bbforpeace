@@ -25,26 +25,9 @@ export const Media: CollectionConfig = {
     // fail fast with an error instead of hanging when no cloud adapter is configured.
     disableLocalStorage: !!process.env.VERCEL,
     mimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf'],
-    imageSizes: [
-      {
-        name: 'thumbnail',
-        width: 400,
-        height: 300,
-        position: 'centre',
-      },
-      {
-        name: 'card',
-        width: 768,
-        height: 512,
-        position: 'centre',
-      },
-      {
-        name: 'hero',
-        width: 1920,
-        height: 1080,
-        position: 'centre',
-      },
-    ],
+    // No imageSizes — the frontend uses next/image which handles responsive
+    // resizing automatically. Generating sizes server-side would require sharp
+    // to download, resize ×3, and re-upload to Vercel Blob, causing timeouts.
   },
   fields: [
     {
