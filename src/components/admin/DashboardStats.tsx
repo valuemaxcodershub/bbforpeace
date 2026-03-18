@@ -119,6 +119,10 @@ const editorItems: DashboardItem[] = [
 export function DashboardStats() {
   const { user } = useAuth()
   const userRole = (user as any)?.role as UserRole | undefined
+
+  // During logout (user becomes null), render nothing
+  if (!user) return null
+
   const isSuperAdmin = userRole === 'super-admin'
   const items = isSuperAdmin ? superAdminItems : editorItems
 

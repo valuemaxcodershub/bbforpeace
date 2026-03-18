@@ -168,6 +168,9 @@ export function CustomNav() {
     })
   }
 
+  // During logout (user becomes null), render nothing — Payload will redirect to login
+  if (!user) return null
+
   return (
     <aside className="bb-custom-nav">
       {visibleMenu.map((section) => {
@@ -179,7 +182,10 @@ export function CustomNav() {
               <button
                 key={section.label}
                 type="button"
-                onClick={() => logOut()}
+                onClick={async () => {
+                  await logOut()
+                  window.location.href = '/admin'
+                }}
                 className="bb-custom-nav__item"
               >
                 <span className="bb-custom-nav__item-content">

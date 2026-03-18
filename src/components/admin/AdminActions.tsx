@@ -42,7 +42,11 @@ export function AdminActions() {
             </a>
             <button
               type="button"
-              onClick={() => { setIsOpen(false); logOut(); }}
+              onClick={async () => {
+                setIsOpen(false)
+                await logOut()
+                window.location.href = '/admin'
+              }}
               className="bb-admin-user__item"
               role="menuitem"
             >
