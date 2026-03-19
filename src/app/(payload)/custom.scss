@@ -42,18 +42,18 @@ body {
 }
 
 .app-header,
-.nav,
-.drawer,
 .collection-list,
 .doc-controls,
 .render-fields {
   border-radius: 12px;
 }
 
-.nav {
+/* Scope nav styling to sidebar only — Payload reuses .nav inside drawers */
+.gutter--left .nav {
   background: linear-gradient(180deg, #250054 0%, #28005b 55%, #2e0763 100%);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 12px 28px rgba(23, 0, 52, 0.4);
+  border-radius: 12px;
 }
 
 .template-default .gutter--left {
@@ -66,20 +66,20 @@ body {
   background: linear-gradient(180deg, #250054 0%, #28005b 55%, #2e0763 100%) !important;
 }
 
-.nav a,
-.nav button,
-.nav .pill {
+.gutter--left .nav a,
+.gutter--left .nav button,
+.gutter--left .nav .pill {
   color: #e7e2f0;
 }
 
-.nav .active,
-.nav a:hover,
-.nav button:hover {
+.gutter--left .nav .active,
+.gutter--left .nav a:hover,
+.gutter--left .nav button:hover {
   background: rgba(255, 255, 255, 0.16);
 }
 
-.nav,
-.nav * {
+.gutter--left .nav,
+.gutter--left .nav * {
   font-size: 0.98rem;
 }
 
