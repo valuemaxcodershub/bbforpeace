@@ -90,5 +90,21 @@ export async function GET() {
   checks.resolvedUrl = process.env.NEXT_PUBLIC_SITE_URL ||
     (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
 
+  // Check Vercel Blob storage
+  try {
+    const token = process.env.BLOB_READ_WRITE_TOKEN || ''
+    const storeMatch = token.match(/^vercel_blob_rw_([a-z\d]+)_[a-z\d]+$/i)
+    checks.blobStoreId = storeMatch ? storeMatch[1] : 'unparseable'
+    checks.blobBaseUrl = storeMatch ? `https://${storeMatch[1].toLowerCase()}.public.blob.vercel-storage.com` : 'unknown'
+
+    const { list } = await import('@vercel/blob')
+    const blobs = await list({ limit: 5, token })
+    checks.blobFiles = blobs.blobs.map((b: any) => ({ url: b.url, size: b.size, uploaded: b.uploadedAt }))
+    checks.blobCount = blobs.blobs.length
+    checks.blobHasMore = blobs.hasMore
+  } catch (error: any) {
+    checks.blob = `error: ${error?.message || String(error)}`
+  }
+
   return NextResponse.json(checks, { status: checks.status === 'ok' ? 200 : 500 })
 }
