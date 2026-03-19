@@ -44,8 +44,8 @@ export async function GET() {
     const { Pool } = await import('pg')
     // Apply same normalization as payload.config.ts
     let normalized = connStr.replace('sslmode=require', 'sslmode=no-verify')
-    if (normalized.includes('.pooler.supabase.com:6543/')) {
-      normalized = normalized.replace('.pooler.supabase.com:6543/', '.pooler.supabase.com:5432/')
+    if (normalized.includes('.pooler.supabase.com:5432/')) {
+      normalized = normalized.replace('.pooler.supabase.com:5432/', '.pooler.supabase.com:6543/')
     }
     const pool = new Pool({
       connectionString: normalized,

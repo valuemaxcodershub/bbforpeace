@@ -49,14 +49,15 @@ const siteURL =
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
 
 const normalizeConnectionString = (raw: string): string => {
-  // Use session pooler (5432) for Supabase — it supports prepared statements
-  // required by Drizzle ORM. Transaction pooler (6543) uses PgBouncer which
-  // doesn't support prepared statements.
   const base = raw.replace('sslmode=require', 'sslmode=no-verify')
 
-  // If transaction pooler (6543) is configured, rewrite to session pooler (5432)
-  if (base.includes('.pooler.supabase.com:6543/')) {
-    return base.replace('.pooler.supabase.com:6543/', '.pooler.supabase.com:5432/')
+  // In production serverless, use the transaction pooler (port 6543).
+  // Session pooler (5432) has very limited connections on Supabase free tier
+  // and gets exhausted by concurrent serverless functions.
+  // PgBouncer 1.21+ (used by Supabase) supports the extended query protocol
+  // including parameterized queries used by Drizzle/node-postgres.
+  if (isProduction && base.includes('.pooler.supabase.com:5432/')) {
+    return base.replace('.pooler.supabase.com:5432/', '.pooler.supabase.com:6543/')
   }
 
   return base
