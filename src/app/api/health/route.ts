@@ -12,6 +12,8 @@ export async function GET() {
       POSTGRES_URL: !!process.env.POSTGRES_URL,
       POSTGRES_URL_NON_POOLING: !!process.env.POSTGRES_URL_NON_POOLING,
       PAYLOAD_SECRET: !!process.env.PAYLOAD_SECRET,
+      BLOB_READ_WRITE_TOKEN: !!process.env.BLOB_READ_WRITE_TOKEN,
+      VERCEL: !!process.env.VERCEL,
       NODE_ENV: process.env.NODE_ENV,
     },
     connectionString: 'not checked',

@@ -50,9 +50,8 @@ const siteURL =
 
 const normalizeConnectionString = (raw: string): string => {
   // Use session pooler (5432) for Supabase — it supports prepared statements
-  // and lateral joins that Payload CMS requires. Transaction pooler (6543)
-  // uses PgBouncer transaction mode which breaks these features.
-  // With max:1 pool size, session pooler client limits are not an issue.
+  // required by Drizzle ORM. Transaction pooler (6543) uses PgBouncer which
+  // doesn't support prepared statements.
   const base = raw.replace('sslmode=require', 'sslmode=no-verify')
 
   // If transaction pooler (6543) is configured, rewrite to session pooler (5432)
@@ -266,11 +265,8 @@ export default buildConfig({
     ContactUsPageSettings,
   ].map((g) => ({ ...g, admin: { ...g.admin, hideAPIURL: true } })),
 
-  // In production serverless, avoid schema push and prefer pooled runtime connections.
-  // Use local/session URL in development for DDL when push is enabled.
-  // Recommended env setup:
-  // - Production POSTGRES_URL => Supabase transaction pooler (port 6543)
-  // - Local DATABASE_URI => Supabase session pooler (port 5432)
+  // Supabase session pooler (port 5432) — supports prepared statements.
+  // Pool max:1 in production to minimize connection usage on serverless.
   db: postgresAdapter({
     push: !isProduction,
     pool: {
@@ -282,9 +278,9 @@ export default buildConfig({
         )
       ),
       ssl: { rejectUnauthorized: false },
-      max: isProduction ? 2 : 10,
+      max: isProduction ? 1 : 10,
       connectionTimeoutMillis: 30000,
-      idleTimeoutMillis: 20000,
+      idleTimeoutMillis: 10000,
     },
   }),
 
