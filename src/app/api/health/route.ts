@@ -97,11 +97,32 @@ export async function GET() {
     checks.blobStoreId = storeMatch ? storeMatch[1] : 'unparseable'
     checks.blobBaseUrl = storeMatch ? `https://${storeMatch[1].toLowerCase()}.public.blob.vercel-storage.com` : 'unknown'
 
-    const { list } = await import('@vercel/blob')
+    const { list, head } = await import('@vercel/blob')
     const blobs = await list({ limit: 5, token })
     checks.blobFiles = blobs.blobs.map((b: any) => ({ url: b.url, size: b.size, uploaded: b.uploadedAt }))
     checks.blobCount = blobs.blobs.length
     checks.blobHasMore = blobs.hasMore
+
+    // Test head() on the first blob file to verify static handler would work
+    if (blobs.blobs.length > 0) {
+      try {
+        const testUrl = blobs.blobs[0].url
+        const headResult = await head(testUrl, { token })
+        checks.blobHeadTest = { url: testUrl, contentType: headResult.contentType, size: headResult.size, ok: true }
+      } catch (headErr: any) {
+        checks.blobHeadTest = { error: headErr?.message || String(headErr) }
+      }
+      // Also test with the baseUrl + filename pattern the static handler uses
+      try {
+        const firstBlob = blobs.blobs[0]
+        const filename = firstBlob.pathname || new URL(firstBlob.url).pathname.substring(1)
+        const constructedUrl = `${checks.blobBaseUrl}/${filename}`
+        const headResult2 = await head(constructedUrl, { token })
+        checks.blobStaticHandlerTest = { constructedUrl, contentType: headResult2.contentType, size: headResult2.size, ok: true }
+      } catch (headErr2: any) {
+        checks.blobStaticHandlerTest = { error: headErr2?.message || String(headErr2) }
+      }
+    }
   } catch (error: any) {
     checks.blob = `error: ${error?.message || String(error)}`
   }
