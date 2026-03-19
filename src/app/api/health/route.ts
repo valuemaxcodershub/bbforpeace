@@ -47,6 +47,12 @@ export async function GET() {
     if (normalized.includes('.pooler.supabase.com:5432/')) {
       normalized = normalized.replace('.pooler.supabase.com:5432/', '.pooler.supabase.com:6543/')
     }
+    if (normalized.includes(':6543/') && !normalized.includes('pgbouncer=true')) {
+      normalized += (normalized.includes('?') ? '&' : '?') + 'pgbouncer=true'
+    }
+    // Show normalized host:port
+    const normMatch = normalized.match(/@([^/?]+)/)
+    checks.normalizedHost = normMatch ? normMatch[1] : 'unknown'
     const pool = new Pool({
       connectionString: normalized,
       ssl: { rejectUnauthorized: false },
