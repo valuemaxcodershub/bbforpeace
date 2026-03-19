@@ -7,7 +7,6 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatDate(date: string | Date, options?: Intl.DateTimeFormatOptions): string {
   const defaultOptions: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
     month: 'long',
     day: 'numeric',
     ...options,
@@ -57,8 +56,7 @@ export function absoluteUrl(path: string): string {
  *   - null/undefined → fallback
  *   - string paths (e.g. '/images/photo.jpg') → encode if needed
  *   - Payload media objects resolved at depth >= 1
- *   - Payload API URLs (/api/media/file/...) that don't actually serve files
- *     because static files live in public/images, not public/uploads
+ *   - Payload API URLs (/api/media/file/...) backed by Blob storage
  */
 export function getMediaUrl(media: unknown, fallback = '/images/_VEE7124%20(1).jpg'): string {
   if (!media) return fallback
@@ -74,15 +72,8 @@ export function getMediaUrl(media: unknown, fallback = '/images/_VEE7124%20(1).j
     const obj = media as Record<string, unknown>
     const url = typeof obj.url === 'string' ? obj.url : ''
 
-    // Payload generates URLs like https://host/api/media/file/FILENAME
-    // These don't work because files live in public/images/, not public/uploads/
-    // Fall back to the filename-based path
     if (url.includes('/api/media/file/') || url.includes('/api/media/file%2F')) {
-      const filename = typeof obj.filename === 'string' ? obj.filename : ''
-      if (filename) {
-        // Direct images are in /images/, encode the path
-        return safeEncode('/images/' + filename)
-      }
+      return safeEncode(url)
     }
 
     // If url is a local path (starts with / but not /api/), use it directly
@@ -90,7 +81,7 @@ export function getMediaUrl(media: unknown, fallback = '/images/_VEE7124%20(1).j
       return safeEncode(url)
     }
 
-    // Last resort: try filename
+    // Last resort: try filename for local assets
     const filename = typeof obj.filename === 'string' ? obj.filename : ''
     if (filename) return safeEncode('/images/' + filename)
   }
