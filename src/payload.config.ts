@@ -49,21 +49,7 @@ const siteURL =
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
 
 const normalizeConnectionString = (raw: string): string => {
-  let base = raw.replace('sslmode=require', 'sslmode=no-verify')
-
-  // In production serverless, use the transaction pooler (port 6543).
-  // Session pooler (5432) has very limited connections on Supabase free tier
-  // and gets exhausted by concurrent serverless functions.
-  // PgBouncer 1.21+ (used by Supabase) supports the extended query protocol
-  // including parameterized queries used by Drizzle/node-postgres.
-  if (isProduction && base.includes('.pooler.supabase.com:5432/')) {
-    base = base.replace('.pooler.supabase.com:5432/', '.pooler.supabase.com:6543/')
-  }
-
-  // Supabase transaction pooler requires pgbouncer=true parameter
-  if (base.includes(':6543/') && !base.includes('pgbouncer=true')) {
-    base += (base.includes('?') ? '&' : '?') + 'pgbouncer=true'
-  }
+  const base = raw.replace('sslmode=require', 'sslmode=no-verify')
 
   return base
 }
@@ -271,20 +257,20 @@ export default buildConfig({
     ContactUsPageSettings,
   ].map((g) => ({ ...g, admin: { ...g.admin, hideAPIURL: true } })),
 
-  // Supabase session pooler (port 5432) — supports prepared statements.
-  // Pool max:1 in production to minimize connection usage on serverless.
+  // Prefer the direct non-pooling Supabase URL in production. It avoids the
+  // PgBouncer compatibility issues we hit with auth/query rendering.
   db: postgresAdapter({
     push: !isProduction,
     pool: {
       connectionString: normalizeConnectionString(
         (
         isProduction
-          ? (process.env.POSTGRES_URL || process.env.DATABASE_URI || process.env.POSTGRES_URL_NON_POOLING || '')
+          ? (process.env.POSTGRES_URL_NON_POOLING || process.env.DATABASE_URI || process.env.POSTGRES_URL || '')
           : (process.env.DATABASE_URI || process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL || '')
         )
       ),
       ssl: { rejectUnauthorized: false },
-      max: isProduction ? 1 : 10,
+      max: isProduction ? 2 : 10,
       connectionTimeoutMillis: 30000,
       idleTimeoutMillis: 10000,
     },

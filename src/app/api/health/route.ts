@@ -24,7 +24,7 @@ export async function GET() {
   // Show connection string (masked) that Payload would use
   const isProduction = process.env.NODE_ENV === 'production'
   const connStr = isProduction
-    ? (process.env.POSTGRES_URL || process.env.DATABASE_URI || process.env.POSTGRES_URL_NON_POOLING || '')
+    ? (process.env.POSTGRES_URL_NON_POOLING || process.env.DATABASE_URI || process.env.POSTGRES_URL || '')
     : (process.env.DATABASE_URI || process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL || '')
 
   if (connStr) {
@@ -43,13 +43,7 @@ export async function GET() {
   try {
     const { Pool } = await import('pg')
     // Apply same normalization as payload.config.ts
-    let normalized = connStr.replace('sslmode=require', 'sslmode=no-verify')
-    if (normalized.includes('.pooler.supabase.com:5432/')) {
-      normalized = normalized.replace('.pooler.supabase.com:5432/', '.pooler.supabase.com:6543/')
-    }
-    if (normalized.includes(':6543/') && !normalized.includes('pgbouncer=true')) {
-      normalized += (normalized.includes('?') ? '&' : '?') + 'pgbouncer=true'
-    }
+    const normalized = connStr.replace('sslmode=require', 'sslmode=no-verify')
     // Show normalized host:port
     const normMatch = normalized.match(/@([^/?]+)/)
     checks.normalizedHost = normMatch ? normMatch[1] : 'unknown'
