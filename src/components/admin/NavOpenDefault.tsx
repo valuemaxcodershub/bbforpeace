@@ -1,6 +1,6 @@
 'use client'
 
-import { useNav, usePreferences } from '@payloadcms/ui'
+import { useNav } from '@payloadcms/ui'
 import { useEffect, useRef } from 'react'
 
 /**
@@ -23,7 +23,6 @@ import { useEffect, useRef } from 'react'
  */
 export const NavOpenDefault: React.FC = () => {
   const { navOpen, setNavOpen, hydrated } = useNav()
-  const { setPreference } = usePreferences()
   const hasForced = useRef(false)
 
   useEffect(() => {
@@ -35,9 +34,6 @@ export const NavOpenDefault: React.FC = () => {
 
     hasForced.current = true
 
-    // Persist the "open" preference so Payload's own effect also reads it as open
-    setPreference('nav', { open: true })
-
     // Force nav open after a short delay so we run *after* Payload's preference
     // loading & breakpoint effects have settled
     const timer = setTimeout(() => {
@@ -48,7 +44,7 @@ export const NavOpenDefault: React.FC = () => {
     }, 350)
 
     return () => clearTimeout(timer)
-  }, [hydrated, setNavOpen, setPreference]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [hydrated, setNavOpen]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return null
 }
