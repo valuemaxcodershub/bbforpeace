@@ -21,7 +21,7 @@ export const Testimonials: CollectionConfig = {
     read: () => true,
     create: isEditorOrAbove,
     update: isEditorOrAbove,
-    delete: ({ req: { user } }) => user?.role === 'super-admin' || user?.role === 'admin',
+    delete: isEditorOrAbove,
   },
   fields: [
     {

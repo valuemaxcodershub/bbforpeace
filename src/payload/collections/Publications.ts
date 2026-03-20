@@ -21,7 +21,7 @@ export const Publications: CollectionConfig = {
     read: () => true, // Public can read publications
     create: isAdminOrAbove,
     update: isAdminOrAbove,
-    delete: ({ req: { user } }) => user?.role === 'super-admin' || user?.role === 'admin',
+    delete: isAdminOrAbove,
   },
   fields: [
     {

@@ -18,7 +18,7 @@ export const Programmes: CollectionConfig = {
     read: () => true, // Public can read programmes
     create: isAdminOrAbove,
     update: isAdminOrAbove,
-    delete: ({ req: { user } }) => user?.role === 'super-admin' || user?.role === 'admin',
+    delete: isAdminOrAbove,
   },
   fields: [
     {
