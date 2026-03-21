@@ -1,18 +1,19 @@
 'use client'
 
 import { useAuth } from '@payloadcms/ui'
+import Link from 'next/link'
 import {
-  Settings,
-  Home,
-  Info,
-  Newspaper,
-  FileBarChart2,
-  Users,
-  Image,
-  FileText,
+  ArrowRight,
   BookOpen,
   ClipboardList,
-  ArrowRight,
+  FileBarChart2,
+  FileText,
+  Home,
+  Image,
+  Info,
+  Newspaper,
+  Settings,
+  Users,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -118,9 +119,8 @@ const editorItems: DashboardItem[] = [
 
 export function DashboardStats() {
   const { user } = useAuth()
-  const userRole = (user as any)?.role as UserRole | undefined
+  const userRole = (user as { role?: UserRole } | null)?.role
 
-  // During logout (user becomes null), render nothing
   if (!user) return null
 
   const isSuperAdmin = userRole === 'super-admin'
@@ -128,7 +128,6 @@ export function DashboardStats() {
 
   return (
     <section className="bb-dash">
-      {/* Welcome banner */}
       <div className="bb-dash__welcome">
         <div className="bb-dash__welcome-text">
           <h1 className="bb-dash__heading">Welcome back 👋</h1>
@@ -143,12 +142,12 @@ export function DashboardStats() {
         </div>
       </div>
 
-      {/* Cards grid */}
       <div className="bb-dash__grid">
         {items.map((item) => {
           const Icon = item.icon
+
           return (
-            <a key={item.label} href={item.href} className="bb-dash-card">
+            <Link key={item.label} href={item.href} className="bb-dash-card">
               <div className="bb-dash-card__icon-wrap" style={{ background: item.accent }}>
                 <Icon size={22} strokeWidth={2} color="#fff" />
               </div>
@@ -156,10 +155,10 @@ export function DashboardStats() {
                 <span className="bb-dash-card__label">{item.label}</span>
                 <span className="bb-dash-card__desc">{item.description}</span>
               </div>
-              <span className="bb-dash-card__arrow">
+              <span className="bb-dash-card__arrow" aria-hidden="true">
                 <ArrowRight size={16} />
               </span>
-            </a>
+            </Link>
           )
         })}
       </div>

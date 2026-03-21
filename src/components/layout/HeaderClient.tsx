@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 import {
   Menu,
   X,
@@ -54,10 +55,12 @@ const iconMap = {
 } as const
 
 export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoAlt }: HeaderClientProps) {
+  const pathname = usePathname()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const [mobileDropdown, setMobileDropdown] = useState<string | null>(null)
+  const [supportsHover, setSupportsHover] = useState(true)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const searchInputRef = useRef<HTMLInputElement>(null)
@@ -78,6 +81,47 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
   }, [isSearchOpen])
 
   useEffect(() => {
+    const mediaQuery = window.matchMedia('(hover: hover) and (pointer: fine)')
+
+    const updateHoverSupport = () => {
+      setSupportsHover(mediaQuery.matches)
+    }
+
+    updateHoverSupport()
+
+    mediaQuery.addEventListener('change', updateHoverSupport)
+
+    return () => mediaQuery.removeEventListener('change', updateHoverSupport)
+  }, [])
+
+  useEffect(() => {
+    setIsMobileMenuOpen(false)
+    setMobileDropdown(null)
+    setActiveDropdown(null)
+  }, [pathname])
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsMobileMenuOpen(false)
+        setMobileDropdown(null)
+      }
+    }
+
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [isMobileMenuOpen])
+
+  useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setIsSearchOpen(false)
@@ -91,6 +135,23 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
 
   const handleMobileDropdownToggle = (name: string) => {
     setMobileDropdown(mobileDropdown === name ? null : name)
+  }
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false)
+    setMobileDropdown(null)
+  }
+
+  const handleDesktopNavItemClick = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    item: SiteNavItem,
+  ) => {
+    if (supportsHover || !item.children) return
+
+    if (activeDropdown !== item.name) {
+      event.preventDefault()
+      setActiveDropdown(item.name)
+    }
   }
 
   const handleSearch = (event: React.FormEvent) => {
@@ -147,7 +208,7 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
         <div className="container">
           <div className="flex justify-between items-center py-3">
             <Link href="/" className="flex items-center group">
-              <div className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-full overflow-hidden shadow-md group-hover:shadow-lg transition-shadow ring-2 ring-primary-100 flex-shrink-0">
+              <div className="relative w-11 h-11 sm:w-16 sm:h-16 rounded-full overflow-hidden shadow-md group-hover:shadow-lg transition-shadow ring-2 ring-primary-100 flex-shrink-0">
                 <Image
                   src={logoUrl}
                   alt={logoAlt}
@@ -156,11 +217,11 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
                   priority
                 />
               </div>
-              <div className="ml-2 sm:ml-3">
-                <span className="block text-[3.2vw] sm:text-[2vw] md:text-[1.4vw] lg:text-[1.1vw] font-bold text-gradient leading-tight">
+              <div className="ml-2 sm:ml-3 min-w-0 max-w-[58vw] sm:max-w-none">
+                <span className="block text-sm sm:text-[2vw] md:text-[1.4vw] lg:text-[1.1vw] font-bold text-gradient leading-tight truncate sm:whitespace-normal">
                   {siteName}
                 </span>
-                <span className="block text-[1.8vw] sm:text-[1.2vw] md:text-[0.8vw] lg:text-[0.65vw] text-gray-500 font-medium">
+                <span className="hidden sm:block text-[1.2vw] md:text-[0.8vw] lg:text-[0.65vw] text-gray-500 font-medium leading-tight">
                   {siteTagline}
                 </span>
               </div>
@@ -171,11 +232,14 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
                 <div
                   key={item.name}
                   className="relative"
-                  onMouseEnter={() => item.children && setActiveDropdown(item.name)}
-                  onMouseLeave={() => setActiveDropdown(null)}
+                  onMouseEnter={supportsHover && item.children ? () => setActiveDropdown(item.name) : undefined}
+                  onMouseLeave={supportsHover && item.children ? () => setActiveDropdown(null) : undefined}
                 >
                   <Link
                     href={item.href}
+                    onClick={(event) => handleDesktopNavItemClick(event, item)}
+                    aria-haspopup={item.children ? 'menu' : undefined}
+                    aria-expanded={item.children ? activeDropdown === item.name : undefined}
                     className={`flex items-center gap-1 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
                       activeDropdown === item.name
                         ? 'bg-primary-100 text-primary-900'
@@ -230,7 +294,7 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setIsSearchOpen(true)}
-                className="p-2.5 rounded-full text-gray-600 hover:text-primary-900 hover:bg-gray-100 transition-all"
+                className="min-h-11 min-w-11 p-3 rounded-full text-gray-600 hover:text-primary-900 hover:bg-gray-100 transition-all touch-manipulation"
                 aria-label="Search"
               >
                 <Search className="w-5 h-5" />
@@ -244,7 +308,7 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
               </Link>
 
               <button
-                className="lg:hidden p-2.5 rounded-full text-gray-700 hover:bg-gray-100 transition-colors"
+                className="lg:hidden min-h-11 min-w-11 p-3 rounded-full text-gray-700 hover:bg-gray-100 transition-colors touch-manipulation"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 aria-label="Toggle menu"
               >
@@ -261,20 +325,21 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
           onClick={() => setIsMobileMenuOpen(false)}
         />
 
-        <div className={`lg:hidden fixed top-0 right-0 h-full w-[85%] max-w-sm bg-white z-50 shadow-2xl transform transition-transform duration-300 ease-out ${
+        <div className={`lg:hidden fixed inset-y-0 right-0 h-[100dvh] w-[min(90vw,22rem)] bg-white z-50 shadow-2xl transform transition-transform duration-300 ease-out ${
           isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}>
-          <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-primary-900 to-primary-800">
+        }`} id="mobile-site-menu" aria-hidden={!isMobileMenuOpen}>
+          <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-primary-900 to-primary-800 pt-[max(1rem,env(safe-area-inset-top))]">
             <span className="text-white font-bold text-lg">Menu</span>
             <button
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={closeMobileMenu}
               className="p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+              aria-label="Close menu"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
-          <div className="h-[calc(100%-140px)] overflow-y-auto py-4">
+          <div className="flex h-[calc(100dvh-4.75rem)] flex-col overflow-y-auto overscroll-contain py-4 pb-[max(5rem,env(safe-area-inset-bottom))]">
             <nav className="flex flex-col gap-1 px-3">
               {navigation.map((item, itemIndex) => (
                 <div
@@ -286,9 +351,10 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
                     <>
                       <button
                         onClick={() => handleMobileDropdownToggle(item.name)}
-                        className={`flex items-center justify-between w-full px-4 py-3.5 rounded-xl font-medium transition-all duration-300 ${
+                        className={`flex min-h-11 items-center justify-between w-full px-4 py-3.5 rounded-xl font-medium transition-all duration-300 ${
                           mobileDropdown === item.name ? 'bg-primary-100 text-primary-900' : 'text-gray-700 hover:bg-gray-100'
                         }`}
+                        aria-expanded={mobileDropdown === item.name}
                       >
                         <span>{item.name}</span>
                         <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${
@@ -308,10 +374,9 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
                                 <Link
                                   key={child.name}
                                   href={child.href}
-                                  className="group flex items-center gap-3 px-3 py-3 rounded-lg bg-white/60 hover:bg-white hover:shadow-sm border border-transparent hover:border-gray-100 transition-all duration-200"
+                                  className="group flex items-center gap-3 px-3 py-3.5 rounded-lg bg-white/60 hover:bg-white hover:shadow-sm border border-transparent hover:border-gray-100 transition-all duration-200 touch-manipulation"
                                   onClick={() => {
-                                    setIsMobileMenuOpen(false)
-                                    setMobileDropdown(null)
+                                    closeMobileMenu()
                                   }}
                                   style={{ animationDelay: `${childIndex * 30}ms` }}
                                 >
@@ -335,8 +400,8 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
                   ) : (
                     <Link
                       href={item.href}
-                      className="flex items-center px-4 py-3.5 rounded-xl text-gray-700 font-medium hover:bg-gray-100 hover:text-primary-900 transition-all duration-200"
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex min-h-11 items-center px-4 py-3.5 rounded-xl text-gray-700 font-medium hover:bg-gray-100 hover:text-primary-900 transition-all duration-200 touch-manipulation"
+                      onClick={closeMobileMenu}
                     >
                       {item.name}
                     </Link>
@@ -349,8 +414,8 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
           <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-gray-50 space-y-3">
             <Link
               href="/contact"
-              className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-xl font-semibold text-primary-900 bg-accent-gold hover:bg-yellow-400 transition-all duration-200 shadow-lg shadow-yellow-400/30"
-              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex min-h-11 items-center justify-center gap-2 w-full px-6 py-3 rounded-xl font-semibold text-primary-900 bg-accent-gold hover:bg-yellow-400 transition-all duration-200 shadow-lg shadow-yellow-400/30 touch-manipulation"
+              onClick={closeMobileMenu}
             >
               Get Involved
             </Link>
