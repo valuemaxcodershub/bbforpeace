@@ -1,75 +1,125 @@
--- Enable Row Level Security on the public tables exposed by Supabase/PostgREST.
+-- Enable Row Level Security and add explicit policies for the tables exposed
+-- through Supabase/PostgREST.
 -- Run this in the Supabase SQL editor or your deployment migration pipeline.
 
-alter table if exists public.site_settings_menu_structure_report_submenu enable row level security;
-alter table if exists public.site_settings_annual_report_placeholders enable row level security;
-alter table if exists public.users enable row level security;
-alter table if exists public.posts_media_gallery enable row level security;
-alter table if exists public.publications enable row level security;
-alter table if exists public.posts_rels enable row level security;
-alter table if exists public.team enable row level security;
-alter table if exists public.partners enable row level security;
-alter table if exists public.programmes_objectives enable row level security;
-alter table if exists public.programmes_achievements enable row level security;
-alter table if exists public.events enable row level security;
-alter table if exists public.programmes_gallery enable row level security;
-alter table if exists public.tags enable row level security;
-alter table if exists public.programmes enable row level security;
-alter table if exists public.payload_kv enable row level security;
-alter table if exists public.subscribers enable row level security;
-alter table if exists public.payload_preferences enable row level security;
-alter table if exists public.payload_preferences_rels enable row level security;
-alter table if exists public.site_settings_hero_slides enable row level security;
-alter table if exists public.site_settings_typewriter_phrases enable row level security;
-alter table if exists public.payload_migrations enable row level security;
-alter table if exists public.payload_locked_documents enable row level security;
-alter table if exists public.site_settings_core_values enable row level security;
-alter table if exists public.site_settings_menu_structure_about_us_submenu enable row level security;
-alter table if exists public.site_settings_impact_stats enable row level security;
-alter table if exists public.site_settings_about_highlights enable row level security;
-alter table if exists public.partners_settings_items enable row level security;
-alter table if exists public.partners_settings enable row level security;
-alter table if exists public.footer_settings enable row level security;
-alter table if exists public.award_settings enable row level security;
-alter table if exists public.social_media_settings enable row level security;
-alter table if exists public.site_settings enable row level security;
-alter table if exists public.contact_settings enable row level security;
-alter table if exists public.home_page_settings_hero_slides enable row level security;
-alter table if exists public.home_page_settings_typewriter_phrases enable row level security;
-alter table if exists public.home_page_settings_impact_highlights enable row level security;
-alter table if exists public.home_page_settings_impact_stats enable row level security;
-alter table if exists public.home_page_settings_about_highlights enable row level security;
-alter table if exists public.home_page_settings_focus_areas enable row level security;
-alter table if exists public.home_page_settings_approach_pillars enable row level security;
-alter table if exists public.general_settings enable row level security;
-alter table if exists public.home_page_settings_videos enable row level security;
-alter table if exists public.home_page_settings_awards enable row level security;
-alter table if exists public.about_us_page_settings_milestones enable row level security;
-alter table if exists public.home_page_settings_initiatives enable row level security;
-alter table if exists public.about_us_page_settings_core_values enable row level security;
-alter table if exists public.about_us_page_settings_strategic_pillars enable row level security;
-alter table if exists public.about_us_page_settings_unique_points enable row level security;
-alter table if exists public.about_us_page_settings_about_awards enable row level security;
-alter table if exists public.programme_page_settings enable row level security;
-alter table if exists public.event_page_settings enable row level security;
-alter table if exists public.media_page_settings_testimonials enable row level security;
-alter table if exists public.media_page_settings enable row level security;
-alter table if exists public.media_page_settings_gallery_videos enable row level security;
-alter table if exists public.reports_settings_annual_reports enable row level security;
-alter table if exists public.media_page_settings_gallery_images enable row level security;
-alter table if exists public.about_us_page_settings enable row level security;
-alter table if exists public.users_sessions enable row level security;
-alter table if exists public.media enable row level security;
-alter table if exists public.posts enable row level security;
-alter table if exists public.categories enable row level security;
-alter table if exists public.site_settings_menu_structure_media_submenu enable row level security;
-alter table if exists public.home_page_settings enable row level security;
-alter table if exists public.reports_settings enable row level security;
-alter table if exists public.reports_settings_strategic_pillars enable row level security;
-alter table if exists public.contact_us_page_settings enable row level security;
-alter table if exists public.contact_us_page_settings_offices enable row level security;
-alter table if exists public.award_settings_awards enable row level security;
-alter table if exists public.gallery_items enable row level security;
-alter table if exists public.testimonials enable row level security;
-alter table if exists public.payload_locked_documents_rels enable row level security;
-alter table if exists public.seo_settings enable row level security;
+do $$
+declare
+	table_name text;
+	policy_name text;
+	public_tables text[] := array[
+		'site_settings_menu_structure_report_submenu',
+		'site_settings_annual_report_placeholders',
+		'posts_media_gallery',
+		'publications',
+		'posts_rels',
+		'team',
+		'partners',
+		'programmes_objectives',
+		'programmes_achievements',
+		'events',
+		'programmes_gallery',
+		'tags',
+		'programmes',
+		'site_settings_hero_slides',
+		'site_settings_typewriter_phrases',
+		'site_settings_core_values',
+		'site_settings_menu_structure_about_us_submenu',
+		'site_settings_impact_stats',
+		'site_settings_about_highlights',
+		'partners_settings_items',
+		'partners_settings',
+		'footer_settings',
+		'award_settings',
+		'social_media_settings',
+		'site_settings',
+		'contact_settings',
+		'home_page_settings_hero_slides',
+		'home_page_settings_typewriter_phrases',
+		'home_page_settings_impact_highlights',
+		'home_page_settings_impact_stats',
+		'home_page_settings_about_highlights',
+		'home_page_settings_focus_areas',
+		'home_page_settings_approach_pillars',
+		'general_settings',
+		'home_page_settings_videos',
+		'home_page_settings_awards',
+		'about_us_page_settings_milestones',
+		'home_page_settings_initiatives',
+		'about_us_page_settings_core_values',
+		'about_us_page_settings_strategic_pillars',
+		'about_us_page_settings_unique_points',
+		'about_us_page_settings_about_awards',
+		'programme_page_settings',
+		'event_page_settings',
+		'media_page_settings_testimonials',
+		'media_page_settings',
+		'media_page_settings_gallery_videos',
+		'reports_settings_annual_reports',
+		'media_page_settings_gallery_images',
+		'about_us_page_settings',
+		'media',
+		'posts',
+		'categories',
+		'site_settings_menu_structure_media_submenu',
+		'home_page_settings',
+		'reports_settings',
+		'reports_settings_strategic_pillars',
+		'contact_us_page_settings',
+		'contact_us_page_settings_offices',
+		'award_settings_awards',
+		'gallery_items',
+		'testimonials',
+		'seo_settings'
+	];
+	private_tables text[] := array[
+		'users',
+		'users_sessions',
+		'payload_kv',
+		'payload_preferences',
+		'payload_preferences_rels',
+		'payload_migrations',
+		'payload_locked_documents',
+		'payload_locked_documents_rels',
+		'subscribers'
+	];
+begin
+	foreach table_name in array public_tables loop
+		execute format('alter table if exists public.%I enable row level security', table_name);
+
+		policy_name := table_name || '_select_public';
+		execute format('drop policy if exists %I on public.%I', policy_name, table_name);
+		execute format('create policy %I on public.%I for select to anon, authenticated using (true)', policy_name, table_name);
+
+		policy_name := table_name || '_insert_authenticated';
+		execute format('drop policy if exists %I on public.%I', policy_name, table_name);
+		execute format('create policy %I on public.%I for insert to authenticated with check (true)', policy_name, table_name);
+
+		policy_name := table_name || '_update_authenticated';
+		execute format('drop policy if exists %I on public.%I', policy_name, table_name);
+		execute format('create policy %I on public.%I for update to authenticated using (true) with check (true)', policy_name, table_name);
+
+		policy_name := table_name || '_delete_authenticated';
+		execute format('drop policy if exists %I on public.%I', policy_name, table_name);
+		execute format('create policy %I on public.%I for delete to authenticated using (true)', policy_name, table_name);
+	end loop;
+
+	foreach table_name in array private_tables loop
+		execute format('alter table if exists public.%I enable row level security', table_name);
+
+		policy_name := table_name || '_select_authenticated';
+		execute format('drop policy if exists %I on public.%I', policy_name, table_name);
+		execute format('create policy %I on public.%I for select to authenticated using (true)', policy_name, table_name);
+
+		policy_name := table_name || '_insert_authenticated';
+		execute format('drop policy if exists %I on public.%I', policy_name, table_name);
+		execute format('create policy %I on public.%I for insert to authenticated with check (true)', policy_name, table_name);
+
+		policy_name := table_name || '_update_authenticated';
+		execute format('drop policy if exists %I on public.%I', policy_name, table_name);
+		execute format('create policy %I on public.%I for update to authenticated using (true) with check (true)', policy_name, table_name);
+
+		policy_name := table_name || '_delete_authenticated';
+		execute format('drop policy if exists %I on public.%I', policy_name, table_name);
+		execute format('create policy %I on public.%I for delete to authenticated using (true)', policy_name, table_name);
+	end loop;
+end $$;
