@@ -159,6 +159,36 @@ export async function GET() {
       checks.payloadFindOnePublication = `FAILED: ${findErr?.message || String(findErr)}`
     }
 
+    // Test: findByID publication 14 (corrupted data in admin)
+    try {
+      const pub14 = await pl.findByID({ collection: 'publications', id: 14, depth: 0 })
+      checks.payloadFindPub14 = `ok: slug=${pub14.slug}, title=${String(pub14.title).substring(0, 60)}`
+    } catch (findErr: any) {
+      checks.payloadFindPub14 = `FAILED: ${findErr?.message || String(findErr)}`
+    }
+
+    // Test: update with overrideAccess=false (simulates HTTP API with auth)
+    try {
+      const pubs2 = await pl.find({ collection: 'publications', limit: 1, depth: 0 })
+      if (pubs2.docs.length > 0) {
+        const users = await pl.find({ collection: 'users', limit: 1, depth: 0 })
+        if (users.docs.length > 0) {
+          const testDoc = pubs2.docs[0]
+          await pl.update({
+            collection: 'publications',
+            id: testDoc.id,
+            data: { title: testDoc.title as string },
+            depth: 0,
+            overrideAccess: false,
+            user: users.docs[0],
+          })
+          checks.payloadUpdateWithUser = `ok (user=${users.docs[0].id}, role=${(users.docs[0] as any).role})`
+        }
+      }
+    } catch (authUpdateErr: any) {
+      checks.payloadUpdateWithUser = `FAILED: ${authUpdateErr?.message || String(authUpdateErr)}`
+    }
+
     // Test: find + update a post
     try {
       const posts = await pl.find({ collection: 'posts', limit: 1, depth: 0 })
