@@ -39,8 +39,8 @@ function withErrorLogging(
   }
 }
 
-export const GET = REST_GET(config)
-export const POST = REST_POST(config)
+export const GET = withErrorLogging(REST_GET(config), 'GET')
+export const POST = withErrorLogging(REST_POST(config), 'POST')
 export const DELETE = withErrorLogging(REST_DELETE(config), 'DELETE')
 export const PATCH = withErrorLogging(REST_PATCH(config), 'PATCH')
 export const PUT = withErrorLogging(REST_PUT(config), 'PUT')
