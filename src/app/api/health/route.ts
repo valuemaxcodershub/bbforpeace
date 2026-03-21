@@ -127,5 +127,69 @@ export async function GET() {
     checks.blob = `error: ${error?.message || String(error)}`
   }
 
+  // ── Database role & RLS diagnostics ──
+  try {
+    const { Pool } = await import('pg')
+    const normalized = connStr.replace('sslmode=require', 'sslmode=no-verify')
+    const diagPool = new Pool({
+      connectionString: normalized,
+      ssl: { rejectUnauthorized: false },
+      max: 1,
+      connectionTimeoutMillis: 15000,
+    })
+
+    // Check if current role has BYPASSRLS
+    const roleInfo = await diagPool.query(
+      `SELECT rolname, rolsuper, rolbypassrls FROM pg_roles WHERE rolname = current_user`,
+    )
+    checks.dbRole = roleInfo.rows[0] || 'unknown'
+
+    // List tables with RLS enabled but no policies (potential blockers)
+    const rlsDiag = await diagPool.query(`
+      SELECT c.relname AS table_name,
+             c.relrowsecurity AS rls_enabled,
+             COALESCE(COUNT(p.polname), 0) AS policy_count
+      FROM pg_class c
+      LEFT JOIN pg_policy p ON p.polrelid = c.oid
+      WHERE c.relnamespace = 'public'::regnamespace
+        AND c.relkind = 'r'
+        AND c.relrowsecurity = true
+      GROUP BY c.relname, c.relrowsecurity
+      HAVING COALESCE(COUNT(p.polname), 0) = 0
+      ORDER BY c.relname
+    `)
+    checks.tablesWithRLSNoPolicies = rlsDiag.rows.map((r: any) => r.table_name)
+
+    // Test a write operation (safe: insert + immediately delete from tags)
+    try {
+      const testSlug = `_health_check_${Date.now()}`
+      const ins = await diagPool.query(
+        `INSERT INTO tags (name, updated_at, created_at) VALUES ($1, NOW(), NOW()) RETURNING id`,
+        [testSlug],
+      )
+      const testId = ins.rows[0].id
+      await diagPool.query(`DELETE FROM tags WHERE id = $1`, [testId])
+      checks.writeTest = 'ok (insert+delete on tags succeeded)'
+    } catch (writeErr: any) {
+      checks.writeTest = `FAILED: ${writeErr?.message || String(writeErr)}`
+    }
+
+    // Test write on payload_locked_documents (Payload uses this for document locking)
+    try {
+      const lockIns = await diagPool.query(
+        `INSERT INTO payload_locked_documents (updated_at, created_at) VALUES (NOW(), NOW()) RETURNING id`,
+      )
+      const lockId = lockIns.rows[0].id
+      await diagPool.query(`DELETE FROM payload_locked_documents WHERE id = $1`, [lockId])
+      checks.lockTableWriteTest = 'ok'
+    } catch (lockErr: any) {
+      checks.lockTableWriteTest = `FAILED: ${lockErr?.message || String(lockErr)}`
+    }
+
+    await diagPool.end()
+  } catch (diagErr: any) {
+    checks.rlsDiagnostics = `error: ${diagErr?.message || String(diagErr)}`
+  }
+
   return NextResponse.json(checks, { status: checks.status === 'ok' ? 200 : 500 })
 }
