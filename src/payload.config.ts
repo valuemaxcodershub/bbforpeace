@@ -183,6 +183,14 @@ if (!payloadSecret && process.env.NODE_ENV === 'production') {
 
 // Build allowed origins list (site URL + Vercel preview URL if available)
 const allowedOrigins = [siteURL]
+
+// Also allow with/without www so CORS/CSRF works regardless of how the user navigates
+if (siteURL.includes('://www.')) {
+  allowedOrigins.push(siteURL.replace('://www.', '://'))
+} else if (siteURL.includes('://') && !siteURL.includes('://www.')) {
+  allowedOrigins.push(siteURL.replace('://', '://www.'))
+}
+
 if (process.env.VERCEL_URL && !siteURL.includes(process.env.VERCEL_URL)) {
   allowedOrigins.push(`https://${process.env.VERCEL_URL}`)
 }
@@ -270,7 +278,7 @@ export default buildConfig({
         )
       ),
       ssl: { rejectUnauthorized: false },
-      max: isProduction ? 2 : 10,
+      max: isProduction ? 4 : 10,
       connectionTimeoutMillis: 30000,
       idleTimeoutMillis: 10000,
     },
