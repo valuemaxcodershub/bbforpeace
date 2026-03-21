@@ -127,6 +127,65 @@ export async function GET() {
     checks.blob = `error: ${error?.message || String(error)}`
   }
 
+  // ── Payload-level CRUD test (mimics admin save / delete) ──
+  try {
+    const { getPayload } = await import('payload')
+    const payloadConfig = (await import('@payload-config')).default
+    const pl = await getPayload({ config: payloadConfig })
+
+    // Test: find a single publication via Payload (same as admin edit view)
+    try {
+      const pubs = await pl.find({ collection: 'publications', limit: 1, depth: 0 })
+      if (pubs.docs.length > 0) {
+        const testDoc = pubs.docs[0]
+        checks.payloadFindOnePublication = `ok: id=${testDoc.id}, title=${String(testDoc.title).substring(0, 50)}`
+
+        // Test: update (PATCH) the same doc with its own title (no-op change)
+        try {
+          await pl.update({
+            collection: 'publications',
+            id: testDoc.id,
+            data: { title: testDoc.title as string },
+            depth: 0,
+          })
+          checks.payloadUpdatePublication = 'ok'
+        } catch (updateErr: any) {
+          checks.payloadUpdatePublication = `FAILED: ${updateErr?.message || String(updateErr)}`
+        }
+      } else {
+        checks.payloadFindOnePublication = 'no documents'
+      }
+    } catch (findErr: any) {
+      checks.payloadFindOnePublication = `FAILED: ${findErr?.message || String(findErr)}`
+    }
+
+    // Test: find + update a post
+    try {
+      const posts = await pl.find({ collection: 'posts', limit: 1, depth: 0 })
+      if (posts.docs.length > 0) {
+        const testPost = posts.docs[0]
+        checks.payloadFindOnePost = `ok: id=${testPost.id}`
+        try {
+          await pl.update({
+            collection: 'posts',
+            id: testPost.id,
+            data: { title: testPost.title as string },
+            depth: 0,
+          })
+          checks.payloadUpdatePost = 'ok'
+        } catch (updateErr: any) {
+          checks.payloadUpdatePost = `FAILED: ${updateErr?.message || String(updateErr)}`
+        }
+      } else {
+        checks.payloadFindOnePost = 'no documents'
+      }
+    } catch (findErr: any) {
+      checks.payloadFindOnePost = `FAILED: ${findErr?.message || String(findErr)}`
+    }
+  } catch (crudErr: any) {
+    checks.payloadCrudTest = `error: ${crudErr?.message || String(crudErr)}`
+  }
+
   // ── Database role & RLS diagnostics ──
   try {
     const { Pool } = await import('pg')
