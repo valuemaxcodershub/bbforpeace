@@ -217,11 +217,11 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
                   priority
                 />
               </div>
-              <div className="ml-2 sm:ml-3 min-w-0 max-w-[58vw] sm:max-w-none">
-                <span className="block text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gradient leading-tight">
+              <div className="ml-2 sm:ml-3 min-w-0">
+                <span className="block text-[0.7rem] sm:text-xs md:text-sm lg:text-base font-bold text-gradient leading-tight whitespace-nowrap">
                   Building Blocks for Peace Foundation
                 </span>
-                <span className="hidden sm:block text-xs md:text-sm text-gray-500 font-medium leading-tight">
+                <span className="hidden sm:block text-[0.6rem] md:text-xs text-gray-500 font-medium leading-tight">
                   {siteTagline}
                 </span>
               </div>
