@@ -278,7 +278,7 @@ export default buildConfig({
         )
       ),
       ssl: { rejectUnauthorized: false },
-      max: isProduction ? 4 : 10,
+      max: isProduction ? 2 : 10,
       connectionTimeoutMillis: 30000,
       idleTimeoutMillis: 10000,
     },

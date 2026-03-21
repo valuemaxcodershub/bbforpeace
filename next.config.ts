@@ -22,6 +22,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'www.bbforpeace.org',
+      },
+      {
+        protocol: 'https',
         hostname: 'img.youtube.com',
       },
       {
