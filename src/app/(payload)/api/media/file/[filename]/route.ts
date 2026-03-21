@@ -1,5 +1,3 @@
-import path from 'path'
-import fs from 'fs'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 
@@ -38,53 +36,13 @@ async function blobExists(url: string): Promise<boolean> {
 }
 
 /**
- * Try to serve the file from the local public/images directory.
- * Works both locally (filesystem) and on Vercel (bundled static assets).
+ * Redirect to the file in public/images/ (served by CDN on Vercel, by dev server locally).
+ * No fs/path imports — avoids bundling public/images/ into the serverless function.
  */
-function tryLocalFile(filename: string): Response | null {
-  // In production (Vercel), static files are served by the CDN at /images/...
-  // We redirect to the public path so Next.js / Vercel handles it.
-  // Check a few possible sub-paths the file might live under.
-  const possiblePaths = [
-    filename,                    // e.g. "_VEE6792.jpg"
-    `board/${filename}`,         // e.g. "board/Rafiu Adeniran Lawal.jpeg"
-    `ourteam/${filename}`,       // e.g. "ourteam/1. Rafiu Adeniran Lawal.jpeg"
-    `reports/${filename}`,       // e.g. "reports/2025 annual report.PNG"
-    `partners/${filename}`,
-  ]
-
-  // On Vercel, we can't read the filesystem — redirect to /images/<path>
-  // The static files in public/images/ are served by the CDN.
-  if (process.env.VERCEL) {
-    // Encode each path segment separately so slashes are preserved
-    const encoded = filename.split('/').map(seg => encodeURIComponent(seg)).join('/')
-    const publicPath = `/images/${encoded}`
-    const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bbforpeace.org'
-    return Response.redirect(`${base}${publicPath}`, 307)
-  }
-
-  // Local dev: try actual filesystem
-  const publicDir = path.join(process.cwd(), 'public', 'images')
-  for (const rel of possiblePaths) {
-    const fullPath = path.join(publicDir, rel)
-    if (fs.existsSync(fullPath)) {
-      const ext = path.extname(fullPath).toLowerCase()
-      const mimeMap: Record<string, string> = {
-        '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png',
-        '.webp': 'image/webp', '.gif': 'image/gif', '.svg': 'image/svg+xml',
-        '.pdf': 'application/pdf', '.jfif': 'image/jpeg',
-      }
-      const contentType = mimeMap[ext] || 'application/octet-stream'
-      const data = fs.readFileSync(fullPath)
-      return new Response(data, {
-        headers: {
-          'Content-Type': contentType,
-          'Cache-Control': 'public, max-age=31536000, immutable',
-        },
-      })
-    }
-  }
-  return null
+function redirectToPublicImage(filename: string): Response {
+  const encoded = filename.split('/').map(seg => encodeURIComponent(seg)).join('/')
+  const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bbforpeace.org'
+  return Response.redirect(`${base}/images/${encoded}`, 307)
 }
 
 async function handleMediaFileRequest(filename: string): Promise<Response> {
@@ -115,7 +73,9 @@ async function handleMediaFileRequest(filename: string): Promise<Response> {
 
   // 1. Try Vercel Blob first
   if (baseUrl) {
-    const fileKey = path.posix.join(prefix, encodeURIComponent(decodedFilename))
+    const fileKey = prefix
+      ? `${prefix}/${encodeURIComponent(decodedFilename)}`
+      : encodeURIComponent(decodedFilename)
     const blobUrl = `${baseUrl}/${fileKey}`
 
     if (await blobExists(blobUrl)) {
@@ -131,16 +91,8 @@ async function handleMediaFileRequest(filename: string): Promise<Response> {
     }
   }
 
-  // 2. Fall back to local public/images/ files
-  const localResponse = tryLocalFile(decodedFilename)
-  if (localResponse) {
-    return localResponse
-  }
-
-  return Response.json(
-    { message: `File not found: ${decodedFilename}` },
-    { status: 404 },
-  )
+  // 2. Fall back to public/images/ (served by CDN/dev server, NOT bundled into function)
+  return redirectToPublicImage(decodedFilename)
 }
 
 export async function GET(_: Request, { params }: { params: Promise<{ filename: string }> }) {
