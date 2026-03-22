@@ -108,6 +108,8 @@ export default async function TestimonialsPage() {
             </div>
 
             {/* Featured (first) testimonial */}
+            {testimonials.length > 0 ? (
+            <>
             <article
               className="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-2xl transition-all lg:flex mb-12"
               data-scroll="up"
@@ -170,6 +172,14 @@ export default async function TestimonialsPage() {
                 </article>
               ))}
             </div>
+            </>
+            ) : (
+              <div className="text-center py-16">
+                <MessageSquareQuote className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-700 mb-2">No testimonials yet</h3>
+                <p className="text-gray-500">Check back soon for inspiring stories from our community.</p>
+              </div>
+            )}
 
             {/* CTA section */}
             <div

@@ -12,6 +12,18 @@ const defaultPartners = [
   { id: '6', name: 'Ford Foundation', logo: '/images/partners/ford.png' },
 ]
 
+// Name-based fallback so DB partners without uploaded logos still get the right image
+const partnerLogoFallback: Record<string, string> = {
+  'GPPAC': '/images/partners/gppac.jfif',
+  'GPPAC Foundation': '/images/partners/gppac.jfif',
+  'WANEP': '/images/partners/wanep.png',
+  'West Africa Network for Peacebuilding': '/images/partners/wanep.png',
+  'British Council': '/images/partners/British_Council_logo.svg.png',
+  'MacArthur Foundation': '/images/partners/maaurthor.jfif',
+  'Open Society Foundations': '/images/partners/open%20society%20foundation.png',
+  'Ford Foundation': '/images/partners/ford.png',
+}
+
 export interface PartnersSectionProps {
   heading?: string
   subheading?: string
@@ -32,7 +44,7 @@ export function PartnersSection({
   const partners = partnersProp?.length ? partnersProp.map((p, i) => ({
     id: String(i + 1),
     name: p.name,
-    logo: getMediaUrl(p.logo, '/images/partners/gppac.jfif'),
+    logo: getMediaUrl(p.logo, partnerLogoFallback[p.name] || '/images/partners/gppac.jfif'),
   })) : defaultPartners
   // Double the partners array for seamless infinite scroll
   const doubledPartners = [...partners, ...partners]

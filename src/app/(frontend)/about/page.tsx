@@ -139,11 +139,23 @@ export default async function AboutPage() {
   const regionOfficeCity = as.regionOfficeCity || 'Makurdi, Benue State'
   const regionOfficeEmail = as.regionOfficeEmail || 'info@bbforpeace.org'
 
+  // Name-based fallback so DB partners without uploaded logos still get the right image
+  const partnerLogoFallback: Record<string, string> = {
+    'GPPAC': '/images/partners/gppac.jfif',
+    'GPPAC Foundation': '/images/partners/gppac.jfif',
+    'WANEP': '/images/partners/wanep.png',
+    'West Africa Network for Peacebuilding': '/images/partners/wanep.png',
+    'British Council': '/images/partners/British_Council_logo.svg.png',
+    'MacArthur Foundation': '/images/partners/maaurthor.jfif',
+    'Open Society Foundations': '/images/partners/open%20society%20foundation.png',
+    'Ford Foundation': '/images/partners/ford.png',
+  }
+
   // Partners - prefer collection data, fallback to hardcoded
   const partners = partnersDocs.length ? partnersDocs.map((p: any) => ({
     name: p.name,
     description: p.description || '',
-    logo: getMediaUrl(p.logo, '/images/partners/gppac.jfif'),
+    logo: getMediaUrl(p.logo, partnerLogoFallback[p.name] || '/images/partners/gppac.jfif'),
   })) : [
     { name: 'GPPAC', description: 'Global Partnership for Prevention of Armed Conflict', logo: '/images/partners/gppac.jfif' },
     { name: 'WANEP', description: 'West Africa Network for Peacebuilding', logo: '/images/partners/wanep.png' },

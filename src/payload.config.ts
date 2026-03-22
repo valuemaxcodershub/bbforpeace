@@ -268,23 +268,28 @@ export default buildConfig({
     ContactUsPageSettings,
   ].map((g) => ({ ...g, admin: { ...g.admin, hideAPIURL: true } })),
 
-  // Prefer the direct non-pooling Supabase URL in production. It avoids the
-  // PgBouncer compatibility issues we hit with auth/query rendering.
+  // Use Supabase transaction-mode pooler (POSTGRES_URL, port 6543) in production.
+  // Session mode (POSTGRES_URL_NON_POOLING) causes MaxClientsInSessionMode errors
+  // because each Vercel serverless function opens its own pg pool and the combined
+  // client count across concurrent functions exceeds session-mode pool_size.
+  // Transaction mode releases server connections after each query, supporting far
+  // more concurrent clients.
   db: postgresAdapter({
     push: !isProduction,
     pool: {
       connectionString: normalizeConnectionString(
         (
         isProduction
-          ? (process.env.POSTGRES_URL_NON_POOLING || process.env.DATABASE_URI || process.env.POSTGRES_URL || '')
+          ? (process.env.POSTGRES_URL || process.env.DATABASE_URI || process.env.POSTGRES_URL_NON_POOLING || '')
           : (process.env.DATABASE_URI || process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL || '')
         )
       ),
       ssl: { rejectUnauthorized: false },
-      // Serverless: allow a small pool so concurrent queries (e.g. footer
-      // fetches 5 globals) don't serialize behind a single connection.
-      // Supabase session-mode default pool_size is 15, so 3 is safe.
-      max: isProduction ? 3 : 10,
+      // Serverless: keep 1 connection per function. Transaction-mode pooler
+      // releases server-side connections after each query, so a single client
+      // connection handles concurrent queries efficiently without exhausting
+      // Supabase's pool_size.
+      max: isProduction ? 1 : 10,
       // Fail fast: if Supabase is cold/unreachable, bail in 5s not 30s
       // so the page can render fallback content within Vercel's 60s limit.
       connectionTimeoutMillis: 5000,
