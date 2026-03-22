@@ -207,8 +207,8 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
       }`}>
         <div className="container">
           <div className="flex justify-between items-center py-3">
-            <Link href="/" className="flex items-center group">
-              <div className="relative w-14 h-14 sm:w-20 sm:h-20 rounded-full overflow-hidden shadow-md group-hover:shadow-lg transition-shadow ring-2 ring-primary-100 flex-shrink-0">
+            <Link href="/" className="flex items-center group flex-shrink-0">
+              <div className="relative w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full overflow-hidden shadow-md group-hover:shadow-lg transition-shadow ring-2 ring-primary-100 flex-shrink-0">
                 <Image
                   src={logoUrl}
                   alt={logoAlt}
@@ -217,11 +217,11 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
                   priority
                 />
               </div>
-              <div className="ml-2 sm:ml-3 min-w-0">
-                <span className="block text-[0.7rem] sm:text-xs md:text-sm lg:text-base font-bold text-gradient leading-tight whitespace-nowrap">
+              <div className="ml-2 sm:ml-2.5 min-w-0">
+                <span className="block text-[0.6rem] sm:text-[0.7rem] md:text-xs lg:text-sm font-bold text-gradient leading-tight whitespace-nowrap">
                   Building Blocks for Peace Foundation
                 </span>
-                <span className="hidden sm:block text-[0.6rem] md:text-xs text-gray-500 font-medium leading-tight">
+                <span className="hidden sm:block text-[0.55rem] md:text-[0.65rem] lg:text-xs text-gray-500 font-medium leading-tight">
                   {siteTagline}
                 </span>
               </div>

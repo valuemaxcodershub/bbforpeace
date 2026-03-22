@@ -120,9 +120,6 @@ export async function Footer() {
                 <span className="block text-[10px] text-gray-400">— {siteTagline}</span>
               </div>
             </div>
-            <p className="text-gray-400 text-sm leading-relaxed mb-3">
-              <span className="text-accent-gold italic font-medium">Empowering Communities for Peace</span>
-            </p>
             <p className="text-gray-400 text-sm leading-relaxed mb-5">
               {footerText}
             </p>
