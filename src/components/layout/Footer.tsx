@@ -14,7 +14,7 @@ const quickLinks = [
   { name: 'Contact', href: '/contact' },
 ]
 
-async function getPayloadWithTimeout(timeoutMs = 12000) {
+async function getPayloadWithTimeout(timeoutMs = 5000) {
   return await Promise.race([
     getPayload({ config }),
     new Promise<never>((_, reject) => {

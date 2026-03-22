@@ -26,7 +26,7 @@ const poppins = Poppins({
   display: 'swap',
 })
 
-async function getPayloadSafe(timeoutMs = 15000) {
+async function getPayloadSafe(timeoutMs = 5000) {
   return await Promise.race([
     getPayload({ config }),
     new Promise<never>((_, reject) => {

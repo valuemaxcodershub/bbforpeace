@@ -28,6 +28,7 @@ import { AdminActions as AdminActions_495d710e6a77187e75e440d1fadde88b } from '.
 import { NavOpenDefault as NavOpenDefault_bf6d1cf1c1d5c4224e6b6dac5ffcab53 } from '../../../../src/components/admin/NavOpenDefault'
 import { CustomDashboard as CustomDashboard_3a64ea8dcdfa35c0d9eb557c84ef02d0 } from '../../../../src/components/admin/CustomDashboard'
 import { HidePasswordField as HidePasswordField_a1b2c3d4e5f6 } from '../../../../src/components/admin/HidePasswordField'
+import { MobileNavOverlay as MobileNavOverlay_c7d8e9f0a1b2 } from '../../../../src/components/admin/MobileNavOverlay'
 import { PublicationsListHeader as PublicationsListHeader_d4e5f6a1b2c3 } from '../../../../src/components/admin/PublicationsListHeader'
 import { VercelBlobClientUploadHandler as VercelBlobClientUploadHandler_vercelblob } from '@payloadcms/storage-vercel-blob/client'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
@@ -63,6 +64,7 @@ export const importMap = {
   "/src/components/admin/NavOpenDefault#NavOpenDefault": NavOpenDefault_bf6d1cf1c1d5c4224e6b6dac5ffcab53,
   "/src/components/admin/CustomDashboard#CustomDashboard": CustomDashboard_3a64ea8dcdfa35c0d9eb557c84ef02d0,
   "/src/components/admin/HidePasswordField#HidePasswordField": HidePasswordField_a1b2c3d4e5f6,
+  "/src/components/admin/MobileNavOverlay#MobileNavOverlay": MobileNavOverlay_c7d8e9f0a1b2,
   "/src/components/admin/PublicationsListHeader#PublicationsListHeader": PublicationsListHeader_d4e5f6a1b2c3,
   "@payloadcms/storage-vercel-blob/client#VercelBlobClientUploadHandler": VercelBlobClientUploadHandler_vercelblob,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1

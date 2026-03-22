@@ -19,7 +19,7 @@ import Script from 'next/script'
 
 export const revalidate = 60
 
-async function getPayloadWithTimeout(timeoutMs = 12000) {
+async function getPayloadWithTimeout(timeoutMs = 5000) {
   return await Promise.race([
     getPayload({ config }),
     new Promise<never>((_, reject) => {
