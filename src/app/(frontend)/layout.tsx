@@ -26,6 +26,15 @@ const poppins = Poppins({
   display: 'swap',
 })
 
+async function getPayloadSafe(timeoutMs = 15000) {
+  return await Promise.race([
+    getPayload({ config }),
+    new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error(`Payload init timeout after ${timeoutMs}ms`)), timeoutMs)
+    }),
+  ])
+}
+
 // Hardcoded fallbacks if DB is unreachable
 const fallbackMeta = {
   title: 'Building Blocks for Peace Foundation | Empowering Communities for Peace',
@@ -39,10 +48,10 @@ const fallbackMeta = {
 export async function generateMetadata(): Promise<Metadata> {
   let seo: any = null
   try {
-    const payload = await getPayload({ config })
+    const payload = await getPayloadSafe()
     seo = await payload.findGlobal({ slug: 'seo-settings' })
   } catch {
-    // Fall back to hardcoded defaults
+    // Fall back to hardcoded defaults on cold start / timeout
   }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bbforpeace.org'
