@@ -21,28 +21,33 @@ function safeDecode(value: string): string {
 }
 
 /**
- * Check if a blob URL actually exists (HEAD request with timeout).
+ * Fetch a blob URL. Returns the response if it exists, null otherwise.
  */
-async function blobExists(url: string): Promise<boolean> {
+async function fetchBlob(url: string): Promise<Response | null> {
   try {
     const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 3000)
-    const res = await fetch(url, { method: 'HEAD', signal: controller.signal })
+    const timeout = setTimeout(() => controller.abort(), 5000)
+    const res = await fetch(url, { signal: controller.signal })
     clearTimeout(timeout)
-    return res.ok
+    return res.ok ? res : null
   } catch {
-    return false
+    return null
   }
 }
 
+function isDocument(filename: string): boolean {
+  const ext = filename.split('.').pop()?.toLowerCase() || ''
+  return ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(ext)
+}
+
 /**
- * Redirect to the file in public/images/ (served by CDN on Vercel, by dev server locally).
- * No fs/path imports — avoids bundling public/images/ into the serverless function.
+ * Redirect to a public static file. Checks /documents/ for document types, /images/ otherwise.
  */
-function redirectToPublicImage(filename: string): Response {
+function redirectToPublicFile(filename: string): Response {
   const encoded = filename.split('/').map(seg => encodeURIComponent(seg)).join('/')
   const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bbforpeace.org'
-  return Response.redirect(`${base}/images/${encoded}`, 307)
+  const dir = isDocument(filename) ? 'documents' : 'images'
+  return Response.redirect(`${base}/${dir}/${encoded}`, 307)
 }
 
 async function handleMediaFileRequest(filename: string): Promise<Response> {
@@ -78,21 +83,43 @@ async function handleMediaFileRequest(filename: string): Promise<Response> {
       : encodeURIComponent(decodedFilename)
     const blobUrl = `${baseUrl}/${fileKey}`
 
-    if (await blobExists(blobUrl)) {
+    const blobRes = await fetchBlob(blobUrl)
+    if (blobRes) {
+      // For documents (PDFs etc), proxy the content to avoid CORS preflight issues.
+      // For images, redirect is fine — browsers handle image redirects without CORS.
+      if (isDocument(decodedFilename)) {
+        return new Response(blobRes.body, {
+          headers: {
+            'Content-Type': blobRes.headers.get('Content-Type') || 'application/octet-stream',
+            'Content-Disposition': `inline; filename="${decodedFilename}"`,
+            'Cache-Control': 'public, max-age=86400',
+          },
+        })
+      }
       return Response.redirect(blobUrl, 307)
     }
 
     // Also try without prefix (some files were uploaded without one)
     if (prefix) {
       const noPrefixUrl = `${baseUrl}/${encodeURIComponent(decodedFilename)}`
-      if (await blobExists(noPrefixUrl)) {
+      const noPrefixRes = await fetchBlob(noPrefixUrl)
+      if (noPrefixRes) {
+        if (isDocument(decodedFilename)) {
+          return new Response(noPrefixRes.body, {
+            headers: {
+              'Content-Type': noPrefixRes.headers.get('Content-Type') || 'application/octet-stream',
+              'Content-Disposition': `inline; filename="${decodedFilename}"`,
+              'Cache-Control': 'public, max-age=86400',
+            },
+          })
+        }
         return Response.redirect(noPrefixUrl, 307)
       }
     }
   }
 
-  // 2. Fall back to public/images/ (served by CDN/dev server, NOT bundled into function)
-  return redirectToPublicImage(decodedFilename)
+  // 2. Fall back to public files (CDN/dev server, NOT bundled into function)
+  return redirectToPublicFile(decodedFilename)
 }
 
 export async function GET(_: Request, { params }: { params: Promise<{ filename: string }> }) {

@@ -903,15 +903,103 @@ img[src*="gravatar.com"] {
   .template-default .render-fields {
     padding: 0.75rem 0.5rem;
   }
+
+  /* Force single-column layout on mobile so content doesn't overlap sidebar */
+  .template-default {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: none !important;
+  }
+
+  .template-default .gutter--right {
+    width: 100% !important;
+    max-width: 100vw !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Globals / document edit forms: prevent overflow */
+  .template-default .render-fields,
+  .template-default .document-fields,
+  .template-default .document-fields__main {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Table horizontal scroll on mobile */
+  .template-default .table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* App header / doc controls spacing */
+  .template-default .app-header {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  .template-default .doc-controls {
+    padding: 0.5rem 12px !important;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  /* Tabs: scroll horizontally instead of wrapping/overlapping */
+  .template-default .tabs-field__tabs,
+  .template-default .tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Group fields: reduce padding */
+  .template-default .group-field__wrap {
+    padding: 0.5rem !important;
+  }
+
+  /* Step-nav breadcrumb */
+  .template-default .step-nav {
+    padding-left: 0.25rem;
+    font-size: 0.8rem;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
 }
 
 @media (max-width: 480px) {
   .template-default {
-    --gutter-h: 14px;
+    --gutter-h: 8px;
   }
 
   .template-default .document-fields__main {
-    padding: 0.5rem 0.35rem 1rem;
+    padding: 0.5rem 0.25rem 1rem;
+  }
+
+  .template-default .gutter--right {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  /* Force content to stay within viewport */
+  .template-default .render-fields,
+  .template-default .document-fields,
+  .template-default .document-fields__main,
+  .template-default .field-type {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    word-break: break-word;
+  }
+
+  /* Compact save bar */
+  .template-default .doc-controls {
+    padding: 0.4rem 8px !important;
+  }
+
+  .template-default .doc-controls .btn {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.82rem;
   }
 }
 

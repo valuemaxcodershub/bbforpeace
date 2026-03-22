@@ -207,12 +207,12 @@ export async function Footer() {
               </a>
             </p>
             <div className="flex gap-5">
-              <Link href="/privacy" className="text-gray-500 hover:text-white transition-colors">
+              <span className="text-gray-500">
                 {privacyLabel}
-              </Link>
-              <Link href="/terms" className="text-gray-500 hover:text-white transition-colors">
+              </span>
+              <span className="text-gray-500">
                 {termsLabel}
-              </Link>
+              </span>
             </div>
           </div>
         </div>
