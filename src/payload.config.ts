@@ -281,11 +281,13 @@ export default buildConfig({
         )
       ),
       ssl: { rejectUnauthorized: false },
-      // Serverless: each invocation shares a Node process but Supabase Session
-      // mode caps total clients at pool_size.  Keep 1 conn per invocation and
-      // release idle connections aggressively to avoid MaxClientsInSessionMode.
-      max: isProduction ? 1 : 10,
-      connectionTimeoutMillis: 30000,
+      // Serverless: allow a small pool so concurrent queries (e.g. footer
+      // fetches 5 globals) don't serialize behind a single connection.
+      // Supabase session-mode default pool_size is 15, so 3 is safe.
+      max: isProduction ? 3 : 10,
+      // Fail fast: if Supabase is cold/unreachable, bail in 5s not 30s
+      // so the page can render fallback content within Vercel's 60s limit.
+      connectionTimeoutMillis: 5000,
       idleTimeoutMillis: 5000,
       allowExitOnIdle: true,
     },

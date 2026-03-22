@@ -36,67 +36,35 @@ export default async function HomePage() {
     console.error('Failed to initialize payload for homepage:', error)
   }
 
-  // Fetch home page settings from CMS
+  // Fetch ALL homepage data concurrently to avoid serial 5s timeouts per query.
+  // Each query has its own .catch() so one failure doesn't block the others.
   let hs: Record<string, any> = {}
-  try {
-    if (!payload) throw new Error('Payload unavailable')
-    hs = (await payload.findGlobal({ slug: 'home-page-settings' })) as Record<string, any>
-  } catch (error) {
-    console.error('Failed to fetch home page settings:', error)
-  }
-
-  // Fetch partners settings (heading/subheading/description) + partners from collection
   let partnersData: any = null
   let partnersDocs: any[] = []
-  try {
-    if (!payload) throw new Error('Payload unavailable')
-    const [settings, { docs }] = await Promise.all([
-      payload.findGlobal({ slug: 'partners-settings' }),
-      payload.find({
-        collection: 'partners',
-        where: { isActive: { equals: true } },
-        sort: 'order',
-        limit: 20,
-        depth: 1,
-      }),
-    ])
-    partnersData = settings
-    partnersDocs = docs
-  } catch {}
-
-  // Fetch awards from award-settings global
   let awardData: any = null
-  try {
-    if (!payload) throw new Error('Payload unavailable')
-    awardData = await payload.findGlobal({ slug: 'award-settings' })
-  } catch {}
-
-  // Fetch recent posts from posts collection
   let recentPostsDocs: any[] = []
-  try {
-    if (!payload) throw new Error('Payload unavailable')
-    const { docs } = await payload.find({
-      collection: 'posts',
-      where: { status: { equals: 'published' } },
-      sort: '-publishedAt',
-      limit: 3,
-      depth: 1,
-    })
-    recentPostsDocs = docs
-  } catch {}
-
-  // Fetch recent publications from publications collection
   let recentPubsDocs: any[] = []
-  try {
-    if (!payload) throw new Error('Payload unavailable')
-    const { docs } = await payload.find({
-      collection: 'publications',
-      sort: '-year',
-      limit: 4,
-      depth: 1,
-    })
-    recentPubsDocs = docs
-  } catch {}
+
+  if (payload) {
+    try {
+      const [homeSettings, partners, partnersList, awards, posts, pubs] = await Promise.all([
+        payload.findGlobal({ slug: 'home-page-settings' }).catch(() => ({})),
+        payload.findGlobal({ slug: 'partners-settings' }).catch(() => null),
+        payload.find({ collection: 'partners', where: { isActive: { equals: true } }, sort: 'order', limit: 20, depth: 1 }).catch(() => ({ docs: [] })),
+        payload.findGlobal({ slug: 'award-settings' }).catch(() => null),
+        payload.find({ collection: 'posts', where: { status: { equals: 'published' } }, sort: '-publishedAt', limit: 3, depth: 1 }).catch(() => ({ docs: [] })),
+        payload.find({ collection: 'publications', sort: '-year', limit: 4, depth: 1 }).catch(() => ({ docs: [] })),
+      ])
+      hs = (homeSettings ?? {}) as Record<string, any>
+      partnersData = partners
+      partnersDocs = (partnersList as any)?.docs ?? []
+      awardData = awards
+      recentPostsDocs = (posts as any)?.docs ?? []
+      recentPubsDocs = (pubs as any)?.docs ?? []
+    } catch (error) {
+      console.error('Homepage data fetch failed:', error)
+    }
+  }
 
   return (
     <>

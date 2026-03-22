@@ -44,17 +44,17 @@ export async function Footer() {
   try {
     const payload = await getPayloadWithTimeout()
     const [social, footer, contact, general, programmes] = await Promise.all([
-      payload.findGlobal({ slug: 'social-media-settings' }),
-      payload.findGlobal({ slug: 'footer-settings' }),
-      payload.findGlobal({ slug: 'contact-settings' }),
-      payload.findGlobal({ slug: 'general-settings' }),
+      payload.findGlobal({ slug: 'social-media-settings' }).catch(() => ({})),
+      payload.findGlobal({ slug: 'footer-settings' }).catch(() => ({})),
+      payload.findGlobal({ slug: 'contact-settings' }).catch(() => ({})),
+      payload.findGlobal({ slug: 'general-settings' }).catch(() => ({})),
       payload.find({
         collection: 'programmes',
         where: { status: { equals: 'active' } },
         sort: 'order',
         limit: 4,
         depth: 0,
-      }),
+      }).catch(() => ({ docs: [] })),
     ])
     socialData = social as unknown as Record<string, string>
     footerData = footer as unknown as Record<string, string>
