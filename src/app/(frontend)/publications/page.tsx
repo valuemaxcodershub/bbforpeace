@@ -42,10 +42,9 @@ const publicationsHero = {
 }
 
 export default async function PublicationsPage() {
-  const payload = await getPayload({ config })
-
   let publications: any[] = []
   try {
+    const payload = await getPayload({ config })
     const [result] = await Promise.all([
       payload.find({
         collection: 'publications',

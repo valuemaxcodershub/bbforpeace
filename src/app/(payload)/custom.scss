@@ -775,6 +775,11 @@ img[src*="gravatar.com"] {
     visibility: visible !important;
     pointer-events: auto !important;
   }
+
+  /* Hide backdrop on desktop — it's only for mobile */
+  .bb-mobile-nav-backdrop {
+    display: none !important;
+  }
 }
 
 /* ==========================================
@@ -783,18 +788,28 @@ img[src*="gravatar.com"] {
    A semi-transparent backdrop lets the user tap outside to close.
    ========================================== */
 @media (max-width: 1024px) {
-  /* Overlay backdrop when nav is open */
-  .template-default--nav-open .template-default__nav-overlay {
+  /* ---- MOBILE NAV BACKDROP ---- */
+  /* Rendered by MobileNavOverlay provider component (only when nav is open) */
+  .bb-mobile-nav-backdrop {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.45);
     z-index: 998;
     pointer-events: auto;
+    cursor: pointer;
   }
 
-  /* Slide the left gutter in as an overlay drawer */
+  /* ---- FORCE SINGLE-COLUMN LAYOUT ---- */
+  /* Override Payload's grid so nav never pushes content aside on mobile */
+  .template-default,
+  .template-default.template-default--nav-open {
+    display: block !important;
+    grid-template-columns: none !important;
+  }
+
+  /* ---- SIDEBAR AS FIXED OVERLAY DRAWER ---- */
   .template-default .gutter--left {
-    position: fixed;
+    position: fixed !important;
     top: 0;
     left: 0;
     bottom: 0;
@@ -810,6 +825,14 @@ img[src*="gravatar.com"] {
   .template-default--nav-open .gutter--left {
     transform: translateX(0);
     box-shadow: 4px 0 24px rgba(0, 0, 0, 0.25);
+  }
+
+  /* ---- CONTENT AREA ALWAYS FULL WIDTH ---- */
+  .template-default .gutter--right {
+    width: 100% !important;
+    max-width: 100vw !important;
+    margin-left: 0 !important;
+    grid-column: unset !important;
   }
 }
 
@@ -893,6 +916,11 @@ img[src*="gravatar.com"] {
 
   .template-default .gutter--right {
     padding-top: 1rem;
+    width: 100% !important;
+    max-width: 100vw !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    overflow-x: hidden !important;
   }
 
   .template-default .document-fields__main {
@@ -902,21 +930,6 @@ img[src*="gravatar.com"] {
   .template-default .collection-list,
   .template-default .render-fields {
     padding: 0.75rem 0.5rem;
-  }
-
-  /* Force single-column layout on mobile so content doesn't overlap sidebar */
-  .template-default {
-    display: flex !important;
-    flex-direction: column !important;
-    grid-template-columns: none !important;
-  }
-
-  .template-default .gutter--right {
-    width: 100% !important;
-    max-width: 100vw !important;
-    padding-left: 12px !important;
-    padding-right: 12px !important;
-    overflow-x: hidden !important;
   }
 
   /* Globals / document edit forms: prevent overflow */

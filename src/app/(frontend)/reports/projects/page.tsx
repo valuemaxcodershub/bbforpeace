@@ -44,10 +44,9 @@ const colorMap = {
 }
 
 export default async function ProjectReportsPage() {
-  const payload = await getPayload({ config })
-
   let projectReportsFromCms: any[] = []
   try {
+    const payload = await getPayload({ config })
     const result = await payload.find({
         collection: 'publications',
         where: { subMenu: { equals: 'project-report' } },

@@ -21,13 +21,12 @@ const contactHero = {
 }
 
 export default async function ContactPage() {
-  const payload = await getPayload({ config })
-
   let pageSettings: any = {}
   let contactGlobal: any = {}
   let socialMedia: any = {}
 
   try {
+    const payload = await getPayload({ config })
     ;[pageSettings, contactGlobal, socialMedia] = await Promise.all([
       payload.findGlobal({ slug: 'contact-us-page-settings' }),
       payload.findGlobal({ slug: 'contact-settings' }),

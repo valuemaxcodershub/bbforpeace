@@ -9,12 +9,12 @@ const iconMap: Record<string, LucideIcon> = {
 
 // Default fallback data
 const defaultProgrammes = [
-  { title: 'Youth & Women Peace and Security', description: 'Empowering young people and women as active agents of peace through capacity building and advocacy.', icon: 'Users', gradient: 'from-violet-600 via-purple-600 to-indigo-700', link: '/programmes/youth-women-peace-security' },
-  { title: 'Conflict Management & Peacebuilding', description: 'Building skills to identify and handle conflicts sensibly, fairly, and efficiently.', icon: 'Shield', gradient: 'from-blue-600 via-indigo-600 to-blue-800', link: '/programmes/conflict-management' },
-  { title: 'Prevention of Violent Extremism', description: 'Proactive measures to combat extremism through education and community engagement.', icon: 'AlertTriangle', gradient: 'from-orange-500 via-red-500 to-rose-600', link: '/programmes/preventing-violent-extremism' },
-  { title: 'Governance & Accountability', description: 'Promoting inclusive, transparent, and accountable governance through civic awareness.', icon: 'Scale', gradient: 'from-emerald-600 via-teal-600 to-cyan-700', link: '/programmes/governance-accountability' },
-  { title: 'Climate & Environmental Security', description: 'Integrating climate action with peacebuilding to address resource conflicts.', icon: 'Leaf', gradient: 'from-green-600 via-emerald-600 to-teal-700', link: '/programmes/climate-environmental-security' },
-  { title: 'Peace Education', description: 'Equipping communities with knowledge and skills for peaceful conflict resolution.', icon: 'BookOpen', gradient: 'from-amber-500 via-yellow-500 to-orange-500', link: '/programmes/peace-education' },
+  { title: 'Youth & Women Peace and Security', description: 'Empowering young people and women as active agents of peace through capacity building and advocacy.', icon: 'Users', gradient: 'from-violet-600 via-purple-600 to-indigo-700', link: '/programmes#pillar-1' },
+  { title: 'Conflict Management & Peacebuilding', description: 'Building skills to identify and handle conflicts sensibly, fairly, and efficiently.', icon: 'Shield', gradient: 'from-blue-600 via-indigo-600 to-blue-800', link: '/programmes#pillar-2' },
+  { title: 'Prevention of Violent Extremism', description: 'Proactive measures to combat extremism through education and community engagement.', icon: 'AlertTriangle', gradient: 'from-orange-500 via-red-500 to-rose-600', link: '/programmes#pillar-3' },
+  { title: 'Governance & Accountability', description: 'Promoting inclusive, transparent, and accountable governance through civic awareness.', icon: 'Scale', gradient: 'from-emerald-600 via-teal-600 to-cyan-700', link: '/programmes#pillar-4' },
+  { title: 'Climate & Environmental Security', description: 'Integrating climate action with peacebuilding to address resource conflicts.', icon: 'Leaf', gradient: 'from-green-600 via-emerald-600 to-teal-700', link: '/programmes#pillar-5' },
+  { title: 'Peace Education', description: 'Equipping communities with knowledge and skills for peaceful conflict resolution.', icon: 'BookOpen', gradient: 'from-amber-500 via-yellow-500 to-orange-500', link: '/programmes' },
 ]
 
 export interface ProgrammesSectionProps {
@@ -32,7 +32,15 @@ export function ProgrammesSection({
   backgroundImage,
   focusAreas,
 }: ProgrammesSectionProps) {
-  const programmes = focusAreas?.length ? focusAreas : defaultProgrammes
+  const rawProgrammes = focusAreas?.length ? focusAreas : defaultProgrammes
+  // Rewrite any legacy /programmes/<slug> links to anchor links
+  // (no [slug] route exists — only the /programmes page with #pillar-N anchors)
+  const programmes = rawProgrammes.map((p, i) => ({
+    ...p,
+    link: p.link && /^\/programmes\/[a-z]/.test(p.link)
+      ? `/programmes#pillar-${i + 1}`
+      : p.link,
+  }))
   const bgImage = getMediaUrl(backgroundImage, '/images/PXL_20251023_124331635.MP~2.jpg')
 
   return (

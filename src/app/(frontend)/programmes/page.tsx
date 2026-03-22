@@ -32,12 +32,11 @@ const programmesHero = {
 }
 
 export default async function ProgrammesPage() {
-  const payload = await getPayload({ config })
-
   let settings: any = {}
   let programmes: any[] = []
 
   try {
+    const payload = await getPayload({ config })
     const [pageSettings, programmesResult] = await Promise.all([
       payload.findGlobal({ slug: 'programme-page-settings' }),
       payload.find({ collection: 'programmes', where: { status: { equals: 'active' } }, sort: 'order', limit: 10, depth: 1 }),
@@ -247,12 +246,12 @@ export default async function ProgrammesPage() {
                 >
                   Partner With Us <ArrowRight className="w-5 h-5" />
                 </Link>
-                <Link 
-                  href="/donate" 
+                <a 
+                  href="/contact" 
                   className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-white/30 text-white font-bold rounded-xl hover:bg-white hover:text-primary-900 transition-colors"
                 >
-                  Donate Now
-                </Link>
+                  Support Us
+                </a>
               </div>
             </div>
           </div>

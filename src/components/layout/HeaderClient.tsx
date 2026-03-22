@@ -327,7 +327,7 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
 
         <div className={`lg:hidden fixed inset-y-0 right-0 h-[100dvh] w-[min(90vw,22rem)] bg-white z-50 shadow-2xl transform transition-transform duration-300 ease-out ${
           isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-        }`} id="mobile-site-menu" aria-hidden={!isMobileMenuOpen}>
+        }`} id="mobile-site-menu" inert={!isMobileMenuOpen ? true : undefined}>
           <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-primary-900 to-primary-800 pt-[max(1rem,env(safe-area-inset-top))]">
             <span className="text-white font-bold text-lg">Menu</span>
             <button

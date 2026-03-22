@@ -27,11 +27,10 @@ const annualReportsHero = {
 }
 
 export default async function AnnualReportsPage() {
-  const payload = await getPayload({ config })
-
   let reports: any[] = []
 
   try {
+    const payload = await getPayload({ config })
     const result = await payload.find({
       collection: 'publications',
       where: { subMenu: { equals: 'annual-report' } },
@@ -154,22 +153,24 @@ export default async function AnnualReportsPage() {
 
                       {/* Actions */}
                       <div className="flex flex-wrap gap-4 pt-4">
-                        <Link
+                        <a
                           href={report.downloadUrl}
                           target="_blank"
+                          rel="noopener noreferrer"
                           className={`inline-flex items-center gap-3 px-8 py-4 rounded-xl ${style.btnClass} text-white font-bold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5`}
                         >
                           <Download className="w-5 h-5" />
                           Download PDF
-                        </Link>
-                        <Link
+                        </a>
+                        <a
                           href={report.downloadUrl}
                           target="_blank"
+                          rel="noopener noreferrer"
                           className="inline-flex items-center gap-3 px-8 py-4 rounded-xl border-2 border-gray-200 text-gray-700 font-bold hover:border-gray-300 hover:bg-gray-50 transition-all"
                         >
                           <Eye className="w-5 h-5" />
                           View Online
-                        </Link>
+                        </a>
                       </div>
                     </div>
                   </div>

@@ -22,12 +22,11 @@ const galleryHero: GalleryHero = {
 }
 
 export default async function GalleryPage() {
-  const payload = await getPayload({ config })
-
   let settings: any = {}
   let galleryItems: any[] = []
 
   try {
+    const payload = await getPayload({ config })
     const [pageSettings, galleryResult] = await Promise.all([
       payload.findGlobal({ slug: 'media-page-settings' }),
       payload.find({

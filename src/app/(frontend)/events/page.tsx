@@ -23,12 +23,12 @@ const eventsHero = {
 
 export default async function EventsPage({ searchParams }: { searchParams: Promise<{ filter?: string }> }) {
   const { filter: activeFilter } = await searchParams
-  const payload = await getPayload({ config })
 
   let upcomingEvents: any[] = []
   let pastEvents: any[] = []
   let eps: Record<string, any> = {}
   try {
+    const payload = await getPayload({ config })
     const [upcomingResult, pastResult, eventPageSettings] = await Promise.all([
       payload.find({ collection: 'events', where: { status: { in: ['upcoming', 'ongoing'] } }, sort: 'startDate', limit: 10, depth: 1 }),
       payload.find({ collection: 'events', where: { status: { equals: 'completed' } }, sort: '-startDate', limit: 10, depth: 1 }),

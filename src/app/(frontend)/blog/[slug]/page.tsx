@@ -20,33 +20,43 @@ interface Props {
 }
 
 async function getPost(slug: string) {
-  const payload = await getPayload({ config })
-  const result = await payload.find({
-    collection: 'posts',
-    where: {
-      slug: { equals: slug },
-      status: { equals: 'published' },
-    },
-    depth: 2,
-    limit: 1,
-  })
-  return result.docs[0] || null
+  try {
+    const payload = await getPayload({ config })
+    const result = await payload.find({
+      collection: 'posts',
+      where: {
+        slug: { equals: slug },
+        status: { equals: 'published' },
+      },
+      depth: 2,
+      limit: 1,
+    })
+    return result.docs[0] || null
+  } catch (error) {
+    console.error('Failed to fetch post:', error)
+    return null
+  }
 }
 
 async function getRelatedPosts(categoryId: number | string, currentId: number | string) {
-  const payload = await getPayload({ config })
-  const result = await payload.find({
-    collection: 'posts',
-    where: {
-      status: { equals: 'published' },
-      category: { equals: categoryId },
-      id: { not_equals: currentId },
-    },
-    sort: '-publishedAt',
-    depth: 2,
-    limit: 3,
-  })
-  return result.docs
+  try {
+    const payload = await getPayload({ config })
+    const result = await payload.find({
+      collection: 'posts',
+      where: {
+        status: { equals: 'published' },
+        category: { equals: categoryId },
+        id: { not_equals: currentId },
+      },
+      sort: '-publishedAt',
+      depth: 2,
+      limit: 3,
+    })
+    return result.docs
+  } catch (error) {
+    console.error('Failed to fetch related posts:', error)
+    return []
+  }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

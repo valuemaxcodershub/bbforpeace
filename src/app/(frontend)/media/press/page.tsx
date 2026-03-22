@@ -20,10 +20,9 @@ const pressHero = {
 }
 
 export default async function PressPage() {
-  const payload = await getPayload({ config })
-
   let pressStatements: any[] = []
   try {
+    const payload = await getPayload({ config })
     const [postsResult] = await Promise.all([
       payload.find({
         collection: 'posts',

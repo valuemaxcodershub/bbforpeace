@@ -19,29 +19,39 @@ interface Props {
 }
 
 async function getEvent(slug: string) {
-  const payload = await getPayload({ config })
-  const result = await payload.find({
-    collection: 'events',
-    where: { slug: { equals: slug } },
-    depth: 2,
-    limit: 1,
-  })
-  return result.docs[0] || null
+  try {
+    const payload = await getPayload({ config })
+    const result = await payload.find({
+      collection: 'events',
+      where: { slug: { equals: slug } },
+      depth: 2,
+      limit: 1,
+    })
+    return result.docs[0] || null
+  } catch (error) {
+    console.error('Failed to fetch event:', error)
+    return null
+  }
 }
 
 async function getUpcomingEvents(excludeId: number | string) {
-  const payload = await getPayload({ config })
-  const result = await payload.find({
-    collection: 'events',
-    where: {
-      status: { in: ['upcoming', 'ongoing'] },
-      id: { not_equals: excludeId },
-    },
-    sort: 'startDate',
-    depth: 1,
-    limit: 3,
-  })
-  return result.docs
+  try {
+    const payload = await getPayload({ config })
+    const result = await payload.find({
+      collection: 'events',
+      where: {
+        status: { in: ['upcoming', 'ongoing'] },
+        id: { not_equals: excludeId },
+      },
+      sort: 'startDate',
+      depth: 1,
+      limit: 3,
+    })
+    return result.docs
+  } catch (error) {
+    console.error('Failed to fetch upcoming events:', error)
+    return []
+  }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

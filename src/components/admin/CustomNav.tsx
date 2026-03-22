@@ -2,8 +2,8 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useAuth } from '@payloadcms/ui'
-import { useMemo, useState } from 'react'
+import { useAuth, useNav } from '@payloadcms/ui'
+import { useCallback, useMemo, useState } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import {
   LayoutDashboard,
@@ -136,7 +136,15 @@ function isActivePath(currentPath: string, href?: string) {
 export function CustomNav() {
   const pathname = usePathname()
   const { user } = useAuth()
+  const { setNavOpen } = useNav()
   const userRole = (user as any)?.role as UserRole | undefined
+
+  // Close nav on mobile when a link is clicked
+  const closeMobileNav = useCallback(() => {
+    if (window.matchMedia('(max-width: 1024px)').matches) {
+      setNavOpen(false)
+    }
+  }, [setNavOpen])
 
   // Filter menu items based on user role
   const visibleMenu = useMemo(() => {
@@ -183,6 +191,7 @@ export function CustomNav() {
                 key={section.label}
                 type="button"
                 onClick={() => {
+                  closeMobileNav()
                   window.location.href = '/api/auth/logout'
                 }}
                 className="bb-custom-nav__item"
@@ -198,6 +207,7 @@ export function CustomNav() {
             <Link
               key={section.label}
               href={section.href || '/admin'}
+              onClick={closeMobileNav}
               className={`bb-custom-nav__item ${isActivePath(pathname, section.href) ? 'is-active' : ''}`}
             >
               <span className="bb-custom-nav__item-content">
@@ -230,6 +240,7 @@ export function CustomNav() {
                   <Link
                     key={`${section.label}-${child.label}`}
                     href={child.href || '/admin'}
+                    onClick={closeMobileNav}
                     className={`bb-custom-nav__child ${isActivePath(pathname, child.href) ? 'is-active' : ''}`}
                   >
                     <span className="bb-custom-nav__child-content">

@@ -76,16 +76,17 @@ export function PublicationsSection({ publications: pubsProp }: PublicationsSect
                   </span>
                 </div>
                 {/* Download Overlay */}
-                <Link 
+                <a 
                   href={pub.downloadUrl}
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="absolute inset-0 bg-primary-950/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-4"
                 >
                   <div className="w-16 h-16 rounded-2xl bg-accent-gold flex items-center justify-center shadow-xl transform scale-90 group-hover:scale-100 transition-transform">
                     <Download className="w-8 h-8 text-primary-950" />
                   </div>
                   <span className="text-white font-bold text-lg">Download Report</span>
-                </Link>
+                </a>
               </div>
 
               {/* Content */}

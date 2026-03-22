@@ -217,7 +217,10 @@ export default buildConfig({
       actions: ['/src/components/admin/AdminActions#AdminActions'],
       Nav: '/src/components/admin/CustomNav#CustomNav',
       afterNavLinks: ['/src/components/admin/NavOpenDefault#NavOpenDefault'],
-      providers: ['/src/components/admin/HidePasswordField#HidePasswordField'],
+      providers: [
+        '/src/components/admin/HidePasswordField#HidePasswordField',
+        '/src/components/admin/MobileNavOverlay#MobileNavOverlay',
+      ],
       views: {
         dashboard: {
           Component: '/src/components/admin/CustomDashboard#CustomDashboard',
@@ -278,9 +281,13 @@ export default buildConfig({
         )
       ),
       ssl: { rejectUnauthorized: false },
-      max: isProduction ? 2 : 10,
+      // Serverless: each invocation shares a Node process but Supabase Session
+      // mode caps total clients at pool_size.  Keep 1 conn per invocation and
+      // release idle connections aggressively to avoid MaxClientsInSessionMode.
+      max: isProduction ? 1 : 10,
       connectionTimeoutMillis: 30000,
-      idleTimeoutMillis: 10000,
+      idleTimeoutMillis: 5000,
+      allowExitOnIdle: true,
     },
   }),
 

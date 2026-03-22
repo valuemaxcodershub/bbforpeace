@@ -23,13 +23,13 @@ const blogHero = {
 
 export default async function BlogPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
   const { category: activeCategory } = await searchParams
-  const payload = await getPayload({ config })
 
   // Fetch posts and categories from CMS in parallel
   let posts: any[] = []
   let categories: any[] = []
 
   try {
+    const payload = await getPayload({ config })
     // Build query — optionally filter by category
     const postsWhere: any = { status: { equals: 'published' }, subMenu: { equals: 'blog' } }
     if (activeCategory) {

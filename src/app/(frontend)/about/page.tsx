@@ -42,8 +42,6 @@ const aboutHero = {
 }
 
 export default async function AboutPage() {
-  const payload = await getPayload({ config })
-
   // Fetch all data in parallel
   let as: Record<string, any> = {}
   let teamMembers: any[] = []
@@ -53,6 +51,7 @@ export default async function AboutPage() {
   let partnersDocs: any[] = []
 
   try {
+    const payload = await getPayload({ config })
     const [aboutSettings, teamResult, boardResult, partners, awards, partnersCollection] = await Promise.all([
       payload.findGlobal({ slug: 'about-us-page-settings' }),
       payload.find({ collection: 'team', where: { category: { equals: 'staff' }, isActive: { equals: true } }, sort: 'order', limit: 20, depth: 1 }),
@@ -648,10 +647,10 @@ export default async function AboutPage() {
                   <span className="relative text-white">Get Involved</span>
                   <ArrowRight className="relative w-5 h-5 text-white group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <Link href="/donate" className="group inline-flex items-center gap-3 px-8 py-4 rounded-2xl font-semibold text-white border-2 border-white/30 hover:border-white/60 hover:bg-white/10 backdrop-blur-sm transition-all">
+                <a href="/contact" className="group inline-flex items-center gap-3 px-8 py-4 rounded-2xl font-semibold text-white border-2 border-white/30 hover:border-white/60 hover:bg-white/10 backdrop-blur-sm transition-all">
                   <Heart className="w-5 h-5" />
                   Support Our Work
-                </Link>
+                </a>
               </div>
               
               {/* Office Cards */}

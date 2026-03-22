@@ -21,29 +21,39 @@ interface Props {
 }
 
 async function getPublication(slug: string) {
-  const payload = await getPayload({ config })
-  const result = await payload.find({
-    collection: 'publications',
-    where: { slug: { equals: slug } },
-    depth: 2,
-    limit: 1,
-  })
-  return result.docs[0] || null
+  try {
+    const payload = await getPayload({ config })
+    const result = await payload.find({
+      collection: 'publications',
+      where: { slug: { equals: slug } },
+      depth: 2,
+      limit: 1,
+    })
+    return result.docs[0] || null
+  } catch (error) {
+    console.error('Failed to fetch publication:', error)
+    return null
+  }
 }
 
 async function getRelatedPublications(category: string, excludeId: number | string) {
-  const payload = await getPayload({ config })
-  const result = await payload.find({
-    collection: 'publications',
-    where: {
-      category: { equals: category },
-      id: { not_equals: excludeId },
-    },
-    sort: '-year',
-    depth: 1,
-    limit: 3,
-  })
-  return result.docs
+  try {
+    const payload = await getPayload({ config })
+    const result = await payload.find({
+      collection: 'publications',
+      where: {
+        category: { equals: category },
+        id: { not_equals: excludeId },
+      },
+      sort: '-year',
+      depth: 1,
+      limit: 3,
+    })
+    return result.docs
+  } catch (error) {
+    console.error('Failed to fetch related publications:', error)
+    return []
+  }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
