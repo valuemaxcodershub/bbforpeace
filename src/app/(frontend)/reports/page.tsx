@@ -2,8 +2,7 @@ import { PageHero } from '@/components/layout'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Download, Eye, BookOpen, Calendar, ArrowRight, FileText, Sparkles } from 'lucide-react'
-import { getPayload } from 'payload'
-import config from '@payload-config'
+import { getPayloadClient } from '@/lib/payload-client'
 import { getMediaUrl } from '@/lib/utils'
 
 const reportStyles = [
@@ -30,7 +29,7 @@ export default async function AnnualReportsPage() {
   let reports: any[] = []
 
   try {
-    const payload = await getPayload({ config })
+    const payload = await getPayloadClient()
     const result = await payload.find({
       collection: 'publications',
       where: { subMenu: { equals: 'annual-report' } },

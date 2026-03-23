@@ -3,8 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { PageHero } from '@/components/layout'
 import { ArrowRight, Calendar, Download, Eye, Sparkles, Target } from 'lucide-react'
-import { getPayload } from 'payload'
-import config from '@payload-config'
+import { getPayloadClient } from '@/lib/payload-client'
 import { getMediaUrl } from '@/lib/utils'
 
 export const metadata: Metadata = {
@@ -38,7 +37,7 @@ export default async function StrategicPlanPage() {
   let plans: any[] = []
 
   try {
-    const payload = await getPayload({ config })
+    const payload = await getPayloadClient()
     const result = await payload.find({
       collection: 'publications',
       where: { subMenu: { equals: 'strategic-plan' } },

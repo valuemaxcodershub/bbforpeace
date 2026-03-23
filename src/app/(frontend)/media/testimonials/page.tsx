@@ -3,8 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { PageHero } from '@/components/layout'
 import { ArrowRight, MessageSquareQuote, Star } from 'lucide-react'
-import { getPayload } from 'payload'
-import config from '@payload-config'
+import { getPayloadClient } from '@/lib/payload-client'
 import { getMediaUrl } from '@/lib/utils'
 
 export const metadata: Metadata = {
@@ -38,7 +37,7 @@ export default async function TestimonialsPage() {
   let testimonialDocs: any[] = []
 
   try {
-    const payload = await getPayload({ config })
+    const payload = await getPayloadClient()
     const [pageSettings, testimonialResult] = await Promise.all([
       payload.findGlobal({ slug: 'media-page-settings' }),
       payload.find({

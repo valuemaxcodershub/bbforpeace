@@ -13,25 +13,16 @@ import {
   NewsletterSection,
 } from '@/components/sections'
 import { organizationJsonLd } from '@/lib/seo'
-import { getPayload } from 'payload'
-import config from '@payload-config'
+import { getPayloadClient } from '@/lib/payload-client'
 import Script from 'next/script'
+import type { Payload } from 'payload'
 
 export const revalidate = 60
 
-async function getPayloadWithTimeout(timeoutMs = 5000) {
-  return await Promise.race([
-    getPayload({ config }),
-    new Promise<never>((_, reject) => {
-      setTimeout(() => reject(new Error(`Payload init timeout after ${timeoutMs}ms`)), timeoutMs)
-    }),
-  ])
-}
-
 export default async function HomePage() {
-  let payload: Awaited<ReturnType<typeof getPayload>> | null = null
+  let payload: Payload | null = null
   try {
-    payload = await getPayloadWithTimeout()
+    payload = await getPayloadClient()
   } catch (error) {
     console.error('Failed to initialize payload for homepage:', error)
   }

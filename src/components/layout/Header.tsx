@@ -1,5 +1,4 @@
-import { getPayload } from 'payload'
-import config from '@payload-config'
+import { getPayloadClient } from '@/lib/payload-client'
 import { HeaderClient } from './HeaderClient'
 import { getMediaUrl } from '@/lib/utils'
 
@@ -39,15 +38,6 @@ const navigation = [
   { name: 'Contact', href: '/contact' },
 ]
 
-async function getPayloadWithTimeout(timeoutMs = 12000) {
-  return await Promise.race([
-    getPayload({ config }),
-    new Promise<never>((_, reject) => {
-      setTimeout(() => reject(new Error(`Payload init timeout after ${timeoutMs}ms`)), timeoutMs)
-    }),
-  ])
-}
-
 export async function Header() {
   let siteName = 'Building Blocks for Peace'
   let siteTagline = '--Empowering Communities for Peace'
@@ -55,7 +45,7 @@ export async function Header() {
   let logoAlt = 'Building Blocks for Peace Logo'
 
   try {
-    const payload = await getPayloadWithTimeout()
+    const payload = await getPayloadClient()
     const generalSettings = await payload.findGlobal({ slug: 'general-settings' }).catch(() => null)
 
     const general = (generalSettings || {}) as Record<string, any>

@@ -3,8 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Download, FileText, Calendar, ArrowRight, Globe, Target, Sparkles, MapPin, FolderOpen } from 'lucide-react'
 import type { Metadata } from 'next'
-import { getPayload } from 'payload'
-import config from '@payload-config'
+import { getPayloadClient } from '@/lib/payload-client'
 import { getMediaUrl } from '@/lib/utils'
 
 export const metadata: Metadata = {
@@ -46,7 +45,7 @@ const colorMap = {
 export default async function ProjectReportsPage() {
   let projectReportsFromCms: any[] = []
   try {
-    const payload = await getPayload({ config })
+    const payload = await getPayloadClient()
     const result = await payload.find({
         collection: 'publications',
         where: { subMenu: { equals: 'project-report' } },

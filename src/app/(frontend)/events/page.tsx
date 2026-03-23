@@ -3,8 +3,7 @@ import Image from 'next/image'
 import type { Metadata } from 'next'
 import { PageHero } from '@/components/layout'
 import { Calendar, MapPin, Filter, Clock, Users, ArrowRight, Sparkles } from 'lucide-react'
-import { getPayload } from 'payload'
-import config from '@payload-config'
+import { getPayloadClient } from '@/lib/payload-client'
 import { getMediaUrl } from '@/lib/utils'
 
 export const metadata: Metadata = {
@@ -28,7 +27,7 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
   let pastEvents: any[] = []
   let eps: Record<string, any> = {}
   try {
-    const payload = await getPayload({ config })
+    const payload = await getPayloadClient()
     const [upcomingResult, pastResult, eventPageSettings] = await Promise.all([
       payload.find({ collection: 'events', where: { status: { in: ['upcoming', 'ongoing'] } }, sort: 'startDate', limit: 10, depth: 1 }),
       payload.find({ collection: 'events', where: { status: { equals: 'completed' } }, sort: '-startDate', limit: 10, depth: 1 }),

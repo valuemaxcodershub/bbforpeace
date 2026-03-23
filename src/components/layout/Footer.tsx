@@ -1,8 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Facebook, Twitter, Instagram, Youtube, Linkedin, Mail, Phone, MapPin } from 'lucide-react'
-import { getPayload } from 'payload'
-import config from '@payload-config'
+import { getPayloadClient } from '@/lib/payload-client'
 import { getMediaUrl } from '@/lib/utils'
 
 const quickLinks = [
@@ -13,15 +12,6 @@ const quickLinks = [
   { name: 'Reports', href: '/publications' },
   { name: 'Contact', href: '/contact' },
 ]
-
-async function getPayloadWithTimeout(timeoutMs = 5000) {
-  return await Promise.race([
-    getPayload({ config }),
-    new Promise<never>((_, reject) => {
-      setTimeout(() => reject(new Error(`Payload init timeout after ${timeoutMs}ms`)), timeoutMs)
-    }),
-  ])
-}
 
 const iconMap: Record<string, typeof Twitter> = {
   twitter: Twitter,
@@ -42,7 +32,7 @@ export async function Footer() {
   let programmeLinks: Array<{ name: string; href: string }> = []
 
   try {
-    const payload = await getPayloadWithTimeout()
+    const payload = await getPayloadClient()
     const [social, footer, contact, general, programmes] = await Promise.all([
       payload.findGlobal({ slug: 'social-media-settings' }).catch(() => ({})),
       payload.findGlobal({ slug: 'footer-settings' }).catch(() => ({})),

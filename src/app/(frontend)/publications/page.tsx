@@ -2,8 +2,7 @@ import { PageHero } from '@/components/layout'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Download, FileText, Calendar, ArrowRight, BookOpen, Eye, Sparkles, ExternalLink } from 'lucide-react'
-import { getPayload } from 'payload'
-import config from '@payload-config'
+import { getPayloadClient } from '@/lib/payload-client'
 import { getMediaUrl } from '@/lib/utils'
 
 const getCategoryStyle = (category: string) => {
@@ -44,7 +43,7 @@ const publicationsHero = {
 export default async function PublicationsPage() {
   let publications: any[] = []
   try {
-    const payload = await getPayload({ config })
+    const payload = await getPayloadClient()
     const [result] = await Promise.all([
       payload.find({
         collection: 'publications',

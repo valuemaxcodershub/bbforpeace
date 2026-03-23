@@ -43,10 +43,8 @@ export async function subscribeNewsletter(formData: FormData) {
   }
 
   try {
-    const { getPayload } = await import('payload')
-    const config = (await import('@payload-config')).default
-
-    const payload = await getPayload({ config })
+    const { getPayloadClient } = await import('@/lib/payload-client')
+    const payload = await getPayloadClient()
 
     // Check if already subscribed
     const existing = await payload.find({

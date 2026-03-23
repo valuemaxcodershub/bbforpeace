@@ -3,8 +3,7 @@ import { Inter, Poppins } from 'next/font/google'
 import { Header, Footer } from '@/components/layout'
 import { ScrollObserver } from '@/components/ui/ScrollObserver'
 import { BackToTop } from '@/components/ui/BackToTop'
-import { getPayload } from 'payload'
-import config from '@payload-config'
+import { getPayloadClient } from '@/lib/payload-client'
 import { getMediaUrl } from '@/lib/utils'
 
 // Force dynamic rendering - CMS content is always fresh, no build-time DB needed
@@ -26,15 +25,6 @@ const poppins = Poppins({
   display: 'swap',
 })
 
-async function getPayloadSafe(timeoutMs = 5000) {
-  return await Promise.race([
-    getPayload({ config }),
-    new Promise<never>((_, reject) => {
-      setTimeout(() => reject(new Error(`Payload init timeout after ${timeoutMs}ms`)), timeoutMs)
-    }),
-  ])
-}
-
 // Hardcoded fallbacks if DB is unreachable
 const fallbackMeta = {
   title: 'Building Blocks for Peace Foundation | Empowering Communities for Peace',
@@ -48,7 +38,7 @@ const fallbackMeta = {
 export async function generateMetadata(): Promise<Metadata> {
   let seo: any = null
   try {
-    const payload = await getPayloadSafe()
+    const payload = await getPayloadClient()
     seo = await payload.findGlobal({ slug: 'seo-settings' })
   } catch {
     // Fall back to hardcoded defaults on cold start / timeout

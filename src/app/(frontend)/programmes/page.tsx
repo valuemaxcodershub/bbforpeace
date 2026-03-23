@@ -7,8 +7,7 @@ import {
   Globe, Leaf, Heart, Sparkles 
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { getPayload } from 'payload'
-import config from '@payload-config'
+import { getPayloadClient } from '@/lib/payload-client'
 import { getMediaUrl } from '@/lib/utils'
 
 const iconMap: Record<string, LucideIcon> = {
@@ -36,7 +35,7 @@ export default async function ProgrammesPage() {
   let programmes: any[] = []
 
   try {
-    const payload = await getPayload({ config })
+    const payload = await getPayloadClient()
     const [pageSettings, programmesResult] = await Promise.all([
       payload.findGlobal({ slug: 'programme-page-settings' }),
       payload.find({ collection: 'programmes', where: { status: { equals: 'active' } }, sort: 'order', limit: 10, depth: 1 }),

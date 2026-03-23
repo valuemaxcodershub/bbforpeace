@@ -2,8 +2,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { getPayload } from 'payload'
-import config from '@payload-config'
+import { getPayloadClient } from '@/lib/payload-client'
 import { PageHero } from '@/components/layout'
 import { formatDate, getMediaUrl } from '@/lib/utils'
 import {
@@ -20,7 +19,7 @@ interface Props {
 
 async function getEvent(slug: string) {
   try {
-    const payload = await getPayload({ config })
+    const payload = await getPayloadClient()
     const result = await payload.find({
       collection: 'events',
       where: { slug: { equals: slug } },
@@ -36,7 +35,7 @@ async function getEvent(slug: string) {
 
 async function getUpcomingEvents(excludeId: number | string) {
   try {
-    const payload = await getPayload({ config })
+    const payload = await getPayloadClient()
     const result = await payload.find({
       collection: 'events',
       where: {

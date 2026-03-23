@@ -10,8 +10,7 @@ import {
   GraduationCap, Scale, Leaf, Building2, HeartHandshake
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { getPayload } from 'payload'
-import config from '@payload-config'
+import { getPayloadClient } from '@/lib/payload-client'
 import { getMediaUrl } from '@/lib/utils'
 
 const coreValueIconMap: Record<string, LucideIcon> = {
@@ -51,21 +50,21 @@ export default async function AboutPage() {
   let partnersDocs: any[] = []
 
   try {
-    const payload = await getPayload({ config })
+    const payload = await getPayloadClient()
     const [aboutSettings, teamResult, boardResult, partners, awards, partnersCollection] = await Promise.all([
-      payload.findGlobal({ slug: 'about-us-page-settings' }),
-      payload.find({ collection: 'team', where: { category: { equals: 'staff' }, isActive: { equals: true } }, sort: 'order', limit: 20, depth: 1 }),
-      payload.find({ collection: 'team', where: { category: { equals: 'board' }, isActive: { equals: true } }, sort: 'order', limit: 20, depth: 1 }),
-      payload.findGlobal({ slug: 'partners-settings' }),
-      payload.findGlobal({ slug: 'award-settings' }),
-      payload.find({ collection: 'partners', where: { isActive: { equals: true } }, sort: 'order', limit: 20, depth: 1 }),
-    ])
-    as = aboutSettings as Record<string, any>
-    teamMembers = teamResult.docs
-    boardOfTrustees = boardResult.docs
-    partnersData = partners as any
-    awardData = awards as any
-    partnersDocs = partnersCollection.docs
+        payload.findGlobal({ slug: 'about-us-page-settings' }).catch(() => ({})),
+        payload.find({ collection: 'team', where: { category: { equals: 'staff' }, isActive: { equals: true } }, sort: 'order', limit: 20, depth: 1 }).catch(() => ({ docs: [] })),
+        payload.find({ collection: 'team', where: { category: { equals: 'board' }, isActive: { equals: true } }, sort: 'order', limit: 20, depth: 1 }).catch(() => ({ docs: [] })),
+        payload.findGlobal({ slug: 'partners-settings' }).catch(() => null),
+        payload.findGlobal({ slug: 'award-settings' }).catch(() => null),
+        payload.find({ collection: 'partners', where: { isActive: { equals: true } }, sort: 'order', limit: 20, depth: 1 }).catch(() => ({ docs: [] })),
+      ])
+      as = (aboutSettings ?? {}) as Record<string, any>
+      teamMembers = (teamResult as any)?.docs ?? []
+      boardOfTrustees = (boardResult as any)?.docs ?? []
+      partnersData = partners as any
+      awardData = awards as any
+      partnersDocs = (partnersCollection as any)?.docs ?? []
   } catch (error) {
     console.error('Failed to fetch about page data:', error)
   }

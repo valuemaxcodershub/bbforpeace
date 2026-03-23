@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
-import { getPayload } from 'payload'
-import config from '@payload-config'
+import { getPayloadClient } from '@/lib/payload-client'
 import GalleryContent from './GalleryContent'
 import type { GalleryImage, GalleryVideo, GalleryHero } from './GalleryContent'
 import { getMediaUrl } from '@/lib/utils'
@@ -26,7 +25,7 @@ export default async function GalleryPage() {
   let galleryItems: any[] = []
 
   try {
-    const payload = await getPayload({ config })
+    const payload = await getPayloadClient()
     const [pageSettings, galleryResult] = await Promise.all([
       payload.findGlobal({ slug: 'media-page-settings' }),
       payload.find({

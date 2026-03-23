@@ -2,8 +2,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { getPayload } from 'payload'
-import config from '@payload-config'
+import { getPayloadClient } from '@/lib/payload-client'
 import { PageHero } from '@/components/layout'
 import { BlogCard } from '@/components/cards'
 import { formatDate, getMediaUrl } from '@/lib/utils'
@@ -21,7 +20,7 @@ interface Props {
 
 async function getPost(slug: string) {
   try {
-    const payload = await getPayload({ config })
+    const payload = await getPayloadClient()
     const result = await payload.find({
       collection: 'posts',
       where: {
@@ -40,7 +39,7 @@ async function getPost(slug: string) {
 
 async function getRelatedPosts(categoryId: number | string, currentId: number | string) {
   try {
-    const payload = await getPayload({ config })
+    const payload = await getPayloadClient()
     const result = await payload.find({
       collection: 'posts',
       where: {

@@ -59,10 +59,8 @@ export async function submitContactForm(formData: FormData) {
 
   try {
     // Save contact message to Payload CMS
-    const { getPayload } = await import('payload')
-    const config = (await import('@payload-config')).default
-
-    const payload = await getPayload({ config })
+    const { getPayloadClient } = await import('@/lib/payload-client')
+    const payload = await getPayloadClient()
 
     await payload.create({
       collection: 'subscribers',

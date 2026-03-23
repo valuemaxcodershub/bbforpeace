@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 import { PageHero } from '@/components/layout'
 import { Mail, Phone, MapPin, Clock, Send, Globe, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react'
-import { getPayload } from 'payload'
-import config from '@payload-config'
+import { getPayloadClient } from '@/lib/payload-client'
 import { ContactForm } from '@/components/forms/ContactForm'
 import { getMediaUrl } from '@/lib/utils'
 
@@ -26,7 +25,7 @@ export default async function ContactPage() {
   let socialMedia: any = {}
 
   try {
-    const payload = await getPayload({ config })
+    const payload = await getPayloadClient()
     ;[pageSettings, contactGlobal, socialMedia] = await Promise.all([
       payload.findGlobal({ slug: 'contact-us-page-settings' }),
       payload.findGlobal({ slug: 'contact-settings' }),

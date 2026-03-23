@@ -268,32 +268,27 @@ export default buildConfig({
     ContactUsPageSettings,
   ].map((g) => ({ ...g, admin: { ...g.admin, hideAPIURL: true } })),
 
-  // Use Supabase transaction-mode pooler (POSTGRES_URL, port 6543) in production.
-  // Session mode (POSTGRES_URL_NON_POOLING) causes MaxClientsInSessionMode errors
-  // because each Vercel serverless function opens its own pg pool and the combined
-  // client count across concurrent functions exceeds session-mode pool_size.
-  // Transaction mode releases server connections after each query, supporting far
-  // more concurrent clients.
+  // Use Supabase session-mode (direct) connection in production.
+  // Transaction-mode pooler (POSTGRES_URL, PgBouncer port 6543) does NOT support
+  // prepared statements, which Drizzle ORM relies on — causing connection timeouts.
+  // Session-mode (POSTGRES_URL_NON_POOLING) works correctly with prepared statements.
+  // Keep max:1 per serverless function to avoid MaxClientsInSessionMode errors.
   db: postgresAdapter({
     push: !isProduction,
     pool: {
       connectionString: normalizeConnectionString(
-        (
         isProduction
-          ? (process.env.POSTGRES_URL || process.env.DATABASE_URI || process.env.POSTGRES_URL_NON_POOLING || '')
-          : (process.env.DATABASE_URI || process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL || '')
-        )
+          ? (process.env.POSTGRES_URL_NON_POOLING || process.env.DATABASE_URI || '')
+          : (process.env.DATABASE_URI || process.env.POSTGRES_URL_NON_POOLING || '')
       ),
       ssl: { rejectUnauthorized: false },
-      // Serverless: keep 1 connection per function. Transaction-mode pooler
-      // releases server-side connections after each query, so a single client
-      // connection handles concurrent queries efficiently without exhausting
-      // Supabase's pool_size.
+      // Serverless: keep 1 connection per function to stay within
+      // Supabase session-mode pool_size limits.
       max: isProduction ? 1 : 10,
-      // Fail fast: if Supabase is cold/unreachable, bail in 5s not 30s
-      // so the page can render fallback content within Vercel's 60s limit.
-      connectionTimeoutMillis: 5000,
-      idleTimeoutMillis: 5000,
+      // Allow up to 10s for Supabase cold starts (free-tier can take 5-7s).
+      // This still leaves plenty of headroom within Vercel's 60s maxDuration.
+      connectionTimeoutMillis: isProduction ? 10000 : 5000,
+      idleTimeoutMillis: 10000,
       allowExitOnIdle: true,
     },
   }),

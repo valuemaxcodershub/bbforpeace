@@ -2,8 +2,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { getPayload } from 'payload'
-import config from '@payload-config'
+import { getPayloadClient } from '@/lib/payload-client'
 import { PageHero } from '@/components/layout'
 import { formatDate, getMediaUrl } from '@/lib/utils'
 import { Calendar, ArrowLeft } from 'lucide-react'
@@ -14,7 +13,7 @@ interface Props {
 
 async function getPressArticle(slug: string) {
   try {
-    const payload = await getPayload({ config })
+    const payload = await getPayloadClient()
     const result = await payload.find({
       collection: 'posts',
       where: {
