@@ -6,6 +6,7 @@ import sharp from 'sharp'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import crypto from 'crypto'
+import { getPreferredDatabaseUrl } from './lib/database-url'
 
 // Collections
 import { Users } from './payload/collections/Users'
@@ -47,12 +48,6 @@ const isProduction = process.env.NODE_ENV === 'production'
 const siteURL =
   process.env.NEXT_PUBLIC_SITE_URL ||
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
-
-const normalizeConnectionString = (raw: string): string => {
-  const base = raw.replace('sslmode=require', 'sslmode=no-verify')
-
-  return base
-}
 
 const isEmptyValue = (value: unknown): boolean => {
   if (value === undefined || value === null) return true
@@ -268,24 +263,20 @@ export default buildConfig({
     ContactUsPageSettings,
   ].map((g) => ({ ...g, admin: { ...g.admin, hideAPIURL: true } })),
 
-  // Supabase Supavisor session-mode pooler (port 5432) — supports prepared
-  // statements required by Drizzle ORM. All three env vars point to this pooler.
-  // IMPORTANT: max must be >= 2 because the Payload adapter's connectWithReconnect
-  // holds one client for ECONNRESET monitoring without releasing it. With max:1,
-  // zero connections remain for actual queries → every Drizzle query fails.
-  // max:3 = 1 monitoring + 2 for queries. Supabase session-mode pool_size is ~15,
-  // so 3 per serverless function is safe for typical concurrency.
+  // In production, prefer a true direct Supabase Postgres connection.
+  // The Supavisor session pooler (`*.pooler.supabase.com`) has a strict session
+  // cap, and the Payload adapter holds one client open for monitoring, which can
+  // exhaust pool slots under modest traffic. When only pooler URLs are present,
+  // derive the matching direct host (`db.<project-ref>.supabase.co`) automatically.
   db: postgresAdapter({
     push: !isProduction,
     pool: {
-      connectionString: normalizeConnectionString(
-        isProduction
-          ? (process.env.POSTGRES_URL_NON_POOLING || process.env.DATABASE_URI || '')
-          : (process.env.DATABASE_URI || process.env.POSTGRES_URL_NON_POOLING || '')
-      ),
+      connectionString: getPreferredDatabaseUrl(),
       ssl: { rejectUnauthorized: false },
-      max: isProduction ? 3 : 10,
-      // Allow up to 15s for Supabase cold starts (free-tier can take 5-7s).
+      // Keep the application pool small in serverless while leaving room for the
+      // adapter's monitoring client plus active queries.
+      max: isProduction ? 2 : 10,
+      // Allow up to 15s for cold starts and initial TLS negotiation.
       connectionTimeoutMillis: isProduction ? 15000 : 5000,
       idleTimeoutMillis: 10000,
       allowExitOnIdle: true,

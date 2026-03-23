@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { getDatabaseUrlDiagnostics } from '@/lib/database-url'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
@@ -19,13 +20,11 @@ export async function GET() {
   }
 
   // Show connection string host (masked)
-  const isProduction = process.env.NODE_ENV === 'production'
-  const connStr = isProduction
-    ? (process.env.POSTGRES_URL_NON_POOLING || process.env.DATABASE_URI || process.env.POSTGRES_URL || '')
-    : (process.env.DATABASE_URI || process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL || '')
+  const { selectedUrl: connStr, selectedUrlSource } = getDatabaseUrlDiagnostics()
 
   const hostMatch = connStr.match(/@([^/]+)\//)
   checks.connectionHost = hostMatch ? hostMatch[1] : connStr ? 'unparseable' : 'MISSING'
+  checks.connectionSource = selectedUrlSource
 
   // Test Payload connection (uses its own shared pool — no extra connections)
   const payloadStart = Date.now()

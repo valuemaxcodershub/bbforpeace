@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { getDatabaseUrlDiagnostics } from '@/lib/database-url'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 30
@@ -63,22 +64,19 @@ export async function GET() {
   info.connectionDetails = connDetails
 
   // 3. Determine which connection string would be used
-  const isProduction = process.env.NODE_ENV === 'production'
-  const selectedConnStr = isProduction
-    ? (process.env.POSTGRES_URL_NON_POOLING || process.env.DATABASE_URI || '')
-    : (process.env.DATABASE_URI || process.env.POSTGRES_URL_NON_POOLING || '')
+  const { selectedUrl: selectedConnStr, selectedUrlSource } = getDatabaseUrlDiagnostics()
 
   info.selectedConnStr = selectedConnStr
     ? `len=${selectedConnStr.length}, host=${(() => { try { return new URL(selectedConnStr).hostname } catch { return 'unparseable' } })()}`
     : 'EMPTY STRING — THIS IS THE PROBLEM'
+  info.selectedConnStrSource = selectedUrlSource
 
   // 4. Test raw pg connection (no Payload, no Drizzle)
   if (selectedConnStr) {
     try {
       const { Pool } = await import('pg')
-      const normalized = selectedConnStr.replace('sslmode=require', 'sslmode=no-verify')
       const pool = new Pool({
-        connectionString: normalized,
+        connectionString: selectedConnStr,
         ssl: { rejectUnauthorized: false },
         max: 1,
         connectionTimeoutMillis: 15000,
