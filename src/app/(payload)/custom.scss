@@ -1104,9 +1104,13 @@ select,
     z-index: 100;
   }
 
+  .template-default.template-default--nav-open .template-default__nav-toggler-wrapper,
+  .template-default.template-default--nav-open .app-header__mobile-nav-toggler,
+  .template-default.template-default--nav-open .nav-toggler,
   :root.bb-mobile-nav-open .template-default__nav-toggler-wrapper,
   :root.bb-mobile-nav-open .app-header__mobile-nav-toggler,
   :root.bb-mobile-nav-open .template-default .nav-toggler {
+    display: none !important;
     opacity: 0 !important;
     pointer-events: none !important;
     visibility: hidden !important;

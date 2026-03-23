@@ -244,7 +244,11 @@ export default buildConfig({
     Categories,
     Tags,
     Subscribers,
-  ].map((col) => ({ ...col, admin: { ...col.admin, hideAPIURL: true } })),
+  ].map((col) => ({
+    ...col,
+    lockDocuments: false,
+    admin: { ...col.admin, hideAPIURL: true },
+  })),
 
   globals: [
     SiteSettings,
@@ -261,7 +265,11 @@ export default buildConfig({
     EventPageSettings,
     MediaPageSettings,
     ContactUsPageSettings,
-  ].map((g) => ({ ...g, admin: { ...g.admin, hideAPIURL: true } })),
+  ].map((g) => ({
+    ...g,
+    lockDocuments: false,
+    admin: { ...g.admin, hideAPIURL: true },
+  })),
 
   // In production, prefer a true direct Supabase Postgres connection.
   // The Supavisor session pooler (`*.pooler.supabase.com`) has a strict session
