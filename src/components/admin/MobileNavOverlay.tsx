@@ -37,6 +37,16 @@ export function MobileNavOverlay({ children }: { children: React.ReactNode }) {
     }
   }, [navOpen])
 
+  useEffect(() => {
+    const isMobile = window.matchMedia('(max-width: 1024px)').matches
+
+    document.documentElement.classList.toggle('bb-mobile-nav-open', navOpen && isMobile)
+
+    return () => {
+      document.documentElement.classList.remove('bb-mobile-nav-open')
+    }
+  }, [navOpen])
+
   return (
     <>
       {navOpen && (

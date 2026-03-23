@@ -1,9 +1,89 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getPayload } from 'payload'
+import { getPayload, type RequiredDataFromCollectionSlug } from 'payload'
 import config from '@payload-config'
+import { getDatabaseUrlDiagnostics } from '@/lib/database-url'
+import type { Post, Publication } from '@/payload-types'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
+
+const formatError = (error: unknown): string => {
+  if (!error) return 'Unknown error'
+
+  if (error instanceof Error) {
+    const cause = (error as Error & { cause?: unknown }).cause
+    const causeMessage = cause instanceof Error ? ` | cause: ${cause.message}` : ''
+    return `${error.message}${causeMessage}`
+  }
+
+  if (typeof error === 'object' && error !== null) {
+    const message = 'message' in error ? String((error as { message?: unknown }).message) : String(error)
+    const cause = 'cause' in error ? (error as { cause?: unknown }).cause : undefined
+    const causeMessage = cause instanceof Error ? ` | cause: ${cause.message}` : ''
+    return `${message}${causeMessage}`
+  }
+
+  return String(error)
+}
+
+const asId = (value: unknown): number | undefined => {
+  if (typeof value === 'number') return value
+  if (typeof value === 'string' && /^\d+$/.test(value)) return Number(value)
+  if (value && typeof value === 'object' && 'id' in value) {
+    const nestedId = (value as { id?: unknown }).id
+    if (typeof nestedId === 'number') return nestedId
+    if (typeof nestedId === 'string' && /^\d+$/.test(nestedId)) return Number(nestedId)
+  }
+  return undefined
+}
+
+const asIdArray = (value: unknown): number[] | undefined => {
+  if (!Array.isArray(value)) return undefined
+
+  const ids = value
+    .map((item) => asId(item))
+    .filter((item): item is number => item !== undefined)
+
+  return ids.length > 0 ? ids : undefined
+}
+
+type LexicalContent = Post['content'] | Publication['description']
+
+const hasLexicalContent = (value: unknown): value is LexicalContent => {
+  return Boolean(value && typeof value === 'object' && 'root' in value)
+}
+
+const fallbackLexicalContent: LexicalContent = {
+  root: {
+    type: 'root',
+    format: '',
+    indent: 0,
+    version: 1,
+    direction: null,
+    children: [
+      {
+        type: 'paragraph',
+        format: '',
+        indent: 0,
+        version: 1,
+        direction: null,
+        textFormat: 0,
+        textStyle: '',
+        children: [
+          {
+            type: 'text',
+            detail: 0,
+            format: 0,
+            mode: 'normal',
+            style: '',
+            text: 'Diagnostic content',
+            version: 1,
+          },
+        ],
+      },
+    ],
+  },
+}
 
 /**
  * Diagnostic endpoint — tests authentication and CRUD through Payload,
@@ -13,7 +93,10 @@ export const maxDuration = 60
  * GET /api/diag → returns auth status + CRUD test results
  */
 export async function GET(req: NextRequest) {
-  const results: Record<string, unknown> = { timestamp: new Date().toISOString() }
+  const results: Record<string, unknown> = {
+    timestamp: new Date().toISOString(),
+    db: getDatabaseUrlDiagnostics(),
+  }
 
   try {
     const payload = await getPayload({ config })
@@ -77,7 +160,7 @@ export async function GET(req: NextRequest) {
       })
       results.findPublications = `ok, totalDocs=${pubs.totalDocs}`
     } catch (e: any) {
-      results.findPublications = `FAILED: ${e?.message}${e?.cause ? ` | cause: ${e.cause.message || e.cause}` : ''}`
+      results.findPublications = `FAILED: ${formatError(e)}`
     }
 
     // 4. Test update with auth user context
@@ -97,7 +180,7 @@ export async function GET(req: NextRequest) {
         results.updatePublication = 'ok'
       }
     } catch (e: any) {
-      results.updatePublication = `FAILED: ${e?.message}`
+      results.updatePublication = `FAILED: ${formatError(e)}`
     }
 
     // 5. Test delete (create dummy + delete)
@@ -120,10 +203,231 @@ export async function GET(req: NextRequest) {
         results.createDeleteTag = 'ok'
       }
     } catch (e: any) {
-      results.createDeleteTag = `FAILED: ${e?.message}`
+      results.createDeleteTag = `FAILED: ${formatError(e)}`
     }
 
-    // 6. Check CORS/CSRF config
+    // 6. Internal CRUD smoke tests against the exact content collections the admin uses.
+    // These run with overrideAccess so we can isolate DB/schema failures from auth/access.
+    try {
+      const internalCrud: Record<string, string> = {}
+      const [posts, publications, media, categories] = await Promise.all([
+        payload.find({ collection: 'posts', limit: 1, depth: 0, overrideAccess: true }),
+        payload.find({ collection: 'publications', limit: 1, depth: 0, overrideAccess: true }),
+        payload.find({ collection: 'media', limit: 1, depth: 0, overrideAccess: true }),
+        payload.find({ collection: 'categories', limit: 1, depth: 0, overrideAccess: true }),
+      ])
+
+      try {
+        const createdTag = await payload.create({
+          collection: 'tags',
+          overrideAccess: true,
+          depth: 0,
+          data: {
+            name: `_diag_tag_${Date.now()}`,
+            slug: `_diag-tag-${Date.now()}`,
+          },
+        })
+
+        await payload.update({
+          collection: 'tags',
+          id: createdTag.id,
+          overrideAccess: true,
+          depth: 0,
+          data: { name: `${createdTag.name} updated` },
+        })
+
+        await payload.delete({
+          collection: 'tags',
+          id: createdTag.id,
+          overrideAccess: true,
+        })
+
+        internalCrud.tags = 'ok'
+      } catch (error) {
+        internalCrud.tags = `FAILED: ${formatError(error)}`
+      }
+
+      try {
+        const sourcePublication = publications.docs[0] as unknown as Record<string, unknown> | undefined
+        if (!sourcePublication) {
+          internalCrud.publicationUpdate = 'SKIPPED: no publication exists'
+        } else {
+          await payload.update({
+            collection: 'publications',
+            id: sourcePublication.id as number | string,
+            overrideAccess: true,
+            depth: 0,
+            data: {
+              title: String(sourcePublication.title || 'Diagnostic publication'),
+            },
+          })
+
+          internalCrud.publicationUpdate = 'ok'
+        }
+      } catch (error) {
+        internalCrud.publicationUpdate = `FAILED: ${formatError(error)}`
+      }
+
+      try {
+        const sourcePost = posts.docs[0] as unknown as Record<string, unknown> | undefined
+        const fallbackMediaId = asId(media.docs[0])
+        const fallbackCategoryId = asId(categories.docs[0])
+        const featuredImageId = asId(sourcePost?.featuredImage) || fallbackMediaId
+        const categoryId = asId(sourcePost?.category) || fallbackCategoryId
+
+        if (!sourcePost && (!fallbackMediaId || !fallbackCategoryId)) {
+          internalCrud.postCreate = 'SKIPPED: no source post/media/category available'
+        } else if (!featuredImageId || !categoryId) {
+          internalCrud.postCreate = 'SKIPPED: missing featuredImage/category ids'
+        } else {
+          const timestamp = Date.now()
+          const postData: RequiredDataFromCollectionSlug<'posts'> = {
+            title: `Diagnostic Post ${timestamp}`,
+            slug: `diagnostic-post-${timestamp}`,
+            featuredImage: featuredImageId,
+            excerpt: String(sourcePost?.excerpt || 'Diagnostic post excerpt'),
+            content: hasLexicalContent(sourcePost?.content) ? sourcePost.content : fallbackLexicalContent,
+            category: categoryId,
+            status: 'draft',
+            menuSection: String(sourcePost?.menuSection || 'media') as 'about-us' | 'media' | 'report',
+            subMenu: String(sourcePost?.subMenu || 'blog') as
+              | 'who-we-are'
+              | 'our-strategy'
+              | 'our-team'
+              | 'blog'
+              | 'press-statement'
+              | 'gallery-photo'
+              | 'gallery-video'
+              | 'publication'
+              | 'annual-report'
+              | 'project-report'
+              | 'strategic-plan',
+            publishedAt: new Date().toISOString(),
+          }
+
+          const tagIds = asIdArray(sourcePost?.tags)
+          if (tagIds) postData.tags = tagIds
+
+          const authorId = asId(sourcePost?.author)
+          if (authorId) postData.author = authorId
+
+          if (sourcePost?.seo && typeof sourcePost.seo === 'object') {
+            postData.seo = sourcePost.seo as RequiredDataFromCollectionSlug<'posts'>['seo']
+          }
+
+          const createdPost = await payload.create({
+            collection: 'posts',
+            overrideAccess: true,
+            depth: 0,
+            draft: false,
+            data: postData,
+          })
+
+          await payload.update({
+            collection: 'posts',
+            id: createdPost.id,
+            overrideAccess: true,
+            depth: 0,
+            data: {
+              excerpt: 'Diagnostic post updated',
+            },
+          })
+
+          await payload.delete({
+            collection: 'posts',
+            id: createdPost.id,
+            overrideAccess: true,
+          })
+
+          internalCrud.postCreate = 'ok'
+        }
+      } catch (error) {
+        internalCrud.postCreate = `FAILED: ${formatError(error)}`
+      }
+
+      try {
+        const sourcePublication = publications.docs[0] as unknown as Record<string, unknown> | undefined
+        const coverImageId = asId(sourcePublication?.coverImage)
+        const fileId = asId(sourcePublication?.file)
+
+        if (!sourcePublication) {
+          internalCrud.publicationCreate = 'SKIPPED: no publication exists'
+        } else if (!coverImageId || !fileId) {
+          internalCrud.publicationCreate = 'SKIPPED: missing coverImage/file ids'
+        } else {
+          const timestamp = Date.now()
+          const publicationData: RequiredDataFromCollectionSlug<'publications'> = {
+            title: `Diagnostic Publication ${timestamp}`,
+            slug: `diagnostic-publication-${timestamp}`,
+            coverImage: coverImageId,
+            file: fileId,
+            description: hasLexicalContent(sourcePublication.description)
+              ? sourcePublication.description
+              : fallbackLexicalContent,
+            excerpt: String(sourcePublication.excerpt || 'Diagnostic publication excerpt'),
+            category: String(sourcePublication.category || 'report') as
+              | 'research'
+              | 'report'
+              | 'policy-brief'
+              | 'factsheet'
+              | 'manual'
+              | 'other',
+            menuSection: 'report',
+            subMenu: String(sourcePublication.subMenu || 'publication') as
+              | 'publication'
+              | 'annual-report'
+              | 'project-report'
+              | 'strategic-plan',
+            year: Number(sourcePublication.year || new Date().getFullYear()),
+          }
+
+          if (sourcePublication.author) publicationData.author = String(sourcePublication.author)
+          if (sourcePublication.region) publicationData.region = String(sourcePublication.region)
+          if (typeof sourcePublication.pages === 'number') publicationData.pages = sourcePublication.pages
+          if (sourcePublication.accentColor) {
+            publicationData.accentColor = String(sourcePublication.accentColor) as 'blue' | 'emerald' | 'purple' | 'amber'
+          }
+          if (sourcePublication.seo && typeof sourcePublication.seo === 'object') {
+            publicationData.seo = sourcePublication.seo as RequiredDataFromCollectionSlug<'publications'>['seo']
+          }
+          publicationData.isFeatured = false
+
+          const createdPublication = await payload.create({
+            collection: 'publications',
+            overrideAccess: true,
+            depth: 0,
+            draft: false,
+            data: publicationData,
+          })
+
+          await payload.update({
+            collection: 'publications',
+            id: createdPublication.id,
+            overrideAccess: true,
+            depth: 0,
+            data: {
+              excerpt: 'Diagnostic publication updated',
+            },
+          })
+
+          await payload.delete({
+            collection: 'publications',
+            id: createdPublication.id,
+            overrideAccess: true,
+          })
+
+          internalCrud.publicationCreate = 'ok'
+        }
+      } catch (error) {
+        internalCrud.publicationCreate = `FAILED: ${formatError(error)}`
+      }
+
+      results.internalCrud = internalCrud
+    } catch (error) {
+      results.internalCrud = `FAILED: ${formatError(error)}`
+    }
+
+    // 7. Check CORS/CSRF config
     results.origin = req.headers.get('origin') || req.headers.get('referer') || 'none'
     results.siteUrl = process.env.NEXT_PUBLIC_SITE_URL
     results.vercelUrl = process.env.VERCEL_URL

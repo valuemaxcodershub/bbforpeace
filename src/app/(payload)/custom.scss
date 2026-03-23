@@ -672,7 +672,7 @@ img[src*="gravatar.com"] {
     background: rgba(255, 255, 255, 0.1);
     color: #e7e2f0;
     cursor: pointer;
-    z-index: 10;
+    z-index: 1001;
     transition: background 0.15s ease, color 0.15s ease;
   }
 
@@ -848,7 +848,7 @@ img[src*="gravatar.com"] {
     bottom: 0;
     width: var(--nav-width, 280px);
     max-width: 85vw;
-    z-index: 999;
+    z-index: 1000;
     transform: translateX(-100%);
     transition: transform 0.25s ease;
     overflow-y: auto;
@@ -1102,6 +1102,14 @@ select,
   .app-header__mobile-nav-toggler {
     display: flex !important;
     z-index: 100;
+  }
+
+  :root.bb-mobile-nav-open .template-default__nav-toggler-wrapper,
+  :root.bb-mobile-nav-open .app-header__mobile-nav-toggler,
+  :root.bb-mobile-nav-open .template-default .nav-toggler {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
   }
 
   /* Payload drawers: make them fullscreen on tablets/mobile */

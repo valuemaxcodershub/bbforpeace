@@ -137,7 +137,7 @@ function isActivePath(currentPath: string, href?: string) {
 export function CustomNav() {
   const pathname = usePathname()
   const { user } = useAuth()
-  const { setNavOpen } = useNav()
+  const { navOpen, setNavOpen } = useNav()
   const userRole = (user as any)?.role as UserRole | undefined
 
   // Close nav on mobile when a link is clicked
@@ -188,6 +188,8 @@ export function CustomNav() {
         className="bb-custom-nav__close"
         onClick={() => setNavOpen(false)}
         aria-label="Close navigation"
+        aria-hidden={!navOpen}
+        tabIndex={navOpen ? 0 : -1}
       >
         <X size={20} />
       </button>
