@@ -869,6 +869,88 @@ img[src*="gravatar.com"] {
   }
 }
 
+@media (max-width: 768px) {
+  /* On phones, the admin nav behaves like the frontend mobile menu:
+     hidden by default, opened by the hamburger, and pushed into layout flow
+     below the header instead of covering the page as a side overlay. */
+  .bb-mobile-nav-backdrop {
+    display: none !important;
+  }
+
+  .template-default,
+  .template-default.template-default--nav-open {
+    display: block !important;
+    grid-template-columns: none !important;
+  }
+
+  .template-default .gutter--left {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    z-index: auto !important;
+    transform: none !important;
+    box-shadow: none !important;
+    margin: 0 0 0.75rem !important;
+    max-height: 0 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
+  }
+
+  .template-default.template-default--nav-open .gutter--left {
+    max-height: min(70vh, 42rem) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    overflow-y: auto !important;
+    pointer-events: auto !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .template-default .gutter--left .nav,
+  .template-default .gutter--left .drawer,
+  .template-default .gutter--left .drawer__content {
+    border-radius: 16px !important;
+  }
+
+  .bb-custom-nav {
+    padding-top: 3.5rem;
+    max-height: none;
+  }
+
+  .bb-custom-nav__close {
+    top: 0.65rem;
+    right: 0.65rem;
+  }
+
+  .template-default .gutter--right {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    padding-top: 0.75rem !important;
+  }
+
+  .template-default .app-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    backdrop-filter: blur(10px);
+  }
+
+  .template-default .app-header__step-nav-wrapper,
+  .template-default .step-nav {
+    display: none !important;
+  }
+
+  .template-default .app-header__wrapper {
+    min-height: 52px;
+  }
+}
+
 /* ==========================================
    ADMIN CONTENT BODY PADDING
    Give the main content area generous spacing
