@@ -77,7 +77,7 @@ export async function GET(req: NextRequest) {
       })
       results.findPublications = `ok, totalDocs=${pubs.totalDocs}`
     } catch (e: any) {
-      results.findPublications = `FAILED: ${e?.message}`
+      results.findPublications = `FAILED: ${e?.message}${e?.cause ? ` | cause: ${e.cause.message || e.cause}` : ''}`
     }
 
     // 4. Test update with auth user context

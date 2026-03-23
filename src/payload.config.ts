@@ -268,11 +268,13 @@ export default buildConfig({
     ContactUsPageSettings,
   ].map((g) => ({ ...g, admin: { ...g.admin, hideAPIURL: true } })),
 
-  // Use Supabase session-mode (direct) connection in production.
-  // Transaction-mode pooler (POSTGRES_URL, PgBouncer port 6543) does NOT support
-  // prepared statements, which Drizzle ORM relies on — causing connection timeouts.
-  // Session-mode (POSTGRES_URL_NON_POOLING) works correctly with prepared statements.
-  // Keep max:1 per serverless function to avoid MaxClientsInSessionMode errors.
+  // Supabase Supavisor session-mode pooler (port 5432) — supports prepared
+  // statements required by Drizzle ORM. All three env vars point to this pooler.
+  // IMPORTANT: max must be >= 2 because the Payload adapter's connectWithReconnect
+  // holds one client for ECONNRESET monitoring without releasing it. With max:1,
+  // zero connections remain for actual queries → every Drizzle query fails.
+  // max:3 = 1 monitoring + 2 for queries. Supabase session-mode pool_size is ~15,
+  // so 3 per serverless function is safe for typical concurrency.
   db: postgresAdapter({
     push: !isProduction,
     pool: {
@@ -282,12 +284,9 @@ export default buildConfig({
           : (process.env.DATABASE_URI || process.env.POSTGRES_URL_NON_POOLING || '')
       ),
       ssl: { rejectUnauthorized: false },
-      // Serverless: keep 1 connection per function to stay within
-      // Supabase session-mode pool_size limits.
-      max: isProduction ? 1 : 10,
-      // Allow up to 10s for Supabase cold starts (free-tier can take 5-7s).
-      // This still leaves plenty of headroom within Vercel's 60s maxDuration.
-      connectionTimeoutMillis: isProduction ? 10000 : 5000,
+      max: isProduction ? 3 : 10,
+      // Allow up to 15s for Supabase cold starts (free-tier can take 5-7s).
+      connectionTimeoutMillis: isProduction ? 15000 : 5000,
       idleTimeoutMillis: 10000,
       allowExitOnIdle: true,
     },
