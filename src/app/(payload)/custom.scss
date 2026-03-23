@@ -57,13 +57,30 @@ body {
 }
 
 .template-default .gutter--left {
-  background: #28005b !important;
+  background: transparent !important;
+  padding: 1rem 0.75rem 1rem 1rem;
 }
 
 .template-default .gutter--left .nav,
 .template-default .gutter--left .drawer,
 .template-default .gutter--left .drawer__content {
   background: linear-gradient(180deg, #250054 0%, #28005b 55%, #2e0763 100%) !important;
+}
+
+@media (min-width: 1025px) {
+  .template-default .gutter--left {
+    position: sticky;
+    top: 0.75rem;
+    align-self: start;
+    min-height: auto;
+    max-height: calc(100vh - 1.5rem);
+    overflow: visible;
+  }
+
+  .template-default .gutter--left .nav {
+    max-height: calc(100vh - 2.5rem);
+    overflow-y: auto;
+  }
 }
 
 .gutter--left .nav a,
@@ -773,43 +790,7 @@ img[src*="gravatar.com"] {
   font-weight: 700;
 }
 
-/* ==========================================
-   SIDEBAR ALWAYS OPEN ON DESKTOP
-   Force the sidebar open by default (desktop).
-   The user can still click the hamburger to close it.
-   ========================================== */
-
-/* On desktop (> 1024px), force the sidebar grid column visible until
-   Payload adds --nav-open (which happens once NavOpenDefault forces
-   setNavOpen(true) after hydration).  This prevents a visual flash
-   where the sidebar briefly collapses before the JS forces it open. */
 @media (min-width: 1025px) {
-  /* Pre-hydration: sidebar visible immediately (SSR / first paint) */
-  .template-default:not(.template-default--nav-hydrated) {
-    grid-template-columns: var(--nav-width, 280px) auto !important;
-  }
-
-  .template-default:not(.template-default--nav-hydrated) .gutter--left {
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-  }
-
-  /* Post-hydration but nav not yet forced open by JS: keep sidebar visible
-     to bridge the ~350 ms gap until NavOpenDefault calls setNavOpen(true).
-     Once JS adds .bb-nav-initialized to <html>, CSS steps aside and the
-     hamburger button can close the sidebar normally. */
-  :root:not(.bb-nav-initialized) .template-default.template-default--nav-hydrated:not(.template-default--nav-open) {
-    grid-template-columns: var(--nav-width, 280px) auto !important;
-  }
-
-  :root:not(.bb-nav-initialized) .template-default.template-default--nav-hydrated:not(.template-default--nav-open) .gutter--left {
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-  }
-
-  /* Hide backdrop on desktop — it's only for mobile */
   .bb-mobile-nav-backdrop {
     display: none !important;
   }
@@ -853,6 +834,7 @@ img[src*="gravatar.com"] {
     transition: transform 0.25s ease;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    padding: 0;
   }
 
   .template-default--nav-open .gutter--left {
@@ -909,6 +891,7 @@ img[src*="gravatar.com"] {
     overflow-y: auto !important;
     pointer-events: auto !important;
     margin-bottom: 1rem !important;
+    padding: 0 !important;
   }
 
   .template-default .gutter--left .nav,

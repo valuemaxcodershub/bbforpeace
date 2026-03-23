@@ -211,7 +211,6 @@ export default buildConfig({
     components: {
       actions: ['/src/components/admin/AdminActions#AdminActions'],
       Nav: '/src/components/admin/CustomNav#CustomNav',
-      afterNavLinks: ['/src/components/admin/NavOpenDefault#NavOpenDefault'],
       providers: [
         '/src/components/admin/HidePasswordField#HidePasswordField',
         '/src/components/admin/MobileNavOverlay#MobileNavOverlay',

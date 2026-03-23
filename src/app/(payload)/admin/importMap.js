@@ -25,7 +25,6 @@ import { CustomNav as CustomNav_907748efc1bfff20b2e913403526da61 } from '../../.
 import { Icon as Icon_b04c0db8d89d68ff5dd20d513b3034b9 } from '../../../../src/components/admin/Icon'
 import { Logo as Logo_4522c7900ab0b0df414ce3e1574aaee4 } from '../../../../src/components/admin/Logo'
 import { AdminActions as AdminActions_495d710e6a77187e75e440d1fadde88b } from '../../../../src/components/admin/AdminActions'
-import { NavOpenDefault as NavOpenDefault_bf6d1cf1c1d5c4224e6b6dac5ffcab53 } from '../../../../src/components/admin/NavOpenDefault'
 import { CustomDashboard as CustomDashboard_3a64ea8dcdfa35c0d9eb557c84ef02d0 } from '../../../../src/components/admin/CustomDashboard'
 import { HidePasswordField as HidePasswordField_a1b2c3d4e5f6 } from '../../../../src/components/admin/HidePasswordField'
 import { MobileNavOverlay as MobileNavOverlay_c7d8e9f0a1b2 } from '../../../../src/components/admin/MobileNavOverlay'
@@ -61,7 +60,6 @@ export const importMap = {
   "/src/components/admin/Icon#Icon": Icon_b04c0db8d89d68ff5dd20d513b3034b9,
   "/src/components/admin/Logo#Logo": Logo_4522c7900ab0b0df414ce3e1574aaee4,
   "/src/components/admin/AdminActions#AdminActions": AdminActions_495d710e6a77187e75e440d1fadde88b,
-  "/src/components/admin/NavOpenDefault#NavOpenDefault": NavOpenDefault_bf6d1cf1c1d5c4224e6b6dac5ffcab53,
   "/src/components/admin/CustomDashboard#CustomDashboard": CustomDashboard_3a64ea8dcdfa35c0d9eb557c84ef02d0,
   "/src/components/admin/HidePasswordField#HidePasswordField": HidePasswordField_a1b2c3d4e5f6,
   "/src/components/admin/MobileNavOverlay#MobileNavOverlay": MobileNavOverlay_c7d8e9f0a1b2,
