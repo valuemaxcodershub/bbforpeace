@@ -2,6 +2,12 @@ const normalizeConnectionString = (raw: string): string => {
   return raw.replace('sslmode=require', 'sslmode=no-verify')
 }
 
+const transactionConnectionEnvVars = [
+  'PAYLOAD_TRANSACTION_DATABASE_URI',
+  'TRANSACTION_DATABASE_URI',
+  'POSTGRES_TRANSACTION_URL',
+] as const
+
 const directConnectionEnvVars = [
   'PAYLOAD_DIRECT_DATABASE_URI',
   'DIRECT_DATABASE_URI',
@@ -28,7 +34,7 @@ const isSupabasePoolerHost = (host: string): boolean => {
   return host.endsWith('.pooler.supabase.com')
 }
 
-const deriveDirectSupabaseUrl = (raw: string): string => {
+const deriveSupabaseTransactionUrl = (raw: string): string => {
   try {
     const url = new URL(raw)
 
@@ -36,17 +42,7 @@ const deriveDirectSupabaseUrl = (raw: string): string => {
       return normalizeConnectionString(raw)
     }
 
-    const usernameParts = decodeURIComponent(url.username).split('.')
-    if (usernameParts.length < 2) {
-      return normalizeConnectionString(raw)
-    }
-
-    const directUsername = usernameParts[0]
-    const projectRef = usernameParts[1]
-
-    url.hostname = `db.${projectRef}.supabase.co`
-    url.port = '5432'
-    url.username = encodeURIComponent(directUsername)
+    url.port = '6543'
 
     return normalizeConnectionString(url.toString())
   } catch {
@@ -55,6 +51,11 @@ const deriveDirectSupabaseUrl = (raw: string): string => {
 }
 
 export const getPreferredDatabaseUrl = (): string => {
+  const explicitTransactionUrl = getFirstEnvValue(transactionConnectionEnvVars)
+  if (explicitTransactionUrl) {
+    return normalizeConnectionString(explicitTransactionUrl)
+  }
+
   const explicitDirectUrl = getFirstEnvValue(directConnectionEnvVars)
   if (explicitDirectUrl) {
     return normalizeConnectionString(explicitDirectUrl)
@@ -66,25 +67,29 @@ export const getPreferredDatabaseUrl = (): string => {
   }
 
   if (process.env.NODE_ENV === 'production') {
-    return deriveDirectSupabaseUrl(pooledUrl)
+    return deriveSupabaseTransactionUrl(pooledUrl)
   }
 
   return normalizeConnectionString(pooledUrl)
 }
 
 export const getDatabaseUrlDiagnostics = () => {
+  const explicitTransactionUrl = getFirstEnvValue(transactionConnectionEnvVars)
   const explicitDirectUrl = getFirstEnvValue(directConnectionEnvVars)
   const pooledUrl = getFirstEnvValue(pooledConnectionEnvVars)
   const selectedUrl = getPreferredDatabaseUrl()
 
   return {
+    explicitTransactionConfigured: !!explicitTransactionUrl,
     explicitDirectConfigured: !!explicitDirectUrl,
     pooledConfigured: !!pooledUrl,
     selectedUrl,
-    selectedUrlSource: explicitDirectUrl
+    selectedUrlSource: explicitTransactionUrl
+      ? 'explicit-transaction-env'
+      : explicitDirectUrl
       ? 'explicit-direct-env'
       : pooledUrl && selectedUrl !== normalizeConnectionString(pooledUrl)
-        ? 'derived-from-pooler'
+        ? 'derived-transaction-pooler'
         : pooledUrl
           ? 'pooled-env'
           : 'missing',
