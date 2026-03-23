@@ -1,4 +1,5 @@
 import type { CollectionConfig, Access } from 'payload'
+import { sanitizeAdminDocumentData } from './shared/adminSanitizers'
 
 // Access control: Admins and above can manage content
 const isAdminOrAbove: Access = ({ req: { user } }) => {
@@ -19,6 +20,35 @@ export const Posts: CollectionConfig = {
     create: isAdminOrAbove,
     update: isAdminOrAbove,
     delete: isAdminOrAbove,
+  },
+  hooks: {
+    beforeChange: [
+      ({ data }) => {
+        if (!data || typeof data !== 'object') return data
+        const nextData = sanitizeAdminDocumentData(data as Record<string, unknown>, {
+          relationFields: ['featuredImage', 'category'],
+          nullableRelationFields: ['author'],
+          relationArrayFields: ['tags'],
+          nestedArrayRelationFields: [{ arrayField: 'mediaGallery', itemField: 'image' }],
+        })
+
+        if (Array.isArray(nextData.mediaGallery)) {
+          nextData.mediaGallery = nextData.mediaGallery.map((item) => {
+            if (!item || typeof item !== 'object') return item
+
+            const mediaItem = { ...(item as Record<string, unknown>) }
+            if (mediaItem.type === 'youtube') delete mediaItem.image
+            if (mediaItem.type === 'image') {
+              delete mediaItem.youtubeId
+              delete mediaItem.youtubeTitle
+            }
+            return mediaItem
+          })
+        }
+
+        return nextData
+      },
+    ],
   },
   fields: [
     {

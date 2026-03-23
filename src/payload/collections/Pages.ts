@@ -1,4 +1,5 @@
 import type { CollectionConfig, Access } from 'payload'
+import { sanitizeAdminDocumentData } from './shared/adminSanitizers'
 
 // Access control: Only super admin and admin can manage pages
 const isAdminOnly: Access = ({ req: { user } }) => {
@@ -19,6 +20,16 @@ export const Pages: CollectionConfig = {
     create: isAdminOnly,
     update: isAdminOnly,
     delete: ({ req: { user } }) => user?.role === 'super-admin',
+  },
+  hooks: {
+    beforeChange: [
+      ({ data }) => {
+        if (!data || typeof data !== 'object') return data
+        return sanitizeAdminDocumentData(data as Record<string, unknown>, {
+          nullableRelationFields: ['featuredImage'],
+        })
+      },
+    ],
   },
   fields: [
     {

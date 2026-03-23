@@ -1,4 +1,5 @@
 import type { Access, CollectionConfig } from 'payload'
+import { sanitizeAdminDocumentData } from './shared/adminSanitizers'
 
 const isEditorOrAbove: Access = ({ req: { user } }) => {
   if (!user) return false
@@ -22,6 +23,16 @@ export const Testimonials: CollectionConfig = {
     create: isEditorOrAbove,
     update: isEditorOrAbove,
     delete: isEditorOrAbove,
+  },
+  hooks: {
+    beforeChange: [
+      ({ data }) => {
+        if (!data || typeof data !== 'object') return data
+        return sanitizeAdminDocumentData(data as Record<string, unknown>, {
+          relationFields: ['image'],
+        })
+      },
+    ],
   },
   fields: [
     {

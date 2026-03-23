@@ -1,4 +1,5 @@
 import type { CollectionConfig, Access } from 'payload'
+import { sanitizeAdminDocumentData } from './shared/adminSanitizers'
 
 // Access control: Admins and above can manage content
 const isAdminOrAbove: Access = ({ req: { user } }) => {
@@ -22,6 +23,23 @@ export const Publications: CollectionConfig = {
     create: isAdminOrAbove,
     update: isAdminOrAbove,
     delete: isAdminOrAbove,
+  },
+  hooks: {
+    beforeChange: [
+      ({ data }) => {
+        if (!data || typeof data !== 'object') return data
+        return sanitizeAdminDocumentData(data as Record<string, unknown>, {
+          relationFields: ['coverImage', 'file'],
+          removeFields: ['downloadCount'],
+          conditionalRemovals: [
+            {
+              when: (nextData) => nextData.subMenu !== 'project-report',
+              fields: ['region', 'pages', 'accentColor'],
+            },
+          ],
+        })
+      },
+    ],
   },
   fields: [
     {
