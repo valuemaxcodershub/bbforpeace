@@ -269,6 +269,47 @@ export async function GET(req: NextRequest) {
       }
 
       try {
+        const publication14 = await payload.findByID({
+          collection: 'publications',
+          id: 14,
+          depth: 0,
+          overrideAccess: true,
+        })
+
+        const publication14Data: RequiredDataFromCollectionSlug<'publications'> = {
+          title: publication14.title,
+          slug: publication14.slug,
+          coverImage: asId(publication14.coverImage) as number,
+          file: asId(publication14.file) as number,
+          description: publication14.description,
+          excerpt: publication14.excerpt || undefined,
+          category: publication14.category,
+          menuSection: publication14.menuSection,
+          subMenu: publication14.subMenu,
+          year: publication14.year,
+        }
+
+        if (publication14.author) publication14Data.author = publication14.author
+        if (publication14.region) publication14Data.region = publication14.region
+        if (typeof publication14.pages === 'number') publication14Data.pages = publication14.pages
+        if (publication14.accentColor) publication14Data.accentColor = publication14.accentColor
+        if (publication14.seo) publication14Data.seo = publication14.seo
+        if (typeof publication14.isFeatured === 'boolean') publication14Data.isFeatured = publication14.isFeatured
+
+        await payload.update({
+          collection: 'publications',
+          id: 14,
+          overrideAccess: true,
+          depth: 0,
+          data: publication14Data,
+        })
+
+        internalCrud.publication14RoundTrip = 'ok'
+      } catch (error) {
+        internalCrud.publication14RoundTrip = `FAILED: ${formatError(error)}`
+      }
+
+      try {
         const sourcePost = posts.docs[0] as unknown as Record<string, unknown> | undefined
         const fallbackMediaId = asId(media.docs[0])
         const fallbackCategoryId = asId(categories.docs[0])
