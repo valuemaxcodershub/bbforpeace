@@ -764,20 +764,22 @@ img[src*="gravatar.com"] {
     grid-template-columns: none !important;
   }
 
-  /* ---- NUCLEAR HIDE: remove nav on mobile under ALL conditions ---- */
-  /* Payload's NavProvider can set navOpen=true from a stored preference on SSR,
-     which adds template-default--nav-open to the HTML before JS hydrates.
-     We ignore ALL Payload nav-open classes and only show when our own
-     client-side-only class (bb-mobile-nav-open) is on <html>. */
+  /* ---- NUCLEAR HIDE: remove ALL nav elements on mobile ---- */
+  /* Our CustomNav renders <aside class="bb-custom-nav"> which does NOT have
+     Payload's .nav class. We must target BOTH the actual element AND any
+     Payload wrappers. Only show when our client-side-only class is set. */
   .nav,
+  .bb-custom-nav,
   .template-default .nav,
+  .template-default .bb-custom-nav,
   .template-default > .nav,
+  .template-default > .bb-custom-nav,
   .template-default.template-default--nav-open .nav,
-  .template-default.template-default--nav-open > .nav,
+  .template-default.template-default--nav-open .bb-custom-nav,
   .template-default.template-default--nav-hydrated .nav,
-  .template-default.template-default--nav-hydrated > .nav,
+  .template-default.template-default--nav-hydrated .bb-custom-nav,
   .template-default.template-default--nav-hydrated.template-default--nav-open .nav,
-  .template-default.template-default--nav-hydrated.template-default--nav-open > .nav {
+  .template-default.template-default--nav-hydrated.template-default--nav-open .bb-custom-nav {
     display: none !important;
     opacity: 0 !important;
     visibility: hidden !important;
@@ -788,15 +790,19 @@ img[src*="gravatar.com"] {
     position: absolute !important;
   }
 
-  /* Also hide the gutter wrapper if Payload renders one */
+  /* Also hide gutter wrapper */
   .template-default .gutter--left,
   .gutter--left {
     display: none !important;
   }
 
   /* ---- SHOW NAV: only via our JS class on <html> ---- */
+  /* The bb-mobile-nav-open class is ONLY set client-side by MobileNavOverlay
+     when the hamburger is pressed — it can never appear in SSR HTML. */
+  html.bb-mobile-nav-open .nav,
+  html.bb-mobile-nav-open .bb-custom-nav,
   html.bb-mobile-nav-open .template-default .nav,
-  html.bb-mobile-nav-open .template-default > .nav {
+  html.bb-mobile-nav-open .template-default .bb-custom-nav {
     display: block !important;
     position: fixed !important;
     top: 0.75rem !important;
@@ -816,14 +822,16 @@ img[src*="gravatar.com"] {
     background: linear-gradient(180deg, #250054 0%, #28005b 55%, #2e0763 100%) !important;
   }
 
-  html.bb-mobile-nav-open .template-default .nav .nav__scroll {
+  html.bb-mobile-nav-open .nav .nav__scroll,
+  html.bb-mobile-nav-open .bb-custom-nav .nav__scroll {
     height: 100% !important;
     padding-top: calc(var(--app-header-height) + 0.5rem) !important;
     padding-bottom: 1rem !important;
     border-radius: 20px !important;
   }
 
-  .bb-custom-nav {
+  /* When shown, the custom nav itself needs proper sizing */
+  html.bb-mobile-nav-open .bb-custom-nav {
     padding: 1rem 0.4rem 0.7rem !important;
     max-height: 100% !important;
     overflow-y: auto !important;
