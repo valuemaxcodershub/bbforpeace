@@ -21,6 +21,8 @@ import {
   X,
 } from 'lucide-react'
 
+const MOBILE_NAV_MEDIA_QUERY = '(max-width: 714px)'
+
 type UserRole = 'super-admin' | 'admin' | 'editor'
 
 type MenuItem = {
@@ -142,7 +144,7 @@ export function CustomNav() {
 
   // Close nav on mobile when a link is clicked
   const closeMobileNav = useCallback(() => {
-    if (window.matchMedia('(max-width: 1024px)').matches) {
+    if (window.matchMedia(MOBILE_NAV_MEDIA_QUERY).matches) {
       setNavOpen(false)
     }
   }, [setNavOpen])

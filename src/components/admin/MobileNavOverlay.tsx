@@ -4,6 +4,8 @@ import { useNav } from '@payloadcms/ui'
 import { usePathname } from 'next/navigation'
 import React, { useEffect, useRef } from 'react'
 
+const MOBILE_NAV_MEDIA_QUERY = '(max-width: 714px)'
+
 /**
  * Provider that renders a backdrop overlay on mobile when the admin nav is open.
  * Tapping the backdrop closes the nav. Also auto-closes on route changes.
@@ -16,7 +18,7 @@ export function MobileNavOverlay({ children }: { children: React.ReactNode }) {
   // Close nav on route change (mobile navigation)
   useEffect(() => {
     if (prevPathname.current !== pathname && navOpen) {
-      const isMobile = window.matchMedia('(max-width: 1024px)').matches
+      const isMobile = window.matchMedia(MOBILE_NAV_MEDIA_QUERY).matches
       if (isMobile) {
         setNavOpen(false)
       }
@@ -26,7 +28,7 @@ export function MobileNavOverlay({ children }: { children: React.ReactNode }) {
 
   // Prevent body scroll when mobile nav is open
   useEffect(() => {
-    const isMobile = window.matchMedia('(max-width: 1024px)').matches
+    const isMobile = window.matchMedia(MOBILE_NAV_MEDIA_QUERY).matches
     if (navOpen && isMobile) {
       document.body.style.overflow = 'hidden'
     } else {
@@ -38,7 +40,7 @@ export function MobileNavOverlay({ children }: { children: React.ReactNode }) {
   }, [navOpen])
 
   useEffect(() => {
-    const isMobile = window.matchMedia('(max-width: 1024px)').matches
+    const isMobile = window.matchMedia(MOBILE_NAV_MEDIA_QUERY).matches
 
     document.documentElement.classList.toggle('bb-mobile-nav-open', navOpen && isMobile)
 

@@ -214,9 +214,9 @@ img[src*="gravatar.com"] {
 }
 
 /* ==========================================
-   RESPONSIVE  — TABLETS (≤ 768px)
-   ========================================== */
-@media (max-width: 768px) {
+  RESPONSIVE  — SMALL SCREENS (≤ 714px)
+  ========================================== */
+@media (max-width: 714px) {
   /* Hide title on small devices */
   .bb-admin-actions__title {
     display: none;
@@ -797,10 +797,9 @@ img[src*="gravatar.com"] {
 }
 
 /* ==========================================
-   MOBILE SIDEBAR — SLIDE-OVER CANVAS
-   On mobile/tablet the sidebar is an overlay drawer.
-   A semi-transparent backdrop lets the user tap outside to close.
-   ========================================== */
+  MOBILE SIDEBAR — SLIDE-OVER CANVAS
+  Small screens use a dedicated drawer with a backdrop.
+  ========================================== */
 @media (max-width: 1024px) {
   /* ---- MOBILE NAV BACKDROP ---- */
   /* Rendered by MobileNavOverlay provider component (only when nav is open) */
@@ -851,12 +850,14 @@ img[src*="gravatar.com"] {
   }
 }
 
-@media (max-width: 768px) {
-  /* On phones, the admin nav behaves like the frontend mobile menu:
-     hidden by default, opened by the hamburger, and pushed into layout flow
-     below the header instead of covering the page as a side overlay. */
+@media (max-width: 714px) {
   .bb-mobile-nav-backdrop {
-    display: none !important;
+    display: block !important;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(3px);
+    z-index: 998;
   }
 
   .template-default,
@@ -866,48 +867,44 @@ img[src*="gravatar.com"] {
   }
 
   .template-default .gutter--left {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    right: auto !important;
-    bottom: auto !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    z-index: auto !important;
-    transform: none !important;
-    box-shadow: none !important;
-    margin: 0 0 0.75rem !important;
-    max-height: 0 !important;
-    opacity: 0 !important;
-    visibility: hidden !important;
+    position: fixed !important;
+    top: 0.75rem !important;
+    left: 0.75rem !important;
+    bottom: 0.75rem !important;
+    width: min(320px, calc(100vw - 1.5rem)) !important;
+    max-width: calc(100vw - 1.5rem) !important;
+    z-index: 1000 !important;
+    transform: translateX(calc(-100% - 1rem)) !important;
+    transition: transform 0.22s ease, box-shadow 0.22s ease !important;
     overflow: hidden !important;
-    pointer-events: none !important;
+    border-radius: 20px !important;
+    box-shadow: none !important;
+    padding: 0 !important;
   }
 
   .template-default.template-default--nav-open .gutter--left {
-    max-height: min(70vh, 42rem) !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    overflow-y: auto !important;
-    pointer-events: auto !important;
-    margin-bottom: 1rem !important;
-    padding: 0 !important;
+    transform: translateX(0) !important;
+    box-shadow: 0 20px 48px rgba(15, 23, 42, 0.28) !important;
   }
 
   .template-default .gutter--left .nav,
   .template-default .gutter--left .drawer,
   .template-default .gutter--left .drawer__content {
-    border-radius: 16px !important;
+    height: 100% !important;
+    border-radius: 20px !important;
   }
 
   .bb-custom-nav {
-    padding-top: 3.5rem;
-    max-height: none;
+    padding: 4rem 0.4rem 0.7rem !important;
+    max-height: 100% !important;
+    overflow-y: auto !important;
   }
 
   .bb-custom-nav__close {
-    top: 0.65rem;
-    right: 0.65rem;
+    top: 0.8rem;
+    right: 0.8rem;
+    width: 38px;
+    height: 38px;
   }
 
   .template-default .gutter--right {
@@ -1007,7 +1004,7 @@ img[src*="gravatar.com"] {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 714px) {
   .template-default {
     --gutter-h: 20px;
   }
@@ -1188,8 +1185,8 @@ select,
   }
 }
 
-/* ---- Mobile ≤ 768px ---- */
-@media (max-width: 768px) {
+/* ---- Mobile ≤ 714px ---- */
+@media (max-width: 714px) {
   /* App header: ensure proper flex layout with no overflow */
   .template-default .app-header__wrapper {
     display: flex;
