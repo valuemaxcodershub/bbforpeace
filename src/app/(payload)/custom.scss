@@ -890,7 +890,7 @@ img[src*="gravatar.com"] {
     display: none !important;
   }
 
-  /* ---- MOBILE HEADER LAYOUT: [hamburger] [logo] ... [user icon] ---- */
+  /* ---- MOBILE HEADER LAYOUT: [hamburger] [logo] ...spacer... [user icon] ---- */
   .template-default .app-header__wrapper {
     display: flex !important;
     align-items: center !important;
@@ -899,7 +899,7 @@ img[src*="gravatar.com"] {
     padding: 0 0.5rem !important;
   }
 
-  /* Hamburger first */
+  /* Hamburger stays first, doesn't shrink */
   .template-default .app-header__mobile-nav-toggler,
   .template-default .nav-toggler,
   .template-default__nav-toggler-wrapper {
@@ -907,28 +907,33 @@ img[src*="gravatar.com"] {
     flex-shrink: 0;
   }
 
-  /* BB4Peace logo after hamburger */
-  .template-default .app-header .bb-admin-logo,
-  .template-default .app-header .graphic-icon,
-  .template-default .app-header__logo-wrap {
-    order: 2 !important;
-    flex-shrink: 0;
-    margin-left: 0.35rem;
-  }
-
-  /* Push everything else to the right */
+  /* Actions wrapper fills remaining space so logo + user can spread */
   .template-default .app-header__actions-wrapper {
-    order: 3 !important;
-    margin-left: auto !important;
-    flex-shrink: 0;
+    order: 2 !important;
+    flex: 1 1 auto !important;
+    margin-left: 0 !important;
+    max-width: none !important;
+    overflow: visible !important;
   }
 
-  /* Our AdminActions (contains user icon) */
+  /* AdminActions: full width flex row */
   .template-default .app-header .bb-admin-actions {
-    order: 3 !important;
-    margin-left: auto !important;
-    justify-content: flex-end;
-    min-width: auto;
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-width: 0;
+  }
+
+  /* Mobile logo sits right after hamburger */
+  .bb-admin-actions__mobile-logo {
+    flex-shrink: 0;
+    margin-right: auto; /* pushes user icon to far right */
+  }
+
+  /* User icon floats to the right */
+  .template-default .app-header .bb-admin-user {
+    margin-left: auto;
+    flex-shrink: 0;
   }
 }
 
