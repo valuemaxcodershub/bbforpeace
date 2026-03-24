@@ -748,7 +748,8 @@ img[src*="gravatar.com"] {
   .bb-mobile-nav-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.45);
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(3px);
     z-index: 998;
     pointer-events: auto;
     cursor: pointer;
@@ -765,48 +766,16 @@ img[src*="gravatar.com"] {
   /* ---- SIDEBAR AS FIXED OVERLAY DRAWER ---- */
   .template-default .gutter--left {
     position: fixed !important;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: var(--nav-width, 280px);
-    max-width: 85vw;
-    z-index: 1000;
-    transform: translateX(-100%);
-    transition: transform 0.25s ease;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 0;
-  }
-
-  .template-default--nav-open .gutter--left {
-    transform: translateX(0);
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.25);
-  }
-
-  /* ---- CONTENT AREA ALWAYS FULL WIDTH ---- */
-  .template-default .gutter--right {
-    width: 100% !important;
-    max-width: 100vw !important;
-    margin-left: 0 !important;
-    grid-column: unset !important;
-  }
-}
-
-@media (max-width: 768px) {
-  .bb-mobile-nav-backdrop {
-    background: rgba(15, 23, 42, 0.55);
-    backdrop-filter: blur(3px);
-  }
-
-  .template-default .gutter--left {
-    position: fixed !important;
     top: 0.75rem !important;
     left: 0.75rem !important;
     bottom: 0.75rem !important;
     width: min(320px, calc(100vw - 1.5rem)) !important;
     max-width: calc(100vw - 1.5rem) !important;
     z-index: 1000 !important;
-    transform: translateX(-100%) !important;
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
     transition: transform 0.22s ease, box-shadow 0.22s ease !important;
     overflow: hidden !important;
     border-radius: 20px !important;
@@ -815,7 +784,10 @@ img[src*="gravatar.com"] {
   }
 
   .template-default.template-default--nav-open .gutter--left {
-    transform: translateX(0) !important;
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
     box-shadow: 0 20px 48px rgba(15, 23, 42, 0.28) !important;
   }
 
@@ -834,10 +806,12 @@ img[src*="gravatar.com"] {
     overscroll-behavior: contain;
   }
 
+  /* ---- CONTENT AREA ALWAYS FULL WIDTH ---- */
   .template-default .gutter--right {
     width: 100% !important;
-    max-width: 100% !important;
+    max-width: 100vw !important;
     margin-left: 0 !important;
+    grid-column: unset !important;
     padding-top: 0.75rem !important;
   }
 
