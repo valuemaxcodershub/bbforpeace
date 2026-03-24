@@ -797,12 +797,23 @@ img[src*="gravatar.com"] {
   }
 
   /* ---- SHOW NAV: only via our JS class on <html> ---- */
-  /* The bb-mobile-nav-open class is ONLY set client-side by MobileNavOverlay
-     when the hamburger is pressed — it can never appear in SSR HTML. */
+  /* Every show selector must match or exceed the specificity of its
+     corresponding hide selector. The most specific hide is
+     .template-default.template-default--nav-hydrated.template-default--nav-open .bb-custom-nav
+     at specificity 0,4,0.  We prefix each with html.bb-mobile-nav-open to
+     guarantee the show always wins. */
   html.bb-mobile-nav-open .nav,
   html.bb-mobile-nav-open .bb-custom-nav,
   html.bb-mobile-nav-open .template-default .nav,
-  html.bb-mobile-nav-open .template-default .bb-custom-nav {
+  html.bb-mobile-nav-open .template-default .bb-custom-nav,
+  html.bb-mobile-nav-open .template-default > .nav,
+  html.bb-mobile-nav-open .template-default > .bb-custom-nav,
+  html.bb-mobile-nav-open .template-default.template-default--nav-open .nav,
+  html.bb-mobile-nav-open .template-default.template-default--nav-open .bb-custom-nav,
+  html.bb-mobile-nav-open .template-default.template-default--nav-hydrated .nav,
+  html.bb-mobile-nav-open .template-default.template-default--nav-hydrated .bb-custom-nav,
+  html.bb-mobile-nav-open .template-default.template-default--nav-hydrated.template-default--nav-open .nav,
+  html.bb-mobile-nav-open .template-default.template-default--nav-hydrated.template-default--nav-open .bb-custom-nav {
     display: block !important;
     position: fixed !important;
     top: 0.75rem !important;
@@ -831,7 +842,11 @@ img[src*="gravatar.com"] {
   }
 
   /* When shown, the custom nav itself needs proper sizing */
-  html.bb-mobile-nav-open .bb-custom-nav {
+  html.bb-mobile-nav-open .bb-custom-nav,
+  html.bb-mobile-nav-open .template-default .bb-custom-nav,
+  html.bb-mobile-nav-open .template-default.template-default--nav-open .bb-custom-nav,
+  html.bb-mobile-nav-open .template-default.template-default--nav-hydrated .bb-custom-nav,
+  html.bb-mobile-nav-open .template-default.template-default--nav-hydrated.template-default--nav-open .bb-custom-nav {
     padding: 1rem 0.4rem 0.7rem !important;
     max-height: 100% !important;
     overflow-y: auto !important;
