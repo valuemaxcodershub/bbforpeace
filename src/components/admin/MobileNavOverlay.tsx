@@ -68,16 +68,5 @@ export function MobileNavOverlay({ children }: { children: React.ReactNode }) {
     }
   }, [isMobileViewport, navOpen])
 
-  return (
-    <>
-      {navOpen && isMobileViewport && (
-        <div
-          className="bb-mobile-nav-backdrop"
-          onClick={() => setNavOpen(false)}
-          aria-hidden="true"
-        />
-      )}
-      {children}
-    </>
-  )
+  return <>{children}</>
 }

@@ -743,18 +743,6 @@ img[src*="gravatar.com"] {
   Small screens use a dedicated drawer with a backdrop.
   ========================================== */
 @media (max-width: 768px) {
-  /* ---- MOBILE NAV BACKDROP ---- */
-  /* Rendered by MobileNavOverlay provider component (only when nav is open) */
-  .bb-mobile-nav-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.55);
-    backdrop-filter: blur(3px);
-    z-index: 998;
-    pointer-events: auto;
-    cursor: pointer;
-  }
-
   /* ---- FORCE SINGLE-COLUMN LAYOUT ---- */
   .template-default,
   .template-default.template-default--nav-open,
