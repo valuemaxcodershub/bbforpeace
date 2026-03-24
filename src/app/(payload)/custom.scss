@@ -890,44 +890,59 @@ img[src*="gravatar.com"] {
     display: none !important;
   }
 
-  /* ---- MOBILE HEADER LAYOUT: [hamburger] [logo] ...spacer... [user icon] ---- */
+  /* ---- MOBILE HEADER: [hamburger][logo] ............ [user icon] ---- */
   .template-default .app-header__wrapper {
     display: flex !important;
     align-items: center !important;
+    justify-content: flex-start !important;
     min-height: 52px;
     width: 100%;
     padding: 0 0.5rem !important;
+    gap: 0.4rem;
   }
 
-  /* Hamburger stays first, doesn't shrink */
+  /* Hamburger stays first, flush left */
   .template-default .app-header__mobile-nav-toggler,
   .template-default .nav-toggler,
   .template-default__nav-toggler-wrapper {
     order: 1 !important;
     flex-shrink: 0;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
 
-  /* Actions wrapper fills remaining space so logo + user can spread */
+  /* Actions wrapper fills ALL remaining space */
   .template-default .app-header__actions-wrapper {
     order: 2 !important;
-    flex: 1 1 auto !important;
+    flex: 1 1 0% !important;
     margin-left: 0 !important;
+    margin-right: 0 !important;
     max-width: none !important;
     overflow: visible !important;
   }
 
-  /* AdminActions: full width flex row */
+  /* AdminActions spans full width: logo left, user right */
   .template-default .app-header .bb-admin-actions {
     display: flex !important;
     align-items: center !important;
     width: 100% !important;
     min-width: 0;
+    justify-content: space-between !important;
   }
 
-  /* Mobile logo sits right after hamburger */
+  /* Logo flush left (right after hamburger) */
   .bb-admin-actions__mobile-logo {
     flex-shrink: 0;
-    margin-right: auto; /* pushes user icon to far right */
+    margin-right: auto !important;
+    margin-left: 0 !important;
+  }
+
+  /* User icon flush right */
+  .template-default .app-header .bb-admin-user {
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    flex-shrink: 0;
+  }
   }
 
   /* User icon floats to the right */
