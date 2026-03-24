@@ -2,7 +2,7 @@
 
 import { useNav } from '@payloadcms/ui'
 import { usePathname } from 'next/navigation'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 const MOBILE_NAV_MEDIA_QUERY = '(max-width: 768px)'
 
@@ -14,22 +14,43 @@ export function MobileNavOverlay({ children }: { children: React.ReactNode }) {
   const { navOpen, setNavOpen } = useNav()
   const pathname = usePathname()
   const prevPathname = useRef(pathname)
+  const [isMobileViewport, setIsMobileViewport] = useState(false)
 
-  // Close nav on route change (mobile navigation)
-  useEffect(() => {
-    if (prevPathname.current !== pathname && navOpen) {
-      const isMobile = window.matchMedia(MOBILE_NAV_MEDIA_QUERY).matches
-      if (isMobile) {
+  useLayoutEffect(() => {
+    const mediaQuery = window.matchMedia(MOBILE_NAV_MEDIA_QUERY)
+
+    const syncViewportState = (matches: boolean) => {
+      setIsMobileViewport(matches)
+
+      if (matches) {
         setNavOpen(false)
       }
     }
+
+    syncViewportState(mediaQuery.matches)
+
+    const handleChange = (event: MediaQueryListEvent) => {
+      syncViewportState(event.matches)
+    }
+
+    mediaQuery.addEventListener('change', handleChange)
+
+    return () => {
+      mediaQuery.removeEventListener('change', handleChange)
+    }
+  }, [setNavOpen])
+
+  // Close nav on route change (mobile navigation)
+  useEffect(() => {
+    if (prevPathname.current !== pathname && navOpen && isMobileViewport) {
+        setNavOpen(false)
+    }
     prevPathname.current = pathname
-  }, [pathname, navOpen, setNavOpen])
+  }, [isMobileViewport, pathname, navOpen, setNavOpen])
 
   // Prevent body scroll when mobile nav is open
   useEffect(() => {
-    const isMobile = window.matchMedia(MOBILE_NAV_MEDIA_QUERY).matches
-    if (navOpen && isMobile) {
+    if (navOpen && isMobileViewport) {
       document.body.style.overflow = 'hidden'
     } else {
       document.body.style.overflow = ''
@@ -37,21 +58,19 @@ export function MobileNavOverlay({ children }: { children: React.ReactNode }) {
     return () => {
       document.body.style.overflow = ''
     }
-  }, [navOpen])
+  }, [isMobileViewport, navOpen])
 
   useEffect(() => {
-    const isMobile = window.matchMedia(MOBILE_NAV_MEDIA_QUERY).matches
-
-    document.documentElement.classList.toggle('bb-mobile-nav-open', navOpen && isMobile)
+    document.documentElement.classList.toggle('bb-mobile-nav-open', navOpen && isMobileViewport)
 
     return () => {
       document.documentElement.classList.remove('bb-mobile-nav-open')
     }
-  }, [navOpen])
+  }, [isMobileViewport, navOpen])
 
   return (
     <>
-      {navOpen && (
+      {navOpen && isMobileViewport && (
         <div
           className="bb-mobile-nav-backdrop"
           onClick={() => setNavOpen(false)}

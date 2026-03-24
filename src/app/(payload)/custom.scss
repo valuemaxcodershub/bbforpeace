@@ -635,40 +635,10 @@ img[src*="gravatar.com"] {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
-  padding: 4.9rem 0.2rem 0.4rem;
+  padding: 1rem 0.2rem 0.4rem;
   background: linear-gradient(180deg, #250054 0%, #28005b 55%, #2e0763 100%);
   border-radius: 12px;
   position: relative;
-}
-
-/* Mobile close button — hidden on desktop, visible on mobile */
-.bb-custom-nav__close {
-  display: none;
-}
-
-@media (max-width: 768px) {
-  .bb-custom-nav__close {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 0.75rem;
-    right: 0.75rem;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.1);
-    color: #e7e2f0;
-    cursor: pointer;
-    z-index: 1001;
-    transition: background 0.15s ease, color 0.15s ease;
-  }
-
-  .bb-custom-nav__close:hover {
-    background: rgba(255, 255, 255, 0.2);
-    color: #fff;
-  }
 }
 
 .bb-custom-nav__item,
@@ -857,18 +827,11 @@ img[src*="gravatar.com"] {
   }
 
   .bb-custom-nav {
-    padding: 4rem 0.4rem 0.7rem !important;
+    padding: 1rem 0.4rem 0.7rem !important;
     max-height: 100% !important;
     overflow-y: auto !important;
     scrollbar-gutter: stable;
     overscroll-behavior: contain;
-  }
-
-  .bb-custom-nav__close {
-    top: 0.8rem;
-    right: 0.8rem;
-    width: 38px;
-    height: 38px;
   }
 
   .template-default .gutter--right {
@@ -1128,18 +1091,6 @@ select,
   .app-header__mobile-nav-toggler {
     display: flex !important;
     z-index: 100;
-  }
-
-  .template-default.template-default--nav-open .template-default__nav-toggler-wrapper,
-  .template-default.template-default--nav-open .app-header__mobile-nav-toggler,
-  .template-default.template-default--nav-open .nav-toggler,
-  :root.bb-mobile-nav-open .template-default__nav-toggler-wrapper,
-  :root.bb-mobile-nav-open .app-header__mobile-nav-toggler,
-  :root.bb-mobile-nav-open .template-default .nav-toggler {
-    display: none !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    visibility: hidden !important;
   }
 
   /* Payload drawers: make them fullscreen on tablets/mobile */

@@ -18,7 +18,6 @@ import {
   Users,
   LogOut,
   Circle,
-  X,
 } from 'lucide-react'
 
 const MOBILE_NAV_MEDIA_QUERY = '(max-width: 768px)'
@@ -184,15 +183,6 @@ export function CustomNav() {
 
   return (
     <aside className="bb-custom-nav">
-      {/* Mobile close button */}
-      <button
-        type="button"
-        className="bb-custom-nav__close"
-        onClick={() => setNavOpen(false)}
-        aria-label="Close navigation"
-      >
-        <X size={20} />
-      </button>
       {visibleMenu.map((section) => {
         const SectionIcon = section.icon || Circle
 
