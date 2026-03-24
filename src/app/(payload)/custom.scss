@@ -214,9 +214,9 @@ img[src*="gravatar.com"] {
 }
 
 /* ==========================================
-  RESPONSIVE  — SMALL SCREENS (≤ 714px)
+  RESPONSIVE  — SMALL SCREENS (≤ 768px)
   ========================================== */
-@media (max-width: 714px) {
+@media (max-width: 768px) {
   /* Hide title on small devices */
   .bb-admin-actions__title {
     display: none;
@@ -646,7 +646,7 @@ img[src*="gravatar.com"] {
   display: none;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
   .bb-custom-nav__close {
     display: flex;
     align-items: center;
@@ -772,7 +772,7 @@ img[src*="gravatar.com"] {
   MOBILE SIDEBAR — SLIDE-OVER CANVAS
   Small screens use a dedicated drawer with a backdrop.
   ========================================== */
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
   /* ---- MOBILE NAV BACKDROP ---- */
   /* Rendered by MobileNavOverlay provider component (only when nav is open) */
   .bb-mobile-nav-backdrop {
@@ -822,7 +822,7 @@ img[src*="gravatar.com"] {
   }
 }
 
-@media (max-width: 714px) {
+@media (max-width: 768px) {
   .bb-mobile-nav-backdrop {
     background: rgba(15, 23, 42, 0.55);
     backdrop-filter: blur(3px);
@@ -968,7 +968,7 @@ img[src*="gravatar.com"] {
   }
 }
 
-@media (max-width: 714px) {
+@media (max-width: 768px) {
   .template-default {
     --gutter-h: 20px;
   }
@@ -1121,8 +1121,8 @@ select,
   box-sizing: border-box;
 }
 
-/* ---- Mobile ≤ 1024px ---- */
-@media (max-width: 1024px) {
+/* ---- Mobile ≤ 768px ---- */
+@media (max-width: 768px) {
   /* Ensure hamburger toggle is always visible and accessible */
   .template-default__nav-toggler-wrapper,
   .app-header__mobile-nav-toggler {
@@ -1149,8 +1149,8 @@ select,
   }
 }
 
-/* ---- Mobile ≤ 714px ---- */
-@media (max-width: 714px) {
+/* ---- Mobile ≤ 768px ---- */
+@media (max-width: 768px) {
   /* App header: ensure proper flex layout with no overflow */
   .template-default .app-header__wrapper {
     display: flex;

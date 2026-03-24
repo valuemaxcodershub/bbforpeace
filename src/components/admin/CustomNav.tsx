@@ -21,7 +21,7 @@ import {
   X,
 } from 'lucide-react'
 
-const MOBILE_NAV_MEDIA_QUERY = '(max-width: 714px)'
+const MOBILE_NAV_MEDIA_QUERY = '(max-width: 768px)'
 
 type UserRole = 'super-admin' | 'admin' | 'editor'
 

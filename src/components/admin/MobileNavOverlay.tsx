@@ -4,7 +4,7 @@ import { useNav } from '@payloadcms/ui'
 import { usePathname } from 'next/navigation'
 import React, { useEffect, useRef } from 'react'
 
-const MOBILE_NAV_MEDIA_QUERY = '(max-width: 714px)'
+const MOBILE_NAV_MEDIA_QUERY = '(max-width: 768px)'
 
 /**
  * Provider that renders a backdrop overlay on mobile when the admin nav is open.
