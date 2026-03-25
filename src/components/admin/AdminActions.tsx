@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 
 export function AdminActions() {
@@ -21,17 +20,6 @@ export function AdminActions() {
 
   return (
     <div className="bb-admin-actions">
-      {/* Logo visible only on mobile (≤768px), sits between hamburger and user icon */}
-      <span className="bb-admin-actions__mobile-logo">
-        <Image
-          src="/images/logo.jpg"
-          alt="BB4Peace"
-          width={34}
-          height={34}
-          className="rounded-full"
-        />
-      </span>
-
       <span className="bb-admin-actions__title">BBforPeace Admin Panel</span>
 
       <div className="bb-admin-user" ref={menuRef}>
