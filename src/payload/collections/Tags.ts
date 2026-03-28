@@ -1,4 +1,5 @@
 import type { CollectionConfig, Access } from 'payload'
+import { autoSlugHook, SLUG_ADMIN_DESCRIPTION } from './shared/slugUtils'
 
 // Access control: Editors and above can manage tags
 const isAdminOrAbove: Access = ({ req: { user } }) => {
@@ -21,6 +22,9 @@ export const Tags: CollectionConfig = {
     update: isAdminOrAbove,
     delete: isAdminOrAbove,
   },
+  hooks: {
+    beforeValidate: [autoSlugHook],
+  },
   fields: [
     {
       name: 'name',
@@ -32,6 +36,9 @@ export const Tags: CollectionConfig = {
       type: 'text',
       required: true,
       unique: true,
+      admin: {
+        description: SLUG_ADMIN_DESCRIPTION,
+      },
     },
   ],
 }

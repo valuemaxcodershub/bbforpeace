@@ -1,5 +1,6 @@
 import type { CollectionConfig, Access } from 'payload'
 import { sanitizeAdminDocumentData } from './shared/adminSanitizers'
+import { autoSlugHook, SLUG_ADMIN_DESCRIPTION } from './shared/slugUtils'
 
 // Access control: Admins and above can manage programmes
 const isAdminOrAbove: Access = ({ req: { user } }) => {
@@ -22,6 +23,7 @@ export const Programmes: CollectionConfig = {
     delete: isAdminOrAbove,
   },
   hooks: {
+    beforeValidate: [autoSlugHook],
     beforeChange: [
       ({ data }) => {
         if (!data || typeof data !== 'object') return data
@@ -45,6 +47,7 @@ export const Programmes: CollectionConfig = {
       unique: true,
       admin: {
         position: 'sidebar',
+        description: SLUG_ADMIN_DESCRIPTION,
       },
     },
     {

@@ -1,4 +1,5 @@
 import type { CollectionConfig, Access } from 'payload'
+import { autoSlugHook, SLUG_ADMIN_DESCRIPTION } from './shared/slugUtils'
 
 // Access control: Only admins can manage categories
 const isAdminOnly: Access = ({ req: { user } }) => {
@@ -20,6 +21,9 @@ export const Categories: CollectionConfig = {
     update: isAdminOnly,
     delete: ({ req: { user } }) => user?.role === 'super-admin',
   },
+  hooks: {
+    beforeValidate: [autoSlugHook],
+  },
   fields: [
     {
       name: 'name',
@@ -31,6 +35,9 @@ export const Categories: CollectionConfig = {
       type: 'text',
       required: true,
       unique: true,
+      admin: {
+        description: SLUG_ADMIN_DESCRIPTION,
+      },
     },
     {
       name: 'description',

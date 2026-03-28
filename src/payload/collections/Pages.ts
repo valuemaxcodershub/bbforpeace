@@ -1,5 +1,6 @@
 import type { CollectionConfig, Access } from 'payload'
 import { sanitizeAdminDocumentData } from './shared/adminSanitizers'
+import { autoSlugHook, SLUG_ADMIN_DESCRIPTION } from './shared/slugUtils'
 
 // Access control: Only super admin and admin can manage pages
 const isAdminOnly: Access = ({ req: { user } }) => {
@@ -22,6 +23,7 @@ export const Pages: CollectionConfig = {
     delete: ({ req: { user } }) => user?.role === 'super-admin',
   },
   hooks: {
+    beforeValidate: [autoSlugHook],
     beforeChange: [
       ({ data }) => {
         if (!data || typeof data !== 'object') return data
@@ -44,6 +46,7 @@ export const Pages: CollectionConfig = {
       unique: true,
       admin: {
         position: 'sidebar',
+        description: SLUG_ADMIN_DESCRIPTION,
       },
     },
     {
