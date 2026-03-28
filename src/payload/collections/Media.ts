@@ -35,67 +35,69 @@ const MEDIA_REFS_GLOBALS: Record<string, Record<string, string>> = {
 }
 
 const beforeDeleteCheckUsage: CollectionBeforeDeleteHook = async ({ id, req }) => {
-  const usages: string[] = []
+  // Run ALL checks in parallel to stay within Vercel's 60s timeout.
+  // Each promise resolves to an array of usage strings (empty if not used).
+  const checks: Promise<string[]>[] = []
 
-  // 1. Check collections
+  // 1. Collection field checks (all in parallel)
   for (const [slug, fields] of Object.entries(MEDIA_REFS_COLLECTIONS)) {
     for (const [field, label] of Object.entries(fields)) {
-      try {
-        const result = await req.payload.find({
+      checks.push(
+        req.payload.find({
           collection: slug as any,
           where: { [field]: { equals: id } },
           limit: 3,
           depth: 0,
-        })
-        for (const doc of result.docs) {
-          const title = (doc as any).title || (doc as any).name || (doc as any).alt || (doc as any).email || `ID ${doc.id}`
-          usages.push(`${label}: "${title}"`)
-        }
-      } catch {
-        // Collection might not exist or field might be mismatched — skip
-      }
+          select: { title: true, name: true, email: true },
+        }).then((result) =>
+          result.docs.map((doc: any) => {
+            const title = doc.title || doc.name || doc.email || `ID ${doc.id}`
+            return `${label}: "${title}"`
+          })
+        ).catch(() => [])
+      )
     }
   }
 
-  // 2. Check array fields (posts.mediaGallery, programmes.gallery, home-page heroSlides, etc.)
-  // These store media IDs in sub-rows; query via the parent collection
+  // 2. Array field checks (in parallel with everything else)
   const arrayChecks = [
-    { collection: 'posts', arrayField: 'mediaGallery', subField: 'image', label: 'Blog — Gallery Image' },
-    { collection: 'programmes', arrayField: 'gallery', subField: 'image', label: 'Programme — Gallery Image' },
+    { collection: 'posts', field: 'mediaGallery.image', label: 'Blog — Gallery Image' },
+    { collection: 'programmes', field: 'gallery.image', label: 'Programme — Gallery Image' },
   ]
   for (const check of arrayChecks) {
-    try {
-      const result = await req.payload.find({
+    checks.push(
+      req.payload.find({
         collection: check.collection as any,
-        where: { [`${check.arrayField}.${check.subField}`]: { equals: id } },
+        where: { [check.field]: { equals: id } },
         limit: 3,
         depth: 0,
-      })
-      for (const doc of result.docs) {
-        const title = (doc as any).title || `ID ${doc.id}`
-        usages.push(`${check.label} in "${title}"`)
-      }
-    } catch {
-      // Skip if query structure doesn't match
-    }
+        select: { title: true },
+      }).then((result) =>
+        result.docs.map((doc: any) => `${check.label} in "${doc.title || `ID ${doc.id}`}"`)
+      ).catch(() => [])
+    )
   }
 
-  // 3. Check globals via Payload's findGlobal API
+  // 3. Global checks (in parallel with everything else)
   for (const [slug, fields] of Object.entries(MEDIA_REFS_GLOBALS)) {
-    try {
-      const global = await req.payload.findGlobal({ slug: slug as any, depth: 0 })
-      if (!global) continue
-      for (const [fieldPath, label] of Object.entries(fields)) {
-        // Resolve dot-notation paths (e.g. 'og.image')
-        const value = fieldPath.split('.').reduce((obj: any, key) => obj?.[key], global)
-        if (value === id || value === Number(id)) {
-          usages.push(label)
-        }
-      }
-    } catch {
-      // Global might not exist — skip
-    }
+    checks.push(
+      req.payload.findGlobal({ slug: slug as any, depth: 0 })
+        .then((global: any) => {
+          const hits: string[] = []
+          if (!global) return hits
+          for (const [fieldPath, label] of Object.entries(fields)) {
+            const value = fieldPath.split('.').reduce((obj: any, key) => obj?.[key], global)
+            if (value === id || value === Number(id)) hits.push(label)
+          }
+          return hits
+        })
+        .catch(() => [])
+    )
   }
+
+  // Wait for ALL checks at once (single round-trip of parallel queries)
+  const results = await Promise.all(checks)
+  const usages = results.flat()
 
   if (usages.length > 0) {
     const list = usages.map((u) => `  • ${u}`).join('\n')
