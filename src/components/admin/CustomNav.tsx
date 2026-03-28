@@ -13,6 +13,7 @@ import {
   Layers,
   CalendarDays,
   Image,
+  ImageUp,
   FileText,
   Phone,
   Users,
@@ -116,6 +117,12 @@ const menuConfig: MenuItem[] = [
     icon: Phone,
     roles: ['super-admin', 'admin'],
     children: [{ label: 'Contact page content', href: '/admin/globals/contact-us-page-settings', icon: Circle }],
+  },
+  {
+    label: 'Media Library',
+    href: '/admin/collections/media',
+    icon: ImageUp,
+    roles: ['super-admin', 'admin'],
   },
   {
     label: 'user',

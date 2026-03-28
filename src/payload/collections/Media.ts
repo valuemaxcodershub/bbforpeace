@@ -9,9 +9,9 @@ export const Media: CollectionConfig = {
   slug: 'media',
   admin: {
     useAsTitle: 'alt',
-    defaultColumns: ['filename', 'alt', 'mimeType', 'updatedAt'],
-    group: 'Media Page',
-    hidden: true,
+    defaultColumns: ['filename', 'alt', 'mimeType', 'filesize', 'updatedAt'],
+    group: 'Uploads',
+    description: 'All uploaded images, PDFs, and documents. Delete unused files to save storage.',
   },
   access: {
     read: () => true, // Public can view media
