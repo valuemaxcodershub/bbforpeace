@@ -25,6 +25,30 @@ export const Publications: CollectionConfig = {
     delete: isAdminOrAbove,
   },
   hooks: {
+    beforeValidate: [
+      ({ data }) => {
+        if (!data || typeof data !== 'object') return data
+        // Auto-generate slug from title if slug is empty
+        if (!data.slug && data.title) {
+          data.slug = (data.title as string)
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .replace(/^-|-$/g, '')
+        }
+        // Always sanitize slug to be URL-friendly
+        if (data.slug) {
+          data.slug = (data.slug as string)
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .replace(/^-|-$/g, '')
+        }
+        return data
+      },
+    ],
     beforeChange: [
       ({ data }) => {
         if (!data || typeof data !== 'object') return data
