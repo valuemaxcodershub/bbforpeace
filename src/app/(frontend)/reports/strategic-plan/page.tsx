@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { PageHero } from '@/components/layout'
-import { ArrowRight, Calendar, Download, Eye, Sparkles, Target } from 'lucide-react'
+import { ArrowRight, Calendar, BookOpen, Sparkles, Target } from 'lucide-react'
 import { getPayloadClient } from '@/lib/payload-client'
 import { getMediaUrl } from '@/lib/utils'
 
@@ -24,11 +24,11 @@ const defaultPlans = [
   {
     id: 'strategic-plan-2026-2030',
     title: 'Strategic Plan 2026-2030',
+    slug: 'strategic-plan-2026-2030',
     excerpt:
       'A practical roadmap for building resilient, peaceful and inclusive communities across Africa through five interlinked strategic pillars.',
     year: 2026,
     coverImage: '/images/reports/2025 annual report.PNG',
-    fileUrl: '#',
     isFeatured: true,
   },
 ]
@@ -54,10 +54,10 @@ export default async function StrategicPlanPage() {
     ? plans.map((plan: any, idx: number) => ({
         id: plan.id,
         title: plan.title,
+        slug: plan.slug,
         excerpt: plan.excerpt || plan.description || '',
         year: plan.year || new Date().getFullYear(),
         coverImage: getMediaUrl(plan.coverImage, '/images/reports/2025 annual report.PNG'),
-        fileUrl: getMediaUrl(plan.file, '#'),
         isFeatured: Boolean(plan.isFeatured) || idx === 0,
       }))
     : defaultPlans
@@ -95,56 +95,51 @@ export default async function StrategicPlanPage() {
 
             {featuredPlan && (
             <article className="group" data-scroll="up">
-              <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-center">
-                <div className="w-full lg:w-2/5 flex-shrink-0">
-                  <div className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl">
-                    <Image
-                      src={featuredPlan.coverImage}
-                      alt={featuredPlan.title}
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary-900/40 to-transparent" />
-                    <div className="absolute top-4 right-4 px-4 py-2 rounded-full bg-primary-700 text-white text-sm font-bold shadow-lg">
-                      {featuredPlan.year}
+              <div className="group relative bg-gradient-to-br from-primary-950 to-primary-900 rounded-3xl overflow-hidden">
+                <div className="absolute inset-0 bg-[url('/images/PXL_20251023_124331635.MP~2.jpg')] bg-cover bg-center opacity-20" />
+                <div className="absolute inset-0 bg-gradient-to-r from-primary-950 via-primary-950/95 to-primary-950/80" />
+                
+                <div className="relative grid lg:grid-cols-2 gap-8 p-8 lg:p-12">
+                  <div className="flex flex-col justify-center order-2 lg:order-1">
+                    <div className="flex flex-wrap items-center gap-3 mb-6">
+                      <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-accent-gold text-primary-950 text-sm font-bold">
+                        <Sparkles className="w-4 h-4" />
+                        Featured
+                      </span>
+                      <span className="flex items-center gap-1.5 text-white/70 text-sm">
+                        <Calendar className="w-4 h-4" />
+                        {featuredPlan.year}
+                      </span>
+                    </div>
+
+                    <h2 className="text-2xl lg:text-3xl xl:text-4xl font-bold text-white mb-4 leading-tight">
+                      {featuredPlan.title}
+                    </h2>
+
+                    <p className="text-white/70 text-lg mb-8 leading-relaxed">
+                      {featuredPlan.excerpt}
+                    </p>
+
+                    <div className="flex flex-wrap items-center gap-4">
+                      <Link
+                        href={`/reports/strategic-plan/${featuredPlan.slug}`}
+                        className="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary-900 font-bold rounded-xl hover:bg-gray-100 transition-all shadow-lg hover:shadow-xl"
+                      >
+                        <BookOpen className="w-5 h-5" />
+                        Read More
+                      </Link>
                     </div>
                   </div>
-                </div>
 
-                <div className="flex-1 space-y-6">
-                  <div className="flex items-center gap-2 text-gray-500">
-                    <Calendar className="w-4 h-4" />
-                    <span className="text-sm font-medium uppercase tracking-wide">Strategic Plan {featuredPlan.year}</span>
-                  </div>
-
-                  <div className="inline-flex items-center gap-2 rounded-full bg-primary-100 px-4 py-2 text-sm font-semibold text-primary-800">
-                    <Sparkles className="w-4 h-4" />
-                    Featured Document
-                  </div>
-
-                  <h3 className="text-3xl lg:text-4xl font-black text-gray-900">{featuredPlan.title}</h3>
-
-                  <p className="text-gray-600 leading-relaxed text-lg">
-                    {featuredPlan.excerpt}
-                  </p>
-
-                  <div className="flex flex-wrap gap-4 pt-4">
-                    <Link
-                      href={featuredPlan.fileUrl}
-                      target="_blank"
-                      className="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-primary-700 hover:bg-primary-800 text-white font-bold transition-all shadow-lg"
-                    >
-                      <Download className="w-5 h-5" />
-                      Download Plan
-                    </Link>
-                    <Link
-                      href={featuredPlan.fileUrl}
-                      target="_blank"
-                      className="inline-flex items-center gap-3 px-8 py-4 rounded-xl border-2 border-gray-200 text-gray-700 font-bold hover:border-gray-300 hover:bg-gray-50 transition-all"
-                    >
-                      <Eye className="w-5 h-5" />
-                      View Online
-                    </Link>
+                  <div className="relative aspect-[4/3] lg:aspect-auto order-1 lg:order-2">
+                    <div className="absolute inset-0 lg:inset-4 rounded-2xl overflow-hidden shadow-2xl">
+                      <Image
+                        src={featuredPlan.coverImage}
+                        alt={featuredPlan.title}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -158,31 +153,52 @@ export default async function StrategicPlanPage() {
                   <h3 className="text-2xl font-bold text-gray-900">More Strategic Plans</h3>
                 </div>
 
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="grid gap-8 md:grid-cols-2">
                   {otherPlans.map((plan, idx) => (
                     <article
                       key={plan.id}
-                      className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-xl"
+                      className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100"
                       data-scroll="up"
                       data-delay={idx * 100}
                     >
-                      <div className="mb-4 flex items-center justify-between gap-4">
-                        <span className="inline-flex items-center gap-2 rounded-full bg-primary-100 px-3 py-1 text-xs font-bold text-primary-900">
-                          <Target className="w-3.5 h-3.5" />
-                          Strategic Plan
-                        </span>
-                        <span className="text-sm font-semibold text-gray-500">{plan.year}</span>
+                      <div className="flex flex-col sm:flex-row">
+                        <div className="relative w-full sm:w-48 h-48 sm:h-auto flex-shrink-0">
+                          <Image
+                            src={plan.coverImage}
+                            alt={plan.title}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t sm:bg-gradient-to-r from-black/30 to-transparent" />
+                        </div>
+
+                        <div className="flex-1 p-6">
+                          <div className="flex flex-wrap items-center gap-2 mb-3">
+                            <span className="inline-flex items-center gap-2 rounded-full bg-primary-100 px-3 py-1 text-xs font-bold text-primary-900">
+                              <Target className="w-3.5 h-3.5" />
+                              Strategic Plan
+                            </span>
+                            <span className="text-sm text-gray-500">{plan.year}</span>
+                          </div>
+
+                          <h3 className="font-bold text-gray-900 mb-2 group-hover:text-primary-900 transition-colors line-clamp-2 leading-snug">
+                            {plan.title}
+                          </h3>
+
+                          <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                            {plan.excerpt}
+                          </p>
+
+                          <Link
+                            href={`/reports/strategic-plan/${plan.slug}`}
+                            className="inline-flex items-center gap-2 text-primary-700 font-semibold text-sm hover:text-primary-900 transition-colors group/link"
+                          >
+                            <BookOpen className="w-4 h-4" />
+                            Read More
+                            <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
+                          </Link>
+                        </div>
                       </div>
-                      <h4 className="mb-3 text-xl font-bold text-gray-900">{plan.title}</h4>
-                      <p className="mb-5 text-sm leading-relaxed text-gray-600">{plan.excerpt}</p>
-                      <Link
-                        href={plan.fileUrl}
-                        target="_blank"
-                        className="inline-flex items-center gap-2 font-bold text-primary-900 transition-all hover:gap-3"
-                      >
-                        Open Document
-                        <ArrowRight className="w-4 h-4" />
-                      </Link>
                     </article>
                   ))}
                 </div>

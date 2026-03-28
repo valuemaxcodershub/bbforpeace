@@ -1,7 +1,7 @@
 import { PageHero } from '@/components/layout'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Download, FileText, Calendar, ArrowRight, Globe, Target, Sparkles, MapPin, FolderOpen } from 'lucide-react'
+import { Download, FileText, Calendar, ArrowRight, BookOpen, Sparkles, MapPin } from 'lucide-react'
 import type { Metadata } from 'next'
 import { getPayloadClient } from '@/lib/payload-client'
 import { getMediaUrl } from '@/lib/utils'
@@ -58,13 +58,13 @@ export default async function ProjectReportsPage() {
       return {
         id: pub.id,
         title: pub.title,
+        slug: pub.slug,
         description: pub.excerpt || pub.description || '',
         year: pub.year || new Date().getFullYear(),
         category: pub.category || 'Program Report',
         region: pub.region || 'Nigeria',
         pages: pub.pages || 0,
         coverImage: getMediaUrl(pub.coverImage, '/images/_VEE7927.jpg'),
-        downloadUrl: getMediaUrl(pub.file, '#'),
         featured: Boolean(pub.isFeatured) || idx === 0,
         color: pub.accentColor || 'blue',
       }
@@ -77,12 +77,6 @@ export default async function ProjectReportsPage() {
 
   const featuredReport = displayReports.find(r => r.featured)
   const otherReports = displayReports.filter(r => !r.featured)
-  const reportsByYear = otherReports.reduce((acc, report) => {
-    const year = report.year.toString()
-    if (!acc[year]) acc[year] = []
-    acc[year].push(report)
-    return acc
-  }, {} as Record<string, typeof otherReports>)
 
   return (
     <>
@@ -104,8 +98,6 @@ export default async function ProjectReportsPage() {
           <div className="flex flex-wrap justify-center gap-x-12 gap-y-4">
             {[
               { label: 'Project Reports', value: '25+', icon: FileText },
-              { label: 'Research Papers', value: '12', icon: Target },
-              { label: 'Countries Covered', value: '8', icon: Globe },
               { label: 'Downloads', value: '5K+', icon: Download },
             ].map((stat, idx) => (
               <div key={idx} className="flex items-center gap-3 text-white/90">
@@ -123,59 +115,64 @@ export default async function ProjectReportsPage() {
         <section className="py-20 bg-white">
           <div className="container">
             <div className="max-w-6xl mx-auto">
-              <div className="flex items-center gap-3 mb-10" data-scroll="up">
-                <Sparkles className="w-5 h-5 text-accent-gold" />
-                <span className="text-sm font-bold text-primary-900 uppercase tracking-wider">Latest Report</span>
+              <div className="flex items-center gap-3 mb-8" data-scroll="up">
+                <span className="w-12 h-1 bg-accent-gold rounded-full" />
+                <span className="text-sm font-bold text-primary-900 uppercase tracking-wider">Featured Report</span>
               </div>
 
-              <div className="group relative" data-scroll="up">
-                {/* Card with overlay */}
-                <div className="relative h-[500px] rounded-3xl overflow-hidden">
-                  <Image
-                    src={featuredReport.coverImage}
-                    alt={featuredReport.title}
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/30" />
-                  
-                  {/* Content */}
-                  <div className="absolute inset-0 p-8 lg:p-12 flex flex-col justify-center max-w-2xl">
+              <div className="group relative bg-gradient-to-br from-primary-950 to-primary-900 rounded-3xl overflow-hidden" data-scroll="up">
+                <div className="absolute inset-0 bg-[url('/images/_VEE7927.jpg')] bg-cover bg-center opacity-20" />
+                <div className="absolute inset-0 bg-gradient-to-r from-primary-950 via-primary-950/95 to-primary-950/80" />
+                
+                <div className="relative grid lg:grid-cols-2 gap-8 p-8 lg:p-12">
+                  <div className="flex flex-col justify-center order-2 lg:order-1">
                     <div className="flex flex-wrap items-center gap-3 mb-6">
-                      <span className="px-4 py-1.5 rounded-full bg-blue-500 text-white text-sm font-bold">
+                      <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-accent-gold text-primary-950 text-sm font-bold">
+                        <Sparkles className="w-4 h-4" />
+                        Featured
+                      </span>
+                      <span className="px-3 py-1.5 rounded-full bg-white/10 text-white text-xs font-semibold backdrop-blur-sm">
                         {featuredReport.category}
                       </span>
-                      <span className="flex items-center gap-1.5 text-white/80 text-sm">
-                        <MapPin className="w-4 h-4" />
-                        {featuredReport.region}
-                      </span>
-                      <span className="flex items-center gap-1.5 text-white/80 text-sm">
+                      <span className="flex items-center gap-1.5 text-white/70 text-sm">
                         <Calendar className="w-4 h-4" />
                         {featuredReport.year}
                       </span>
+                      {featuredReport.region && (
+                        <span className="flex items-center gap-1.5 text-white/70 text-sm">
+                          <MapPin className="w-4 h-4" />
+                          {featuredReport.region}
+                        </span>
+                      )}
                     </div>
 
-                    <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
+                    <h2 className="text-2xl lg:text-3xl xl:text-4xl font-bold text-white mb-4 leading-tight">
                       {featuredReport.title}
                     </h2>
 
-                    <p className="text-white/70 text-lg mb-8 line-clamp-3">
+                    <p className="text-white/70 text-lg mb-8 leading-relaxed">
                       {featuredReport.description}
                     </p>
 
                     <div className="flex flex-wrap items-center gap-4">
-                      <a
-                        href={featuredReport.downloadUrl}
-                        download
-                        className="inline-flex items-center gap-2 px-8 py-4 bg-accent-gold text-primary-950 font-bold rounded-xl hover:bg-yellow-400 transition-all shadow-lg"
+                      <Link
+                        href={`/reports/projects/${featuredReport.slug}`}
+                        className="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary-900 font-bold rounded-xl hover:bg-gray-100 transition-all shadow-lg hover:shadow-xl"
                       >
-                        <Download className="w-5 h-5" />
-                        Download Report
-                      </a>
-                      <span className="flex items-center gap-2 text-white/60">
-                        <FileText className="w-4 h-4" />
-                        {featuredReport.pages} pages
-                      </span>
+                        <BookOpen className="w-5 h-5" />
+                        Read More
+                      </Link>
+                    </div>
+                  </div>
+
+                  <div className="relative aspect-[4/3] lg:aspect-auto order-1 lg:order-2">
+                    <div className="absolute inset-0 lg:inset-4 rounded-2xl overflow-hidden shadow-2xl">
+                      <Image
+                        src={featuredReport.coverImage}
+                        alt={featuredReport.title}
+                        fill
+                        className="object-cover"
+                      />
                     </div>
                   </div>
                 </div>
@@ -185,112 +182,76 @@ export default async function ProjectReportsPage() {
         </section>
       )}
 
-      {/* Reports by Year */}
-      {(Object.entries(reportsByYear) as [string, any[]][])
-        .sort(([a], [b]) => Number(b) - Number(a))
-        .map(([year, reports]) => (
-          <section key={year} className="py-16 odd:bg-gray-50 even:bg-white">
-            <div className="container">
-              <div className="max-w-6xl mx-auto">
-                {/* Year Header */}
-                <div className="flex items-center gap-4 mb-10" data-scroll="up">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-primary-900" />
-                    <h2 className="text-4xl font-black text-primary-900">{year}</h2>
-                  </div>
-                  <div className="flex-1 h-px bg-gray-200" />
-                  <span className="text-sm text-gray-500 font-medium">{reports.length} reports</span>
-                </div>
-
-                {/* Reports Grid */}
-                <div className="grid lg:grid-cols-2 gap-6">
-                  {reports.map((report, idx) => {
-                    const colors = colorMap[report.color as keyof typeof colorMap]
-                    return (
-                      <article
-                        key={report.id}
-                        className={`group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border-l-4 ${colors.border}`}
-                        data-scroll="up"
-                        data-delay={idx * 100}
-                      >
-                        <div className="flex">
-                          {/* Image */}
-                          <div className="relative w-40 h-48 flex-shrink-0 hidden sm:block">
-                            <Image
-                              src={report.coverImage}
-                              alt={report.title}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-
-                          {/* Content */}
-                          <div className="flex-1 p-6">
-                            {/* Meta */}
-                            <div className="flex flex-wrap items-center gap-2 mb-3">
-                              <span className={`px-2.5 py-1 rounded-md text-xs font-bold ${colors.badge}`}>
-                                {report.category}
-                              </span>
-                              <span className="flex items-center gap-1 text-xs text-gray-500">
-                                <MapPin className="w-3 h-3" />
-                                {report.region}
-                              </span>
-                            </div>
-
-                            {/* Title */}
-                            <h3 className="font-bold text-gray-900 mb-2 group-hover:text-primary-900 transition-colors line-clamp-2 leading-snug">
-                              {report.title}
-                            </h3>
-
-                            {/* Description */}
-                            <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                              {report.description}
-                            </p>
-
-                            {/* Footer */}
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs text-gray-400 flex items-center gap-1">
-                                <FileText className="w-3 h-3" />
-                                {report.pages} pages
-                              </span>
-                              <a
-                                href={report.downloadUrl}
-                                download
-                                className="inline-flex items-center gap-1.5 text-primary-700 font-semibold text-sm hover:text-primary-900 transition-colors group/link"
-                              >
-                                <Download className="w-4 h-4" />
-                                Download
-                                <ArrowRight className="w-3 h-3 opacity-0 -ml-2 group-hover/link:opacity-100 group-hover/link:ml-0 transition-all" />
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-                      </article>
-                    )
-                  })}
-                </div>
-              </div>
-            </div>
-          </section>
-        ))}
-
-      {/* Category Legend */}
-      <section className="py-16 bg-gray-100">
+      {/* All Project Reports */}
+      <section className="py-20 bg-gray-50">
         <div className="container">
-          <div className="max-w-3xl mx-auto text-center" data-scroll="up">
-            <h3 className="text-lg font-bold text-gray-900 mb-6">Report Categories</h3>
-            <div className="flex flex-wrap justify-center gap-4">
-              {[
-                { label: 'Regional Program', color: 'bg-blue-500' },
-                { label: 'Program Report', color: 'bg-emerald-500' },
-                { label: 'Research', color: 'bg-purple-500' },
-                { label: 'Toolkit', color: 'bg-amber-500' },
-              ].map((cat) => (
-                <div key={cat.label} className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm">
-                  <div className={`w-3 h-3 rounded-full ${cat.color}`} />
-                  <span className="text-sm text-gray-700 font-medium">{cat.label}</span>
-                </div>
-              ))}
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16" data-scroll="up">
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">All Project Reports</h2>
+              <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+                Browse our complete collection of project reports documenting our peacebuilding programs and research initiatives.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              {otherReports.map((report, idx) => {
+                const colors = colorMap[report.color as keyof typeof colorMap] || colorMap.blue
+                return (
+                  <article
+                    key={report.id}
+                    className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100"
+                    data-scroll="up"
+                    data-delay={idx * 100}
+                  >
+                    <div className="flex flex-col sm:flex-row">
+                      <div className="relative w-full sm:w-48 h-48 sm:h-auto flex-shrink-0">
+                        <Image
+                          src={report.coverImage}
+                          alt={report.title}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t sm:bg-gradient-to-r from-black/30 to-transparent" />
+                      </div>
+
+                      <div className="flex-1 p-6">
+                        <div className="flex flex-wrap items-center gap-2 mb-3">
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${colors.badge}`}>
+                            {report.category}
+                          </span>
+                          <span className="flex items-center gap-1 text-xs text-gray-500">
+                            <Calendar className="w-3 h-3" />
+                            {report.year}
+                          </span>
+                          {report.region && (
+                            <span className="flex items-center gap-1 text-xs text-gray-500">
+                              <MapPin className="w-3 h-3" />
+                              {report.region}
+                            </span>
+                          )}
+                        </div>
+
+                        <h3 className="font-bold text-gray-900 mb-2 group-hover:text-primary-900 transition-colors line-clamp-2 leading-snug">
+                          {report.title}
+                        </h3>
+
+                        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                          {report.description}
+                        </p>
+
+                        <Link
+                          href={`/reports/projects/${report.slug}`}
+                          className="inline-flex items-center gap-2 text-primary-700 font-semibold text-sm hover:text-primary-900 transition-colors group/link"
+                        >
+                          <BookOpen className="w-4 h-4" />
+                          Read More
+                          <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
+                        </Link>
+                      </div>
+                    </div>
+                  </article>
+                )
+              })}
             </div>
           </div>
         </div>
@@ -301,10 +262,6 @@ export default async function ProjectReportsPage() {
         <div className="absolute inset-0 bg-[url('/images/_VEE7017%20(19)%20(1).jpg')] bg-cover bg-center opacity-10" />
         <div className="container relative z-10">
           <div className="max-w-3xl mx-auto text-center" data-scroll="up">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-white/80 text-sm font-semibold mb-6">
-              <FolderOpen className="w-4 h-4" />
-              Annual Reports
-            </div>
             <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
               Looking for Annual Reports?
             </h2>

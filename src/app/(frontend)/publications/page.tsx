@@ -61,11 +61,11 @@ export default async function PublicationsPage() {
   const displayPubs = publications.map((p: any) => ({
     id: p.id,
     title: p.title,
+    slug: p.slug,
     excerpt: p.excerpt || '',
     coverImage: getMediaUrl(p.coverImage),
     category: p.category || 'research',
     year: p.year,
-    downloadUrl: getMediaUrl(p.file, '#'),
     isFeatured: p.isFeatured || false,
   }))
 
@@ -127,14 +127,13 @@ export default async function PublicationsPage() {
                     </p>
 
                     <div className="flex flex-wrap items-center gap-4">
-                      <a
-                        href={featuredPublication.downloadUrl}
-                        download
+                      <Link
+                        href={`/publications/${featuredPublication.slug}`}
                         className="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary-900 font-bold rounded-xl hover:bg-gray-100 transition-all shadow-lg hover:shadow-xl"
                       >
-                        <Download className="w-5 h-5" />
-                        Download PDF
-                      </a>
+                        <BookOpen className="w-5 h-5" />
+                        Read More
+                      </Link>
                     </div>
                   </div>
 
@@ -214,16 +213,15 @@ export default async function PublicationsPage() {
                           {pub.excerpt}
                         </p>
 
-                        {/* Download */}
-                        <a
-                          href={pub.downloadUrl}
-                          download
+                        {/* Read More */}
+                        <Link
+                          href={`/publications/${pub.slug}`}
                           className="inline-flex items-center gap-2 text-primary-700 font-semibold text-sm hover:text-primary-900 transition-colors group/link"
                         >
-                          <Download className="w-4 h-4" />
-                          Download PDF
+                          <BookOpen className="w-4 h-4" />
+                          Read More
                           <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   </article>

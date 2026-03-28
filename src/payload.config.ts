@@ -305,6 +305,7 @@ export default buildConfig({
         media: true,
       },
       clientUploads: true,
+      addRandomSuffix: true,
       token: process.env.BLOB_READ_WRITE_TOKEN || '',
     }),
   ],

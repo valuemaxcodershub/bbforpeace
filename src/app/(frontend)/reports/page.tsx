@@ -49,9 +49,9 @@ export default async function AnnualReportsPage() {
     id: r.id,
     year: r.year,
     title: r.title,
+    slug: r.slug,
     excerpt: r.excerpt || '',
     coverImage: getMediaUrl(r.coverImage, '/images/reports/2025%20annual%20report.PNG'),
-    downloadUrl: getMediaUrl(r.file, '#'),
   }))
   return (
     <>
@@ -130,19 +130,14 @@ export default async function AnnualReportsPage() {
                       </div>
 
                       {/* Title */}
-                      <div>
-                        <h2 className="text-3xl lg:text-4xl font-black text-gray-900 mb-3">
-                          {report.title}
-                        </h2>
-                        <p className="text-xl lg:text-2xl font-semibold text-gray-700 leading-tight">
-                          {report.title}
-                        </p>
-                      </div>
+                      <h2 className="text-3xl lg:text-4xl font-black text-gray-900">
+                        {report.title}
+                      </h2>
 
                       {/* Published Date */}
                       <div className="flex items-center gap-2 text-gray-500">
                         <Calendar className="w-4 h-4" />
-                        <span className="text-sm font-medium uppercase tracking-wide">{report.year} Annual Report</span>
+                        <span className="text-sm font-medium uppercase tracking-wide">{report.year}</span>
                       </div>
 
                       {/* Summary */}
@@ -152,24 +147,13 @@ export default async function AnnualReportsPage() {
 
                       {/* Actions */}
                       <div className="flex flex-wrap gap-4 pt-4">
-                        <a
-                          href={report.downloadUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <Link
+                          href={`/reports/${report.slug}`}
                           className={`inline-flex items-center gap-3 px-8 py-4 rounded-xl ${style.btnClass} text-white font-bold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5`}
                         >
-                          <Download className="w-5 h-5" />
-                          Download PDF
-                        </a>
-                        <a
-                          href={report.downloadUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-3 px-8 py-4 rounded-xl border-2 border-gray-200 text-gray-700 font-bold hover:border-gray-300 hover:bg-gray-50 transition-all"
-                        >
-                          <Eye className="w-5 h-5" />
-                          View Online
-                        </a>
+                          <BookOpen className="w-5 h-5" />
+                          Read More
+                        </Link>
                       </div>
                     </div>
                   </div>
