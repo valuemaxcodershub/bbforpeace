@@ -19,6 +19,23 @@ export const Media: CollectionConfig = {
     update: isAuthenticated,
     delete: ({ req: { user } }) => user?.role === 'super-admin' || user?.role === 'admin',
   },
+  hooks: {
+    beforeChange: [
+      ({ data }) => {
+        // Sanitize filename: replace spaces/special chars with hyphens to
+        // prevent Vercel Blob double-encoding issues (%20 → %2520)
+        if (data?.filename) {
+          data.filename = data.filename
+            .replace(/%20/g, '-')       // literal %20 → hyphen
+            .replace(/\s+/g, '-')       // spaces → hyphen
+            .replace(/[()[\]{}]/g, '')  // remove brackets/parens
+            .replace(/-{2,}/g, '-')     // collapse multiple hyphens
+            .replace(/^-|-$/g, '')      // trim leading/trailing hyphens
+        }
+        return data
+      },
+    ],
+  },
   upload: {
     staticDir: '../public/uploads',
     // On Vercel, local filesystem is read-only. Disable local storage so uploads

@@ -26,7 +26,6 @@ async function getReport(slug: string) {
       collection: 'publications',
       where: {
         slug: { equals: slug },
-        subMenu: { equals: 'annual-report' },
       },
       depth: 2,
       limit: 1,
@@ -173,19 +172,25 @@ export default async function AnnualReportDetailPage({ params }: Props) {
         ]}
       />
 
-      <article className="py-16">
+      <article className="py-12 lg:py-16">
         <div className="container">
-          <div className="max-w-5xl mx-auto">
-            <div className="grid lg:grid-cols-3 gap-12">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid lg:grid-cols-3 gap-10 lg:gap-14">
               {/* Main Content */}
-              <div className="lg:col-span-2">
+              <div className="lg:col-span-2 order-2 lg:order-1">
+                {/* Excerpt Intro */}
+                {report.excerpt && (
+                  <div className="mb-10 p-6 bg-primary-50 border-l-4 border-primary-700 rounded-r-xl">
+                    <p className="text-gray-800 text-lg leading-relaxed italic">
+                      {report.excerpt}
+                    </p>
+                  </div>
+                )}
+
+                {/* Description (Rich Text) */}
                 <div className="prose prose-lg max-w-none text-gray-700">
                   <RichTextContent content={report.description} />
                 </div>
-
-                {report.excerpt && !report.description && (
-                  <p className="text-gray-700 text-lg leading-relaxed">{report.excerpt}</p>
-                )}
 
                 <div className="mt-10 pt-8 border-t">
                   <Link
@@ -199,7 +204,7 @@ export default async function AnnualReportDetailPage({ params }: Props) {
               </div>
 
               {/* Sidebar */}
-              <aside className="lg:col-span-1">
+              <aside className="lg:col-span-1 order-1 lg:order-2">
                 <div className="sticky top-24 space-y-6">
                   <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
                     <div className="relative aspect-[3/4]">

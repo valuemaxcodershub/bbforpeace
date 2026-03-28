@@ -18,7 +18,7 @@ export function PageHero({
   breadcrumbs
 }: PageHeroProps) {
   return (
-    <section className="relative h-[55vh] min-h-[450px] max-h-[550px] flex items-center overflow-hidden">
+    <section className="relative min-h-[320px] flex items-center overflow-hidden py-16 md:py-20">
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
@@ -47,7 +47,7 @@ export function PageHero({
 
       {/* Content */}
       <div className="container relative z-10">
-        <div className="max-w-3xl">
+        <div className="max-w-4xl">
           {/* Breadcrumbs */}
           {breadcrumbs && (
             <nav className="flex items-center gap-2 text-sm mb-6 animate-fade-in-down">
@@ -62,7 +62,7 @@ export function PageHero({
                       {crumb.label}
                     </Link>
                   ) : (
-                    <span className="text-accent-gold font-medium">{crumb.label}</span>
+                    <span className="text-accent-gold font-medium max-w-[200px] sm:max-w-[300px] md:max-w-[400px] truncate inline-block">{crumb.label}</span>
                   )}
                 </span>
               ))}
@@ -75,7 +75,7 @@ export function PageHero({
               {subtitle}
             </span>
           )}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 animate-fade-in-up leading-tight" style={{ animationDelay: '0.1s' }}>
             {title}
           </h1>
           {description && (

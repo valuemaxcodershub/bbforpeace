@@ -191,13 +191,22 @@ export default async function PublicationDetailPage({ params }: Props) {
         ]}
       />
 
-      <article className="py-16">
+      <article className="py-12 lg:py-16">
         <div className="container">
-          <div className="max-w-5xl mx-auto">
-            <div className="grid lg:grid-cols-3 gap-12">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid lg:grid-cols-3 gap-10 lg:gap-14">
               {/* Main Content */}
-              <div className="lg:col-span-2">
-                {/* Description */}
+              <div className="lg:col-span-2 order-2 lg:order-1">
+                {/* Excerpt Intro */}
+                {pub.excerpt && (
+                  <div className="mb-10 p-6 bg-primary-50 border-l-4 border-primary-700 rounded-r-xl">
+                    <p className="text-gray-800 text-lg leading-relaxed italic">
+                      {pub.excerpt}
+                    </p>
+                  </div>
+                )}
+
+                {/* Description (Rich Text) */}
                 <div className="prose prose-lg max-w-none text-gray-700">
                   <RichTextContent content={pub.description} />
                 </div>
@@ -215,7 +224,7 @@ export default async function PublicationDetailPage({ params }: Props) {
               </div>
 
               {/* Sidebar */}
-              <aside className="lg:col-span-1">
+              <aside className="lg:col-span-1 order-1 lg:order-2">
                 <div className="sticky top-24 space-y-6">
                   {/* Cover + Download Card */}
                   <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">

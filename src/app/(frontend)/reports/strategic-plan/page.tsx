@@ -20,19 +20,6 @@ const strategicPlanHero = {
   backgroundImage: '/images/PXL_20251023_124331635.MP~2.jpg',
 }
 
-const defaultPlans = [
-  {
-    id: 'strategic-plan-2026-2030',
-    title: 'Strategic Plan 2026-2030',
-    slug: 'strategic-plan-2026-2030',
-    excerpt:
-      'A practical roadmap for building resilient, peaceful and inclusive communities across Africa through five interlinked strategic pillars.',
-    year: 2026,
-    coverImage: '/images/reports/2025 annual report.PNG',
-    isFeatured: true,
-  },
-]
-
 export default async function StrategicPlanPage() {
   let plans: any[] = []
 
@@ -50,17 +37,15 @@ export default async function StrategicPlanPage() {
     console.error('Failed to fetch strategic plans:', error)
   }
 
-  const displayPlans = plans.length
-    ? plans.map((plan: any, idx: number) => ({
-        id: plan.id,
-        title: plan.title,
-        slug: plan.slug,
-        excerpt: plan.excerpt || plan.description || '',
-        year: plan.year || new Date().getFullYear(),
-        coverImage: getMediaUrl(plan.coverImage, '/images/reports/2025 annual report.PNG'),
-        isFeatured: Boolean(plan.isFeatured) || idx === 0,
-      }))
-    : defaultPlans
+  const displayPlans = plans.map((plan: any, idx: number) => ({
+    id: plan.id,
+    title: plan.title,
+    slug: plan.slug,
+    excerpt: plan.excerpt || plan.description || '',
+    year: plan.year || new Date().getFullYear(),
+    coverImage: getMediaUrl(plan.coverImage, '/images/reports/2025 annual report.PNG'),
+    isFeatured: Boolean(plan.isFeatured) || idx === 0,
+  }))
 
   const featuredPlan = displayPlans.find((plan) => plan.isFeatured) || displayPlans[0]
   const otherPlans = displayPlans.filter((plan) => plan.id !== featuredPlan?.id)
