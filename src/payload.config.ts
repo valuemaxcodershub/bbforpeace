@@ -280,9 +280,9 @@ export default buildConfig({
     pool: {
       connectionString: getPreferredDatabaseUrl(),
       ssl: { rejectUnauthorized: false },
-      // Keep the application pool small in serverless while leaving room for the
-      // adapter's monitoring client plus active queries.
-      max: isProduction ? 2 : 10,
+      // Keep the application pool modest in serverless while leaving room for
+      // the adapter's monitoring client, active queries, and delete-hook checks.
+      max: isProduction ? 5 : 10,
       // Allow up to 15s for cold starts and initial TLS negotiation.
       connectionTimeoutMillis: isProduction ? 15000 : 5000,
       idleTimeoutMillis: 10000,
