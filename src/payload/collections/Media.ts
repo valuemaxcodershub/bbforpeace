@@ -24,7 +24,13 @@ export const Media: CollectionConfig = {
     // On Vercel, local filesystem is read-only. Disable local storage so uploads
     // fail fast with an error instead of hanging when no cloud adapter is configured.
     disableLocalStorage: !!process.env.VERCEL,
-    mimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf'],
+    mimeTypes: [
+      'image/jpeg', 'image/png', 'image/webp', 'image/gif',
+      'application/pdf',
+      // Some browsers/systems misdetect PDFs or Office docs as these types
+      'application/octet-stream',
+      'text/plain',
+    ],
     // No imageSizes — the frontend uses next/image which handles responsive
     // resizing automatically. Generating sizes server-side would require sharp
     // to download, resize ×3, and re-upload to Vercel Blob, causing timeouts.
