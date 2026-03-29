@@ -126,8 +126,8 @@ export default function FrontendLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
-      <body className="font-sans antialiased bg-white text-gray-900">
+    <html lang="en" className={`${inter.variable} ${poppins.variable} overflow-x-hidden`}>
+      <body className="font-sans antialiased bg-white text-gray-900 overflow-x-hidden">
         <ScrollObserver />
         <Header />
         <main className="min-h-screen">{children}</main>
