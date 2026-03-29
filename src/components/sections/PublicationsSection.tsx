@@ -1,20 +1,21 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, Download, Sparkles } from 'lucide-react'
+import { ArrowRight, BookOpen, Sparkles } from 'lucide-react'
 import { getMediaUrl } from '@/lib/utils'
 
 // Default fallback data
 const defaultPublications = [
-  { id: '1', title: '2025 Annual Report: Consolidating Peace', coverImage: '/images/PXL_20251023_124331635.MP~2.jpg', downloadUrl: '/documents/BBFORPEACE ANNUAL REPORT 2025.pdf', year: 2025, type: 'Annual Report' },
-  { id: '2', title: '2024 Annual Report: Building Resilient Communities', coverImage: '/images/_VEE7037 (1).jpg', downloadUrl: '/documents/BBFORPEACE ANNUAL REPORT 2024.pdf', year: 2024, type: 'Annual Report' },
-  { id: '3', title: 'Beyond #ENDSARS: Effecting Positive Change', coverImage: '/images/PXL_20251209_112904682.MP.jpg', downloadUrl: 'https://drive.google.com/file/d/1ABC123/view', year: 2021, type: 'Policy Brief' },
-  { id: '4', title: 'Nigeria: Shrinking Civic Space', coverImage: '/images/WhatsApp Image 2024-09-25 at 12.37.49_611b169f.jpg', downloadUrl: 'https://drive.google.com/file/d/1DEF456/view', year: 2019, type: 'Research' },
+  { id: '1', title: '2025 Annual Report: Consolidating Peace', slug: '2025-annual-report-consolidating-peace', coverImage: '/images/PXL_20251023_124331635.MP~2.jpg', downloadUrl: '/documents/BBFORPEACE ANNUAL REPORT 2025.pdf', year: 2025, type: 'Annual Report' },
+  { id: '2', title: '2024 Annual Report: Building Resilient Communities', slug: '2024-annual-report-building-resilient-communities', coverImage: '/images/_VEE7037 (1).jpg', downloadUrl: '/documents/BBFORPEACE ANNUAL REPORT 2024.pdf', year: 2024, type: 'Annual Report' },
+  { id: '3', title: 'Beyond #ENDSARS: Effecting Positive Change', slug: 'beyond-endsars-effecting-positive-change', coverImage: '/images/PXL_20251209_112904682.MP.jpg', downloadUrl: 'https://drive.google.com/file/d/1ABC123/view', year: 2021, type: 'Policy Brief' },
+  { id: '4', title: 'Nigeria: Shrinking Civic Space', slug: 'nigeria-shrinking-civic-space', coverImage: '/images/WhatsApp Image 2024-09-25 at 12.37.49_611b169f.jpg', downloadUrl: 'https://drive.google.com/file/d/1DEF456/view', year: 2019, type: 'Research' },
 ]
 
 export interface PublicationsSectionProps {
   publications?: {
     id: string
     title: string
+    slug?: string | null
     coverImage?: { url?: string } | string | null
     file?: { url?: string } | string | null
     year?: number | null
@@ -26,6 +27,7 @@ export function PublicationsSection({ publications: pubsProp }: PublicationsSect
   const publications = pubsProp?.length ? pubsProp.map(p => ({
     id: p.id,
     title: p.title,
+    slug: p.slug || p.id,
     coverImage: getMediaUrl(p.coverImage, '/images/PXL_20251023_124331635.MP~2.jpg'),
     downloadUrl: getMediaUrl(p.file, '#'),
     year: p.year || new Date().getFullYear(),
@@ -75,18 +77,16 @@ export function PublicationsSection({ publications: pubsProp }: PublicationsSect
                     {pub.type}
                   </span>
                 </div>
-                {/* Download Overlay */}
-                <a 
-                  href={pub.downloadUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                {/* Read More Overlay */}
+                <Link 
+                  href={`/publications/${pub.slug || pub.id}`}
                   className="absolute inset-0 bg-primary-950/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-4"
                 >
                   <div className="w-16 h-16 rounded-2xl bg-accent-gold flex items-center justify-center shadow-xl transform scale-90 group-hover:scale-100 transition-transform">
-                    <Download className="w-8 h-8 text-primary-950" />
+                    <BookOpen className="w-8 h-8 text-primary-950" />
                   </div>
-                  <span className="text-white font-bold text-lg">Download Report</span>
-                </a>
+                  <span className="text-white font-bold text-lg">Read More</span>
+                </Link>
               </div>
 
               {/* Content */}

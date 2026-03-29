@@ -130,6 +130,7 @@ export default async function HomePage() {
         publications={recentPubsDocs.length ? recentPubsDocs.map((p: any) => ({
           id: p.id,
           title: p.title,
+          slug: p.slug,
           coverImage: p.coverImage,
           file: p.file,
           year: p.year,
