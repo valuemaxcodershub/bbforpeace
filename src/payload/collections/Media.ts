@@ -144,7 +144,7 @@ export const Media: CollectionConfig = {
         // Images are exempt — they're needed in Blob for next/image optimization and are typically small.
         const MAX_DOC_SIZE = 2 * 1024 * 1024 // 2 MB
         const file = req.file
-        if (file?.data?.length && file.mimeType && !file.mimeType.startsWith('image/')) {
+        if (file?.data?.length && file.mimetype && !file.mimetype.startsWith('image/')) {
           if (file.data.length > MAX_DOC_SIZE) {
             const sizeMb = (file.data.length / 1024 / 1024).toFixed(1)
             throw new Error(
