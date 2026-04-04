@@ -62,7 +62,7 @@ export default function MediaPage() {
                   className="group relative rounded-2xl border border-gray-100 bg-white p-8 shadow-sm hover:shadow-xl transition-all"
                 >
                   <div
-                    className={`inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br ${section.gradient} text-white mb-6`}
+                    className={`inline-flex items-center justify-center w-14 h-14 rounded-xl bg-linear-to-br ${section.gradient} text-white mb-6`}
                   >
                     <Icon className="w-7 h-7" />
                   </div>

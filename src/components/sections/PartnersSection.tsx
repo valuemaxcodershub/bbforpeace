@@ -60,9 +60,9 @@ export function PartnersSection({
       <div className="container relative z-10">
         <div className="text-center mb-12" data-scroll="up">
           <span className="inline-flex items-center gap-2 justify-center text-accent-gold text-sm font-semibold uppercase tracking-widest mb-4">
-            <span className="w-8 h-[2px] bg-accent-gold" />
+            <span className="w-8 h-0.5 bg-accent-gold" />
             {heading}
-            <span className="w-8 h-[2px] bg-accent-gold" />
+            <span className="w-8 h-0.5 bg-accent-gold" />
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             {subheading?.includes('Together') ? (
@@ -82,15 +82,15 @@ export function PartnersSection({
       {/* Infinite Scroll Carousel */}
       <div className="relative group/carousel z-10">
         {/* Gradient Overlays */}
-        <div className="absolute left-0 top-0 bottom-0 w-24 md:w-40 bg-gradient-to-r from-primary-950/90 via-primary-950/50 to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-24 md:w-40 bg-gradient-to-l from-primary-950/90 via-primary-950/50 to-transparent z-10 pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-24 md:w-40 bg-linear-to-r from-primary-950/90 via-primary-950/50 to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-24 md:w-40 bg-linear-to-l from-primary-950/90 via-primary-950/50 to-transparent z-10 pointer-events-none" />
 
         {/* Scrolling Track */}
         <div className="flex animate-scroll-infinite group-hover/carousel:[animation-play-state:paused]">
           {doubledPartners.map((partner, index) => (
             <div
               key={`${partner.id}-${index}`}
-              className="flex-shrink-0 mx-4 md:mx-8"
+              className="shrink-0 mx-4 md:mx-8"
             >
               <div
                 className="group flex items-center justify-center w-36 h-24 md:w-44 md:h-28 rounded-2xl bg-white border border-gray-100 hover:border-primary-300 hover:shadow-lg transition-all duration-300 p-5"

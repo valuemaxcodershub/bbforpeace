@@ -37,7 +37,7 @@ export function BlogCard({ post, index = 0 }: BlogCardProps) {
             fill
             className="object-cover group-hover:scale-110 transition-transform duration-500"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" />
           
           {/* Category Badge */}
           {post.category && (

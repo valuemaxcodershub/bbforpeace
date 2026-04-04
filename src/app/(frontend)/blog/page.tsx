@@ -107,7 +107,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
 
               {/* Categories */}
               <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
-                <Filter className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                <Filter className="w-5 h-5 text-gray-400 shrink-0" />
                 {displayCategories.map((category) => {
                   const isActive = category === 'All' ? !activeCategory : activeCategory === category
                   const href = category === 'All' ? '/blog' : `/blog?category=${encodeURIComponent(category)}`
@@ -137,14 +137,14 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
             <div className="max-w-5xl mx-auto">
             <Link href={`/blog/${displayPosts[0].slug}`} className="group block" data-scroll="up">
               <div className="grid lg:grid-cols-2 gap-0 items-stretch bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-shadow border border-gray-100">
-                <div className="relative aspect-[4/3] lg:aspect-auto lg:min-h-[450px]">
+                <div className="relative aspect-4/3 lg:aspect-auto lg:min-h-[450px]">
                   <Image 
                     src={displayPosts[0].featuredImage} 
                     alt={displayPosts[0].title} 
                     fill 
                     className="object-cover group-hover:scale-105 transition-transform duration-700" 
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary-950/50 to-transparent lg:opacity-0 group-hover:lg:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-linear-to-r from-primary-950/50 to-transparent lg:opacity-0 group-hover:lg:opacity-100 transition-opacity" />
                   <div className="absolute top-5 left-5">
                     <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold bg-accent-gold text-primary-950 shadow-lg">
                       <Tag className="w-3.5 h-3.5" />
@@ -190,9 +190,9 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
           <div className="container">
             <div className="text-center mb-12" data-scroll="up">
               <span className="inline-flex items-center gap-3 justify-center text-primary-900 text-sm font-semibold uppercase tracking-widest mb-4">
-                <span className="w-8 h-[2px] bg-primary-900" />
+                <span className="w-8 h-0.5 bg-primary-900" />
                 Recent Posts
-                <span className="w-8 h-[2px] bg-primary-900" />
+                <span className="w-8 h-0.5 bg-primary-900" />
               </span>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Latest Articles</h2>
             </div>
@@ -208,7 +208,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
                         fill 
                         className="object-cover group-hover:scale-110 transition-transform duration-700" 
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-primary-950/60 via-transparent to-transparent" />
+                      <div className="absolute inset-0 bg-linear-to-t from-primary-950/60 via-transparent to-transparent" />
                       <div className="absolute top-4 left-4">
                         <span className="inline-block px-3 py-1.5 rounded-full text-xs font-bold bg-white/95 text-primary-900 shadow-lg backdrop-blur-sm">
                           {post.category}
@@ -270,13 +270,13 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
           className="py-24 relative overflow-hidden bg-fixed bg-cover bg-center"
           style={{ backgroundImage: 'url(/images/PXL_20251023_124331635.MP~2.jpg)' }}
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-primary-950/95 via-primary-900/90 to-primary-950/95" />
+          <div className="absolute inset-0 bg-linear-to-br from-primary-950/95 via-primary-900/90 to-primary-950/95" />
           <div className="container relative z-10">
             <div className="max-w-3xl mx-auto text-center" data-scroll="up">
               <span className="inline-flex items-center gap-3 justify-center text-accent-gold text-sm font-semibold uppercase tracking-widest mb-6">
-                <span className="w-8 h-[2px] bg-accent-gold" />
+                <span className="w-8 h-0.5 bg-accent-gold" />
                 Stay Informed
-                <span className="w-8 h-[2px] bg-accent-gold" />
+                <span className="w-8 h-0.5 bg-accent-gold" />
               </span>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
                 Never Miss an Update

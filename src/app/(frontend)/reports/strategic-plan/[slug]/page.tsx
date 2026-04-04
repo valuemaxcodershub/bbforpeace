@@ -208,7 +208,7 @@ export default async function StrategicPlanDetailPage({ params }: Props) {
               <aside className="lg:col-span-1 order-1 lg:order-2">
                 <div className="sticky top-24 space-y-6">
                   <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div className="relative aspect-[3/4]">
+                    <div className="relative aspect-3/4">
                       <Image
                         src={coverImage}
                         alt={plan.title}
@@ -235,7 +235,7 @@ export default async function StrategicPlanDetailPage({ params }: Props) {
                         {(plan.downloadCount ?? 0) > 0 && (
                           <div className="flex items-center gap-2 text-sm text-gray-600">
                             <Download className="w-4 h-4 text-gray-400" />
-                            <span>{plan.downloadCount.toLocaleString()} downloads</span>
+                            <span>{(plan.downloadCount ?? 0).toLocaleString()} downloads</span>
                           </div>
                         )}
                       </div>
@@ -262,9 +262,9 @@ export default async function StrategicPlanDetailPage({ params }: Props) {
           <div className="container">
             <div className="text-center mb-12">
               <span className="inline-flex items-center gap-3 justify-center text-primary-900 text-sm font-semibold uppercase tracking-widest mb-4">
-                <span className="w-8 h-[2px] bg-primary-900" />
+                <span className="w-8 h-0.5 bg-primary-900" />
                 More Plans
-                <span className="w-8 h-[2px] bg-primary-900" />
+                <span className="w-8 h-0.5 bg-primary-900" />
               </span>
               <h2 className="text-3xl font-bold text-gray-900">Other Strategic Plans</h2>
             </div>
@@ -277,7 +277,7 @@ export default async function StrategicPlanDetailPage({ params }: Props) {
                     href={`/reports/strategic-plan/${p.slug}`}
                     className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-gray-100"
                   >
-                    <div className="relative aspect-[4/3]">
+                    <div className="relative aspect-4/3">
                       <Image src={img} alt={p.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                     </div>
                     <div className="p-5">

@@ -220,7 +220,7 @@ export default async function EventDetailPage({ params }: Props) {
                     <h3 className="text-lg font-bold text-gray-900 mb-5">Event Details</h3>
                     <div className="space-y-4">
                       <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-primary-100 text-primary-900 flex-shrink-0">
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-primary-100 text-primary-900 shrink-0">
                           <Calendar className="w-5 h-5" />
                         </div>
                         <div>
@@ -233,7 +233,7 @@ export default async function EventDetailPage({ params }: Props) {
                       </div>
 
                       <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-emerald-100 text-emerald-700 flex-shrink-0">
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-emerald-100 text-emerald-700 shrink-0">
                           <MapPin className="w-5 h-5" />
                         </div>
                         <div>
@@ -247,7 +247,7 @@ export default async function EventDetailPage({ params }: Props) {
 
                       {event.maxAttendees && (
                         <div className="flex items-start gap-3">
-                          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-amber-100 text-amber-700 flex-shrink-0">
+                          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-amber-100 text-amber-700 shrink-0">
                             <Users className="w-5 h-5" />
                           </div>
                           <div>
@@ -284,7 +284,7 @@ export default async function EventDetailPage({ params }: Props) {
                             className="block group"
                           >
                             <div className="flex gap-3">
-                              <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 relative">
+                              <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0 relative">
                                 <Image
                                   src={getMediaUrl(e.featuredImage)}
                                   alt={e.title}

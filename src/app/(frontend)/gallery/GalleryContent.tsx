@@ -213,7 +213,7 @@ function GalleryInner({ images, videos, hero }: { images?: GalleryImage[], video
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-700"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary-950/80 via-primary-950/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="absolute inset-0 bg-linear-to-t from-primary-950/80 via-primary-950/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
                       <div className="absolute bottom-0 left-0 right-0 p-5">
                         <p className="text-white font-bold">{image.title}</p>
                         <p className="text-gray-300 text-sm">{image.category}</p>
@@ -268,7 +268,7 @@ function GalleryInner({ images, videos, hero }: { images?: GalleryImage[], video
                         <Play className="w-9 h-9 md:w-11 md:h-11 text-primary-950 ml-1" fill="currentColor" />
                       </div>
                     </div>
-                    <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
+                    <div className="absolute bottom-0 left-0 right-0 p-5 bg-linear-to-t from-black/90 via-black/50 to-transparent">
                       <span className="inline-block px-3 py-1 rounded-full bg-white/20 text-white text-xs font-bold mb-2 backdrop-blur-sm">
                         {video.category}
                       </span>
@@ -328,7 +328,7 @@ function GalleryInner({ images, videos, hero }: { images?: GalleryImage[], video
               fill
               className="object-contain"
             />
-            <div className="absolute bottom-0 left-0 right-0 p-8 text-center bg-gradient-to-t from-black/60 to-transparent">
+            <div className="absolute bottom-0 left-0 right-0 p-8 text-center bg-linear-to-t from-black/60 to-transparent">
               <p className="text-white text-2xl font-bold">{filteredImages[lightboxImage].title}</p>
               <p className="text-gray-300 font-medium">{filteredImages[lightboxImage].category}</p>
             </div>

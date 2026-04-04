@@ -42,13 +42,13 @@ export function BoardMemberCard({ name, position, bio, image, index, imagePositi
 
   return (
     <div 
-      className={`group relative bg-gradient-to-br ${bgGradient} rounded-3xl overflow-hidden border border-white shadow-lg hover:shadow-2xl transition-all duration-500`}
+      className={`group relative bg-linear-to-br ${bgGradient} rounded-3xl overflow-hidden border border-white shadow-lg hover:shadow-2xl transition-all duration-500`}
       data-scroll="scale"
       data-delay={index * 100}
     >
       {/* Profile Image at top */}
       <div className="relative">
-        <div className="aspect-[4/3] overflow-hidden">
+        <div className="aspect-4/3 overflow-hidden">
           <Image 
             src={image} 
             alt={name} 
@@ -56,10 +56,10 @@ export function BoardMemberCard({ name, position, bio, image, index, imagePositi
             className={`object-cover ${imagePosition} group-hover:scale-105 transition-transform duration-700`} 
           />
           {/* Gradient overlay at bottom */}
-          <div className={`absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent`} />
+          <div className={`absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-black/60 to-transparent`} />
         </div>
         {/* Position badge */}
-        <span className={`absolute bottom-3 left-4 inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r ${gradient} text-white shadow-lg`}>
+        <span className={`absolute bottom-3 left-4 inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-linear-to-r ${gradient} text-white shadow-lg`}>
           {position}
         </span>
       </div>
@@ -78,7 +78,7 @@ export function BoardMemberCard({ name, position, bio, image, index, imagePositi
           {shouldTruncate && (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className={`mt-3 inline-flex items-center gap-1 text-sm font-semibold bg-gradient-to-r ${gradient} bg-clip-text text-transparent hover:opacity-80 transition-opacity`}
+              className={`mt-3 inline-flex items-center gap-1 text-sm font-semibold bg-linear-to-r ${gradient} bg-clip-text text-transparent hover:opacity-80 transition-opacity`}
             >
               {isExpanded ? (
                 <>
@@ -97,7 +97,7 @@ export function BoardMemberCard({ name, position, bio, image, index, imagePositi
       </div>
       
       {/* Top decorative accent */}
-      <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${gradient}`} />
+      <div className={`absolute top-0 left-0 right-0 h-1 bg-linear-to-r ${gradient}`} />
     </div>
   )
 }

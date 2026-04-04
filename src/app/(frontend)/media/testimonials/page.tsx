@@ -91,14 +91,14 @@ export default async function TestimonialsPage() {
       />
 
       {/* Featured Testimonial */}
-      <section className="py-20 lg:py-28 bg-gradient-to-b from-gray-50 to-white">
+      <section className="py-20 lg:py-28 bg-linear-to-b from-gray-50 to-white">
         <div className="container">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-16" data-scroll="up">
               <span className="inline-flex items-center gap-3 justify-center text-primary-900 text-sm font-semibold uppercase tracking-widest mb-4">
-                <span className="w-8 h-[2px] bg-primary-900" />
+                <span className="w-8 h-0.5 bg-primary-900" />
                 What People Say
-                <span className="w-8 h-[2px] bg-primary-900" />
+                <span className="w-8 h-0.5 bg-primary-900" />
               </span>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900">{sectionHeading}</h2>
               <p className="text-gray-600 mt-4 max-w-2xl mx-auto text-lg">
@@ -120,7 +120,7 @@ export default async function TestimonialsPage() {
                   fill
                   className="object-cover group-hover:scale-110 transition-transform duration-700"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary-950/50 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-primary-950/50 to-transparent" />
               </div>
               <div className="lg:w-3/5 p-8 lg:p-12 flex flex-col justify-center">
                 <MessageSquareQuote className="w-10 h-10 text-primary-200 mb-4" />
@@ -153,7 +153,7 @@ export default async function TestimonialsPage() {
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-700"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary-950/40 to-transparent" />
+                    <div className="absolute inset-0 bg-linear-to-t from-primary-950/40 to-transparent" />
                     <MessageSquareQuote className="absolute bottom-4 right-4 w-8 h-8 text-white/60" />
                   </div>
                   <div className="p-7">
@@ -186,12 +186,12 @@ export default async function TestimonialsPage() {
               style={{ backgroundImage: 'url(/images/PXL_20251023_124331635.MP~2.jpg)' }}
               data-scroll="up"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-primary-950/95 via-primary-900/90 to-primary-950/95" />
+              <div className="absolute inset-0 bg-linear-to-br from-primary-950/95 via-primary-900/90 to-primary-950/95" />
               <div className="relative z-10">
                 <span className="inline-flex items-center gap-3 justify-center text-accent-gold text-sm font-semibold uppercase tracking-widest mb-4">
-                  <span className="w-8 h-[2px] bg-accent-gold" />
+                  <span className="w-8 h-0.5 bg-accent-gold" />
                   Share Your Story
-                  <span className="w-8 h-[2px] bg-accent-gold" />
+                  <span className="w-8 h-0.5 bg-accent-gold" />
                 </span>
                 <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">
                   {ctaHeading}

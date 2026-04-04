@@ -167,7 +167,7 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
   return (
     <>
       {isSearchOpen && (
-        <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm animate-fade-in">
+        <div className="fixed inset-0 z-60 bg-black/60 backdrop-blur-sm animate-fade-in">
           <div className="container h-full flex items-start justify-center pt-20">
             <div className="w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden animate-slide-up">
               <form onSubmit={handleSearch} className="relative">
@@ -207,8 +207,8 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
       }`}>
         <div className="container">
           <div className="flex justify-between items-center py-3">
-            <Link href="/" className="flex items-center group flex-shrink-0">
-              <div className="relative w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full overflow-hidden shadow-md group-hover:shadow-lg transition-shadow ring-2 ring-primary-100 flex-shrink-0">
+            <Link href="/" className="flex items-center group shrink-0">
+              <div className="relative w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full overflow-hidden shadow-md group-hover:shadow-lg transition-shadow ring-2 ring-primary-100 shrink-0">
                 <Image
                   src={logoUrl}
                   alt={logoAlt}
@@ -255,7 +255,7 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
                   </Link>
                   {item.children && activeDropdown === item.name && (
                     <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 animate-fade-in">
-                      <div className="relative bg-gradient-to-br from-white via-gray-50/95 to-white backdrop-blur-xl rounded-2xl shadow-2xl py-2 min-w-80 border border-gray-200/60 overflow-hidden">
+                      <div className="relative bg-linear-to-br from-white via-gray-50/95 to-white backdrop-blur-xl rounded-2xl shadow-2xl py-2 min-w-80 border border-gray-200/60 overflow-hidden">
                         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(40,0,91,0.03)_0%,transparent_50%)]" />
                         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_80%,rgba(212,175,55,0.05)_0%,transparent_40%)]" />
 
@@ -268,7 +268,7 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
                               className="group relative flex items-start gap-4 px-5 py-3.5 mx-2 rounded-xl hover:bg-white hover:shadow-md hover:shadow-primary-100/50 transition-all duration-300"
                               style={{ animationDelay: `${index * 50}ms` }}
                             >
-                              <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-gradient-to-br from-primary-100 to-primary-50 flex items-center justify-center group-hover:from-primary-600 group-hover:to-primary-700 group-hover:scale-105 group-hover:rotate-3 transition-all duration-300 shadow-sm">
+                              <div className="shrink-0 w-11 h-11 rounded-xl bg-linear-to-br from-primary-100 to-primary-50 flex items-center justify-center group-hover:from-primary-600 group-hover:to-primary-700 group-hover:scale-105 group-hover:rotate-3 transition-all duration-300 shadow-sm">
                                 <Icon className="w-5 h-5 text-primary-600 group-hover:text-white transition-colors duration-300" />
                               </div>
                               <div className="flex-1 min-w-0 pt-0.5">
@@ -280,7 +280,7 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
                                   <p className="text-xs text-gray-500 mt-0.5 group-hover:text-gray-600 transition-colors leading-relaxed">{child.description}</p>
                                 )}
                               </div>
-                              <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary-500/0 via-primary-500/0 to-accent-gold/0 group-hover:from-primary-500/5 group-hover:via-transparent group-hover:to-accent-gold/5 transition-all duration-500" />
+                              <div className="absolute inset-0 rounded-xl bg-linear-to-r from-primary-500/0 via-primary-500/0 to-accent-gold/0 group-hover:from-primary-500/5 group-hover:via-transparent group-hover:to-accent-gold/5 transition-all duration-500" />
                             </Link>
                           )
                         })}
@@ -302,7 +302,7 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
 
               <Link
                 href="/contact"
-                className="hidden md:inline-flex items-center gap-2 px-6 py-2.5 rounded-lg font-semibold text-white text-sm bg-accent-gold text-primary-900 hover:bg-yellow-400 transition-all duration-200"
+                className="hidden md:inline-flex items-center gap-2 px-6 py-2.5 rounded-lg font-semibold text-sm bg-accent-gold text-primary-900 hover:bg-yellow-400 transition-all duration-200"
               >
                 Get Involved
               </Link>
@@ -325,10 +325,10 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
           onClick={() => setIsMobileMenuOpen(false)}
         />
 
-        <div className={`lg:hidden fixed inset-y-0 right-0 h-[100dvh] w-[min(90vw,22rem)] bg-white z-50 shadow-2xl transform transition-all duration-300 ease-out ${
+        <div className={`lg:hidden fixed inset-y-0 right-0 h-dvh w-[min(90vw,22rem)] bg-white z-50 shadow-2xl transform transition-all duration-300 ease-out ${
           isMobileMenuOpen ? 'translate-x-0 visible' : 'translate-x-full invisible'
         }`} id="mobile-site-menu" inert={!isMobileMenuOpen ? true : undefined}>
-          <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-primary-900 to-primary-800 pt-[max(1rem,env(safe-area-inset-top))]">
+          <div className="flex items-center justify-between p-4 border-b bg-linear-to-r from-primary-900 to-primary-800 pt-[max(1rem,env(safe-area-inset-top))]">
             <span className="text-white font-bold text-lg">Menu</span>
             <button
               onClick={closeMobileMenu}
@@ -362,10 +362,10 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
                         }`} />
                       </button>
                       <div className={`overflow-hidden transition-all duration-300 ease-out ${
-                        mobileDropdown === item.name ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+                        mobileDropdown === item.name ? 'max-h-125 opacity-100' : 'max-h-0 opacity-0'
                       }`}>
-                        <div className="mx-2 mt-2 mb-2 rounded-xl bg-gradient-to-br from-gray-50 via-white to-gray-50/80 border border-gray-100 shadow-inner overflow-hidden">
-                          <div className="h-0.5 bg-gradient-to-r from-primary-500 via-accent-gold to-primary-500" />
+                        <div className="mx-2 mt-2 mb-2 rounded-xl bg-linear-to-br from-gray-50 via-white to-gray-50/80 border border-gray-100 shadow-inner overflow-hidden">
+                          <div className="h-0.5 bg-linear-to-r from-primary-500 via-accent-gold to-primary-500" />
 
                           <div className="p-2 space-y-1">
                             {item.children.map((child, childIndex) => {
@@ -380,7 +380,7 @@ export function HeaderClient({ navigation, siteName, siteTagline, logoUrl, logoA
                                   }}
                                   style={{ animationDelay: `${childIndex * 30}ms` }}
                                 >
-                                  <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary-100 to-primary-50 flex items-center justify-center group-hover:from-primary-600 group-hover:to-primary-700 transition-all duration-200 shadow-sm">
+                                  <div className="w-9 h-9 rounded-lg bg-linear-to-br from-primary-100 to-primary-50 flex items-center justify-center group-hover:from-primary-600 group-hover:to-primary-700 transition-all duration-200 shadow-sm">
                                     <Icon className="w-4 h-4 text-primary-600 group-hover:text-white transition-colors" />
                                   </div>
                                   <div className="flex-1">

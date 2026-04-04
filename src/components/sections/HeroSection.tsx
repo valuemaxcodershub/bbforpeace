@@ -308,8 +308,8 @@ export function HeroSection({
               priority={idx < 3}
               sizes="100vw"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-primary-950/75 via-primary-900/75 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-primary-940/60 via-transparent to-primary-940/45" />
+            <div className="absolute inset-0 bg-linear-to-r from-primary-950/75 via-primary-900/75 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-primary-940/60 via-transparent to-primary-940/45" />
           </div>
         )
       })}
@@ -416,7 +416,7 @@ export function HeroSection({
       </div>
 
       {/* Bottom Gradient */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent z-10" />
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-linear-to-t from-white to-transparent z-10" />
     </section>
   )
 }

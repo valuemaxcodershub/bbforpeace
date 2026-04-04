@@ -97,9 +97,9 @@ export default async function PublicationsPage() {
               </div>
 
               {/* Featured Card */}
-              <div className="group relative bg-gradient-to-br from-primary-950 to-primary-900 rounded-3xl overflow-hidden" data-scroll="up">
+              <div className="group relative bg-linear-to-br from-primary-950 to-primary-900 rounded-3xl overflow-hidden" data-scroll="up">
                 <div className="absolute inset-0 bg-[url('/images/_VEE7124%20(1).jpg')] bg-cover bg-center opacity-20" />
-                <div className="absolute inset-0 bg-gradient-to-r from-primary-950 via-primary-950/95 to-primary-950/80" />
+                <div className="absolute inset-0 bg-linear-to-r from-primary-950 via-primary-950/95 to-primary-950/80" />
                 
                 <div className="relative grid lg:grid-cols-2 gap-8 p-8 lg:p-12">
                   {/* Content */}
@@ -138,7 +138,7 @@ export default async function PublicationsPage() {
                   </div>
 
                   {/* Image */}
-                  <div className="relative aspect-[4/3] lg:aspect-auto order-1 lg:order-2">
+                  <div className="relative aspect-4/3 lg:aspect-auto order-1 lg:order-2">
                     <div className="absolute inset-0 lg:inset-4 rounded-2xl overflow-hidden shadow-2xl">
                       <Image
                         src={featuredPublication.coverImage}
@@ -180,14 +180,14 @@ export default async function PublicationsPage() {
                   >
                     <div className="flex flex-col sm:flex-row">
                       {/* Image */}
-                      <div className="relative w-full sm:w-48 h-48 sm:h-auto flex-shrink-0">
+                      <div className="relative w-full sm:w-48 h-48 sm:h-auto shrink-0">
                         <Image
                           src={pub.coverImage}
                           alt={pub.title}
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t sm:bg-gradient-to-r from-black/30 to-transparent" />
+                        <div className="absolute inset-0 bg-linear-to-t sm:bg-linear-to-r from-black/30 to-transparent" />
                       </div>
 
                       {/* Content */}

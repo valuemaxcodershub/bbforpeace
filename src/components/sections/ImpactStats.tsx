@@ -83,7 +83,7 @@ export function ImpactStats({
   const mainHeading = headingWords.join(' ')
 
   return (
-    <section className="py-24 bg-gradient-to-br from-primary-950 via-primary-900 to-primary-800 relative overflow-hidden">
+    <section className="py-24 bg-linear-to-br from-primary-950 via-primary-900 to-primary-800 relative overflow-hidden">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 opacity-10">
         <Image
@@ -93,14 +93,14 @@ export function ImpactStats({
           className="object-cover"
         />
       </div>
-      <div className="absolute inset-0 bg-gradient-to-r from-primary-950/90 to-primary-900/80" />
+      <div className="absolute inset-0 bg-linear-to-r from-primary-950/90 to-primary-900/80" />
 
       <div className="container relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left Content */}
           <div data-scroll="left">
             <span className="inline-flex items-center gap-2 text-accent-gold text-sm font-semibold uppercase tracking-widest mb-4">
-              <span className="w-8 h-[2px] bg-accent-gold" />
+              <span className="w-8 h-0.5 bg-accent-gold" />
               {badge}
             </span>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">

@@ -195,17 +195,17 @@ export default async function AboutPage() {
       />
 
       {/* History Section */}
-        <section className="py-20 bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50">
+        <section className="py-20 bg-linear-to-br from-amber-50 via-orange-50 to-rose-50">
           <div className="container">
             <div className="max-w-5xl mx-auto">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               <div data-scroll="left">
                 <span className="inline-flex items-center gap-3 text-primary-900 text-sm font-semibold uppercase tracking-widest mb-4">
-                  <span className="w-8 h-[2px] bg-accent-gold" />
+                  <span className="w-8 h-0.5 bg-accent-gold" />
                   Our Story
                 </span>
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-                  Building Peace <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-primary-900">Since 2016</span>
+                  Building Peace <span className="text-transparent bg-clip-text bg-linear-to-r from-primary-600 to-primary-900">Since 2016</span>
                 </h2>
                 <div className="space-y-4 text-gray-600 leading-relaxed">
                   <p>{storyP1}</p>
@@ -215,7 +215,7 @@ export default async function AboutPage() {
 
                 {/* Timeline */}
                 <div className="mt-10 relative bg-white/60 backdrop-blur-sm p-6 rounded-[1.5rem] border border-white shadow-lg">
-                  <div className="absolute left-8 top-8 bottom-8 w-0.5 bg-gradient-to-b from-accent-gold via-primary-600 to-primary-200" />
+                  <div className="absolute left-8 top-8 bottom-8 w-0.5 bg-linear-to-b from-accent-gold via-primary-600 to-primary-200" />
                   <div className="space-y-5">
                     {milestones.map((milestone: any, idx: number) => {
                       const colors = [
@@ -228,7 +228,7 @@ export default async function AboutPage() {
                       ]
                       return (
                       <div key={idx} className="flex items-start gap-4 relative">
-                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${colors[idx % colors.length]} flex items-center justify-center flex-shrink-0 z-10 shadow-lg`}>
+                        <div className={`w-10 h-10 rounded-xl bg-linear-to-br ${colors[idx % colors.length]} flex items-center justify-center shrink-0 z-10 shadow-lg`}>
                           <Calendar className="w-4 h-4 text-white" />
                         </div>
                         <div className="flex-1 pt-1">
@@ -244,7 +244,7 @@ export default async function AboutPage() {
               <div className="relative" data-scroll="right">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-4">
-                    <div className="relative aspect-[3/4] rounded-[1.5rem] overflow-hidden shadow-xl rotate-2 hover:rotate-0 transition-transform">
+                    <div className="relative aspect-3/4 rounded-[1.5rem] overflow-hidden shadow-xl rotate-2 hover:rotate-0 transition-transform">
                       <Image src={storyImages[0]} alt="Team" fill className="object-cover" />
                     </div>
                     <div className="relative aspect-square rounded-[1.5rem] overflow-hidden shadow-xl -rotate-1 hover:rotate-0 transition-transform">
@@ -255,7 +255,7 @@ export default async function AboutPage() {
                     <div className="relative aspect-square rounded-[1.5rem] overflow-hidden shadow-xl rotate-1 hover:rotate-0 transition-transform">
                       <Image src={storyImages[2]} alt="Community" fill className="object-cover" />
                     </div>
-                    <div className="relative aspect-[3/4] rounded-[1.5rem] overflow-hidden shadow-xl -rotate-2 hover:rotate-0 transition-transform">
+                    <div className="relative aspect-3/4 rounded-[1.5rem] overflow-hidden shadow-xl -rotate-2 hover:rotate-0 transition-transform">
                       <Image src={storyImages[3]} alt="Award" fill className="object-cover" />
                     </div>
                   </div>
@@ -313,9 +313,9 @@ export default async function AboutPage() {
           <div className="container">
             <div className="text-center mb-12" data-scroll="up">
               <span className="inline-flex items-center gap-3 justify-center text-primary-900 text-sm font-semibold uppercase tracking-widest mb-4">
-                <span className="w-8 h-[2px] bg-accent-gold" />
+                <span className="w-8 h-0.5 bg-accent-gold" />
                 What Guides Us
-                <span className="w-8 h-[2px] bg-accent-gold" />
+                <span className="w-8 h-0.5 bg-accent-gold" />
               </span>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Our Core Values</h2>
             </div>
@@ -340,8 +340,8 @@ export default async function AboutPage() {
                   'from-fuchsia-500 to-pink-500',
                 ]
                 return (
-                  <div key={idx} className={`group p-6 rounded-[1.5rem] bg-gradient-to-br ${colors[idx % colors.length]} border border-white shadow-sm hover:shadow-xl transition-all duration-300`} data-scroll="scale" data-delay={idx * 100}>
-                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${iconColors[idx % iconColors.length]} flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all shadow-lg`}>
+                  <div key={idx} className={`group p-6 rounded-[1.5rem] bg-linear-to-br ${colors[idx % colors.length]} border border-white shadow-sm hover:shadow-xl transition-all duration-300`} data-scroll="scale" data-delay={idx * 100}>
+                    <div className={`w-14 h-14 rounded-2xl bg-linear-to-br ${iconColors[idx % iconColors.length]} flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all shadow-lg`}>
                       <Icon className="w-7 h-7 text-white" />
                     </div>
                     <h3 className="font-bold text-gray-900 text-lg mb-2">{value.title}</h3>
@@ -364,9 +364,9 @@ export default async function AboutPage() {
           <div className="container relative z-10">
             <div className="text-center mb-14" data-scroll="up">
               <span className="inline-flex items-center gap-3 justify-center text-accent-gold text-sm font-semibold uppercase tracking-widest mb-4">
-                <span className="w-8 h-[2px] bg-accent-gold" />
+                <span className="w-8 h-0.5 bg-accent-gold" />
                 {strategyPeriod}
-                <span className="w-8 h-[2px] bg-accent-gold" />
+                <span className="w-8 h-0.5 bg-accent-gold" />
               </span>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">Strategic Pillars</h2>
               <p className="text-gray-300 max-w-2xl mx-auto text-lg">Our five interlinked impact areas guiding our work over the next five years.</p>
@@ -378,7 +378,7 @@ export default async function AboutPage() {
                   const shadow = pillarShadowMap[pillar.gradient] || 'shadow-blue-500/30'
                   return (
                     <div key={idx} className="group bg-white/10 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:bg-white/20 hover:border-accent-gold/30 transition-all text-center" data-scroll="scale" data-delay={idx * 100}>
-                      <div className={`w-14 h-14 bg-gradient-to-br ${pillar.gradient} rounded-2xl mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg ${shadow} flex items-center justify-center`}>
+                      <div className={`w-14 h-14 bg-linear-to-br ${pillar.gradient} rounded-2xl mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg ${shadow} flex items-center justify-center`}>
                         <IconComponent className="w-7 h-7 text-white" strokeWidth={2} />
                       </div>
                       <p className="text-white font-semibold leading-snug">{pillar.title}</p>
@@ -391,14 +391,14 @@ export default async function AboutPage() {
         </section>
 
         {/* Unique Positioning */}
-        <section className="py-20 bg-gradient-to-br from-violet-50 via-fuchsia-50 to-pink-50">
+        <section className="py-20 bg-linear-to-br from-violet-50 via-fuchsia-50 to-pink-50">
           <div className="container">
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-10">
                 <span className="inline-flex items-center gap-3 justify-center text-primary-900 text-sm font-semibold uppercase tracking-widest mb-4">
-                  <span className="w-8 h-[2px] bg-accent-gold" />
+                  <span className="w-8 h-0.5 bg-accent-gold" />
                   What Sets Us Apart
-                  <span className="w-8 h-[2px] bg-accent-gold" />
+                  <span className="w-8 h-0.5 bg-accent-gold" />
                 </span>
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Our Unique Positioning</h2>
               </div>
@@ -419,8 +419,8 @@ export default async function AboutPage() {
                       'from-rose-400 to-pink-500',
                     ]
                     return (
-                      <div key={idx} className={`flex gap-4 p-4 rounded-2xl bg-gradient-to-br ${bgGradients[idx % bgGradients.length]} border`}>
-                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${iconGradients[idx % iconGradients.length]} flex items-center justify-center flex-shrink-0 shadow-lg`}>
+                      <div key={idx} className={`flex gap-4 p-4 rounded-2xl bg-linear-to-br ${bgGradients[idx % bgGradients.length]} border`}>
+                        <div className={`w-10 h-10 rounded-xl bg-linear-to-br ${iconGradients[idx % iconGradients.length]} flex items-center justify-center shrink-0 shadow-lg`}>
                           <CheckCircle className="w-5 h-5 text-white" />
                         </div>
                         <div>
@@ -437,13 +437,13 @@ export default async function AboutPage() {
         </section>
 
         {/* Team Section */}
-        <section id="team" className="py-24 bg-gradient-to-br from-sky-50 via-indigo-50 to-violet-50">
+        <section id="team" className="py-24 bg-linear-to-br from-sky-50 via-indigo-50 to-violet-50">
           <div className="container">
             <div className="text-center mb-14" data-scroll="up">
               <span className="inline-flex items-center gap-3 justify-center text-primary-900 text-sm font-semibold uppercase tracking-widest mb-4">
-                <span className="w-8 h-[2px] bg-accent-gold" />
+                <span className="w-8 h-0.5 bg-accent-gold" />
                 Leadership
-                <span className="w-8 h-[2px] bg-accent-gold" />
+                <span className="w-8 h-0.5 bg-accent-gold" />
               </span>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">{teamHeading}</h2>
               <p className="text-gray-600 max-w-2xl mx-auto text-lg">{teamDescription}</p>
@@ -461,10 +461,10 @@ export default async function AboutPage() {
                 return (
                 <div key={idx} className="group text-center" data-scroll="scale" data-delay={idx * 100}>
                   <div className="relative mb-6">
-                    <div className={`absolute inset-0 bg-gradient-to-br ${bgColors[idx % bgColors.length]} rounded-[2rem] rotate-6 group-hover:rotate-12 transition-transform`} />
+                    <div className={`absolute inset-0 bg-linear-to-br ${bgColors[idx % bgColors.length]} rounded-[2rem] rotate-6 group-hover:rotate-12 transition-transform`} />
                     <div className="relative aspect-square rounded-[2rem] overflow-hidden shadow-xl">
                       <Image src={photoUrl} alt={member.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-primary-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="absolute inset-0 bg-linear-to-t from-primary-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <div className="absolute bottom-4 left-4 right-4 flex justify-center gap-2">
                           {member.socialLinks?.linkedin && <a href={member.socialLinks.linkedin} className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center text-white hover:bg-accent-gold hover:text-primary-950 transition-all"><Linkedin className="w-4 h-4" /></a>}
                           {member.socialLinks?.twitter && <a href={member.socialLinks.twitter} className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center text-white hover:bg-accent-gold hover:text-primary-950 transition-all"><Twitter className="w-4 h-4" /></a>}
@@ -483,13 +483,13 @@ export default async function AboutPage() {
         </section>
 
         {/* Board of Trustees Section */}
-        <section id="board" className="py-24 bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-100">
+        <section id="board" className="py-24 bg-linear-to-br from-slate-50 via-gray-50 to-zinc-100">
           <div className="container">
             <div className="text-center mb-14" data-scroll="up">
               <span className="inline-flex items-center gap-3 justify-center text-primary-900 text-sm font-semibold uppercase tracking-widest mb-4">
-                <span className="w-8 h-[2px] bg-accent-gold" />
+                <span className="w-8 h-0.5 bg-accent-gold" />
                 Governance
-                <span className="w-8 h-[2px] bg-accent-gold" />
+                <span className="w-8 h-0.5 bg-accent-gold" />
               </span>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">{boardHeading}</h2>
               <p className="text-gray-600 max-w-2xl mx-auto text-lg">{boardDescription}</p>
@@ -525,9 +525,9 @@ export default async function AboutPage() {
           <div className="container relative z-10">
             <div className="text-center mb-12" data-scroll="up">
               <span className="inline-flex items-center gap-2 justify-center text-accent-gold text-sm font-semibold uppercase tracking-widest mb-4">
-                <span className="w-8 h-[2px] bg-accent-gold" />
+                <span className="w-8 h-0.5 bg-accent-gold" />
                 Our Partners
-                <span className="w-8 h-[2px] bg-accent-gold" />
+                <span className="w-8 h-0.5 bg-accent-gold" />
               </span>
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
                 Working <span className="text-accent-gold">Together</span> for Peace
@@ -541,15 +541,15 @@ export default async function AboutPage() {
           {/* Infinite Scroll Carousel */}
           <div className="relative group/carousel z-10">
             {/* Gradient Overlays */}
-            <div className="absolute left-0 top-0 bottom-0 w-24 md:w-40 bg-gradient-to-r from-primary-950/90 via-primary-950/50 to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-24 md:w-40 bg-gradient-to-l from-primary-950/90 via-primary-950/50 to-transparent z-10 pointer-events-none" />
+            <div className="absolute left-0 top-0 bottom-0 w-24 md:w-40 bg-linear-to-r from-primary-950/90 via-primary-950/50 to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-24 md:w-40 bg-linear-to-l from-primary-950/90 via-primary-950/50 to-transparent z-10 pointer-events-none" />
 
             {/* Scrolling Track */}
             <div className="flex animate-scroll-infinite group-hover/carousel:[animation-play-state:paused]">
               {[...partners, ...partners].map((partner, index) => (
                 <div
                   key={`${partner.name}-${index}`}
-                  className="flex-shrink-0 mx-4 md:mx-8"
+                  className="shrink-0 mx-4 md:mx-8"
                 >
                   <div
                     className="group flex items-center justify-center w-36 h-24 md:w-44 md:h-28 rounded-2xl bg-white border border-gray-100 hover:border-primary-300 hover:shadow-lg transition-all duration-300 p-5"
@@ -580,15 +580,15 @@ export default async function AboutPage() {
         </section>
 
         {/* Awards */}
-        <section className="py-24 relative overflow-hidden bg-gradient-to-br from-violet-100 via-fuchsia-100 to-pink-100">
-          <div className="absolute top-10 left-10 w-72 h-72 bg-gradient-to-br from-accent-gold/20 to-transparent rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-10 w-96 h-96 bg-gradient-to-tl from-primary-200/30 to-transparent rounded-full blur-3xl" />
+        <section className="py-24 relative overflow-hidden bg-linear-to-br from-violet-100 via-fuchsia-100 to-pink-100">
+          <div className="absolute top-10 left-10 w-72 h-72 bg-linear-to-br from-accent-gold/20 to-transparent rounded-full blur-3xl" />
+          <div className="absolute bottom-10 right-10 w-96 h-96 bg-linear-to-tl from-primary-200/30 to-transparent rounded-full blur-3xl" />
           <div className="container relative z-10">
             <div className="text-center mb-14" data-scroll="up">
               <span className="inline-flex items-center gap-3 justify-center text-primary-900 text-sm font-semibold uppercase tracking-widest mb-4">
-                <span className="w-8 h-[2px] bg-accent-gold" />
+                <span className="w-8 h-0.5 bg-accent-gold" />
                 Recognition
-                <span className="w-8 h-[2px] bg-accent-gold" />
+                <span className="w-8 h-0.5 bg-accent-gold" />
               </span>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Awards & Recognition</h2>
             </div>
@@ -604,7 +604,7 @@ export default async function AboutPage() {
                 return (
                   <div key={idx} className={`group bg-white p-8 rounded-[2rem] border ${color.border} shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1`} data-scroll={color.scroll}>
                     <div className="flex gap-5 items-start">
-                      <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${color.bg} flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all`}>
+                      <div className={`w-20 h-20 rounded-2xl bg-linear-to-br ${color.bg} flex items-center justify-center shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all`}>
                         <Award className="w-10 h-10 text-white" />
                       </div>
                       <div>
@@ -623,13 +623,13 @@ export default async function AboutPage() {
         {/* Contact CTA - Modern Redesign */}
         <section className="py-28 relative overflow-hidden">
           {/* Gradient mesh background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-primary-950 to-slate-900" />
+          <div className="absolute inset-0 bg-linear-to-br from-slate-900 via-primary-950 to-slate-900" />
           <div className="absolute inset-0 bg-[url('/images/PXL_20251023_124331635.MP~2.jpg')] bg-cover bg-center opacity-10" />
           
           {/* Animated gradient orbs */}
-          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-gradient-to-br from-violet-600/30 via-fuchsia-500/20 to-transparent rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-gradient-to-br from-amber-500/20 via-orange-500/15 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gradient-to-br from-emerald-500/20 to-cyan-500/15 rounded-full blur-3xl" />
+          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-linear-to-br from-violet-600/30 via-fuchsia-500/20 to-transparent rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-linear-to-br from-amber-500/20 via-orange-500/15 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-linear-to-br from-emerald-500/20 to-cyan-500/15 rounded-full blur-3xl" />
           
           {/* Grid pattern overlay */}
           <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '50px 50px' }} />
@@ -639,12 +639,12 @@ export default async function AboutPage() {
               {/* Header */}
               <div className="text-center mb-14" data-scroll="up">
                 <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-6">
-                  <div className="w-2 h-2 rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400 animate-pulse" />
+                  <div className="w-2 h-2 rounded-full bg-linear-to-r from-emerald-400 to-cyan-400 animate-pulse" />
                   <span className="text-sm font-semibold text-white/80 uppercase tracking-wider">Get Involved</span>
                 </div>
                 <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
                   {ctaHeading.includes('Building Peace') ? (
-                    <>Join Us in <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400">Building Peace</span></>
+                    <>Join Us in <span className="text-transparent bg-clip-text bg-linear-to-r from-amber-400 via-orange-400 to-rose-400">Building Peace</span></>
                   ) : ctaHeading}
                 </h2>
                 <p className="text-white/60 text-lg md:text-xl max-w-2xl mx-auto">{ctaDescription}</p>
@@ -653,8 +653,8 @@ export default async function AboutPage() {
               {/* CTA Buttons */}
               <div className="flex flex-wrap gap-5 justify-center mb-16" data-scroll="up">
                 <Link href="/contact" className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl font-semibold overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-linear-to-r from-amber-500 via-orange-500 to-rose-500" />
+                  <div className="absolute inset-0 bg-linear-to-r from-amber-400 via-orange-400 to-rose-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                   <span className="relative text-white">Get Involved</span>
                   <ArrowRight className="relative w-5 h-5 text-white group-hover:translate-x-1 transition-transform" />
                 </Link>
@@ -667,11 +667,11 @@ export default async function AboutPage() {
               {/* Office Cards */}
               <div className="grid md:grid-cols-2 gap-6" data-scroll="up">
                 <div className="group relative rounded-3xl overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 group-hover:from-violet-500/30 group-hover:to-fuchsia-500/30 transition-colors" />
-                  <div className="absolute inset-[1px] rounded-3xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl" />
+                  <div className="absolute inset-0 bg-linear-to-br from-violet-500/20 to-fuchsia-500/20 group-hover:from-violet-500/30 group-hover:to-fuchsia-500/30 transition-colors" />
+                  <div className="absolute inset-[1px] rounded-3xl bg-linear-to-br from-white/10 to-white/5 backdrop-blur-xl" />
                   <div className="relative p-7">
                     <div className="flex items-start gap-5">
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-violet-500/30 group-hover:scale-110 transition-transform">
+                      <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center shrink-0 shadow-lg shadow-violet-500/30 group-hover:scale-110 transition-transform">
                         <MapPin className="w-6 h-6 text-white" />
                       </div>
                       <div>
@@ -685,11 +685,11 @@ export default async function AboutPage() {
                 </div>
                 
                 <div className="group relative rounded-3xl overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-orange-500/20 group-hover:from-amber-500/30 group-hover:to-orange-500/30 transition-colors" />
-                  <div className="absolute inset-[1px] rounded-3xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl" />
+                  <div className="absolute inset-0 bg-linear-to-br from-amber-500/20 to-orange-500/20 group-hover:from-amber-500/30 group-hover:to-orange-500/30 transition-colors" />
+                  <div className="absolute inset-[1px] rounded-3xl bg-linear-to-br from-white/10 to-white/5 backdrop-blur-xl" />
                   <div className="relative p-7">
                     <div className="flex items-start gap-5">
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-amber-500/30 group-hover:scale-110 transition-transform">
+                      <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-amber-500 to-orange-500 flex items-center justify-center shrink-0 shadow-lg shadow-amber-500/30 group-hover:scale-110 transition-transform">
                         <MapPin className="w-6 h-6 text-white" />
                       </div>
                       <div>

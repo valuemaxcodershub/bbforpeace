@@ -94,7 +94,7 @@ export default async function ContactPage() {
                 <div className="space-y-6">
                   {contactInfo.map((item) => (
                     <div key={item.title} className="flex items-start group">
-                      <div className="w-14 h-14 bg-gradient-to-br from-primary-200 to-primary-100 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:from-primary-900 group-hover:to-primary-800 transition-all shadow-lg">
+                      <div className="w-14 h-14 bg-linear-to-br from-primary-200 to-primary-100 rounded-2xl flex items-center justify-center shrink-0 group-hover:from-primary-900 group-hover:to-primary-800 transition-all shadow-lg">
                         <item.icon className="w-6 h-6 text-primary-900 group-hover:text-white transition-colors" />
                       </div>
                       <div className="ml-5">
@@ -119,10 +119,10 @@ export default async function ContactPage() {
                   <h3 className="font-bold text-gray-900 mb-5">Our Offices</h3>
                   <div className="space-y-4">
                     {offices.map((office: any, idx: number) => (
-                      <div key={idx} className="p-5 bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-2xl border border-gray-100 hover:shadow-lg transition-shadow">
+                      <div key={idx} className="p-5 bg-linear-to-br from-gray-50 to-gray-100/50 rounded-2xl border border-gray-100 hover:shadow-lg transition-shadow">
                         <h4 className="font-bold text-primary-900 mb-2">{office.title}</h4>
                         <p className="text-gray-600 text-sm flex items-start gap-2">
-                          <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5 text-accent-gold" />
+                          <MapPin className="w-4 h-4 shrink-0 mt-0.5 text-accent-gold" />
                           {office.address}
                         </p>
                       </div>

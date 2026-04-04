@@ -18,7 +18,7 @@ export function PageHero({
   breadcrumbs
 }: PageHeroProps) {
   return (
-    <section className="relative min-h-[320px] flex items-center overflow-hidden py-16 md:py-20">
+    <section className="relative min-h-80 flex items-center overflow-hidden py-16 md:py-20">
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
@@ -28,14 +28,14 @@ export function PageHero({
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary-950/95 via-primary-950/85 to-primary-900/70" />
-        <div className="absolute inset-0 bg-gradient-to-t from-primary-950/50 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-r from-primary-950/95 via-primary-950/85 to-primary-900/70" />
+        <div className="absolute inset-0 bg-linear-to-t from-primary-950/50 to-transparent" />
       </div>
 
       {/* Decorative Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-20 -right-20 w-[500px] h-[500px] rounded-full bg-accent-gold/10 blur-3xl" />
-        <div className="absolute -bottom-20 -left-20 w-[400px] h-[400px] rounded-full bg-white/5 blur-3xl" />
+        <div className="absolute -top-20 -right-20 w-125 h-125 rounded-full bg-accent-gold/10 blur-3xl" />
+        <div className="absolute -bottom-20 -left-20 w-100 h-100 rounded-full bg-white/5 blur-3xl" />
         {/* Grid pattern */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0" style={{
@@ -62,7 +62,7 @@ export function PageHero({
                       {crumb.label}
                     </Link>
                   ) : (
-                    <span className="text-accent-gold font-medium max-w-[200px] sm:max-w-[300px] md:max-w-[400px] truncate inline-block">{crumb.label}</span>
+                    <span className="text-accent-gold font-medium max-w-50 sm:max-w-75 md:max-w-100 truncate inline-block">{crumb.label}</span>
                   )}
                 </span>
               ))}
@@ -71,7 +71,7 @@ export function PageHero({
 
           {subtitle && (
             <span className="inline-flex items-center gap-3 text-accent-gold text-sm font-semibold uppercase tracking-widest mb-4 animate-fade-in-down">
-              <span className="w-8 h-[2px] bg-accent-gold" />
+              <span className="w-8 h-0.5 bg-accent-gold" />
               {subtitle}
             </span>
           )}

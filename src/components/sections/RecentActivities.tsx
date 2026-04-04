@@ -46,7 +46,7 @@ export function RecentActivities({ posts }: RecentActivitiesProps) {
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12" data-scroll="up">
           <div>
             <span className="inline-flex items-center gap-3 text-accent-gold text-sm font-semibold uppercase tracking-widest mb-3">
-              <span className="w-8 h-[2px] bg-accent-gold" />
+              <span className="w-8 h-0.5 bg-accent-gold" />
               Latest Updates
             </span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">
@@ -79,7 +79,7 @@ export function RecentActivities({ posts }: RecentActivitiesProps) {
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary-950/60 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-primary-950/60 to-transparent" />
                 <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-accent-gold text-primary-950 text-xs font-semibold">
                   {post.category}
                 </div>

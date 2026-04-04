@@ -39,7 +39,7 @@ export function OurApproachSection({
 }: OurApproachSectionProps) {
   const pillars = pillarsProp?.length ? pillarsProp : defaultPillars
   return (
-    <section className="py-24 bg-gradient-to-br from-primary-950 via-primary-900 to-indigo-900 relative overflow-hidden">
+    <section className="py-24 bg-linear-to-br from-primary-950 via-primary-900 to-indigo-900 relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-0 left-0 w-96 h-96 bg-accent-gold rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
@@ -50,7 +50,7 @@ export function OurApproachSection({
         {/* Header */}
         <div className="max-w-3xl mb-16" data-scroll="up">
           <div className="flex items-center gap-3 mb-4">
-            <span className="w-10 h-[2px] bg-accent-gold" />
+            <span className="w-10 h-0.5 bg-accent-gold" />
             <span className="inline-flex items-center gap-2 text-accent-gold text-sm font-semibold uppercase tracking-widest">
               <Sparkles className="w-4 h-4" />
               {badge}
@@ -83,7 +83,7 @@ export function OurApproachSection({
                 </div>
 
                 {/* Icon */}
-                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center mb-5 shadow-lg ${shadow} group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300`}>
+                <div className={`w-14 h-14 rounded-2xl bg-linear-to-br ${gradient} flex items-center justify-center mb-5 shadow-lg ${shadow} group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300`}>
                   <Icon className="w-7 h-7 text-white" />
                 </div>
 
@@ -96,7 +96,7 @@ export function OurApproachSection({
                 </p>
 
                 {/* Hover Glow */}
-                <div className="absolute inset-0 rounded-[1.5rem] bg-gradient-to-br from-accent-gold/0 to-accent-gold/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                <div className="absolute inset-0 rounded-[1.5rem] bg-linear-to-br from-accent-gold/0 to-accent-gold/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
               </div>
             )
           })}

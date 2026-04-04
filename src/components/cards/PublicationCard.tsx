@@ -33,14 +33,14 @@ export function PublicationCard({ publication, index = 0 }: PublicationCardProps
       
       <Link href={`/publications/${publication.slug}`}>
         {/* Cover Image */}
-        <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
+        <div className="relative aspect-3/4 overflow-hidden bg-gray-100">
           <Image
             src={publication.coverImage}
             alt={publication.title}
             fill
             className="object-cover group-hover:scale-110 transition-transform duration-500"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-8">
+          <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-8">
             <span 
               className="inline-flex items-center px-5 py-2.5 rounded-full text-white font-semibold shadow-lg"
               style={{ background: gradient }}

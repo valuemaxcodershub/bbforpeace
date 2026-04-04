@@ -64,7 +64,7 @@ export default async function StrategicPlanPage() {
         ]}
       />
 
-      <section className="py-20 lg:py-28 bg-gradient-to-b from-gray-50 to-white">
+      <section className="py-20 lg:py-28 bg-linear-to-b from-gray-50 to-white">
         <div className="container">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-16" data-scroll="up">
@@ -80,9 +80,9 @@ export default async function StrategicPlanPage() {
 
             {featuredPlan && (
             <article className="group" data-scroll="up">
-              <div className="group relative bg-gradient-to-br from-primary-950 to-primary-900 rounded-3xl overflow-hidden">
+              <div className="group relative bg-linear-to-br from-primary-950 to-primary-900 rounded-3xl overflow-hidden">
                 <div className="absolute inset-0 bg-[url('/images/PXL_20251023_124331635.MP~2.jpg')] bg-cover bg-center opacity-20" />
-                <div className="absolute inset-0 bg-gradient-to-r from-primary-950 via-primary-950/95 to-primary-950/80" />
+                <div className="absolute inset-0 bg-linear-to-r from-primary-950 via-primary-950/95 to-primary-950/80" />
                 
                 <div className="relative grid lg:grid-cols-2 gap-8 p-8 lg:p-12">
                   <div className="flex flex-col justify-center order-2 lg:order-1">
@@ -116,7 +116,7 @@ export default async function StrategicPlanPage() {
                     </div>
                   </div>
 
-                  <div className="relative aspect-[4/3] lg:aspect-auto order-1 lg:order-2">
+                  <div className="relative aspect-4/3 lg:aspect-auto order-1 lg:order-2">
                     <div className="absolute inset-0 lg:inset-4 rounded-2xl overflow-hidden shadow-2xl">
                       <Image
                         src={featuredPlan.coverImage}
@@ -147,14 +147,14 @@ export default async function StrategicPlanPage() {
                       data-delay={idx * 100}
                     >
                       <div className="flex flex-col sm:flex-row">
-                        <div className="relative w-full sm:w-48 h-48 sm:h-auto flex-shrink-0">
+                        <div className="relative w-full sm:w-48 h-48 sm:h-auto shrink-0">
                           <Image
                             src={plan.coverImage}
                             alt={plan.title}
                             fill
                             className="object-cover group-hover:scale-105 transition-transform duration-500"
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t sm:bg-gradient-to-r from-black/30 to-transparent" />
+                          <div className="absolute inset-0 bg-linear-to-t sm:bg-linear-to-r from-black/30 to-transparent" />
                         </div>
 
                         <div className="flex-1 p-6">

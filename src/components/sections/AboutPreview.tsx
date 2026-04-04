@@ -94,7 +94,7 @@ export function AboutPreview({
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary-950/70 via-primary-950/20 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-primary-950/70 via-primary-950/20 to-transparent" />
                   
                   {/* Play Button */}
                   <button
@@ -161,7 +161,7 @@ export function AboutPreview({
             <div className="grid sm:grid-cols-2 gap-3 mb-8">
               {displayHighlights.map((item, idx) => (
                 <div key={idx} className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-primary-900 flex-shrink-0" />
+                  <CheckCircle className="w-5 h-5 text-primary-900 shrink-0" />
                   <span className="text-gray-700">{item}</span>
                 </div>
               ))}

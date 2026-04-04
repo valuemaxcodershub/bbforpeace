@@ -89,9 +89,9 @@ export default async function ProgrammesPage() {
           <div className="container">
             <div className="text-center mb-14" data-scroll="up">
               <span className="inline-flex items-center gap-3 justify-center text-primary-900 text-sm font-semibold uppercase tracking-widest mb-4">
-                <span className="w-8 h-[2px] bg-primary-900" />
+                <span className="w-8 h-0.5 bg-primary-900" />
                 {overviewBadge}
-                <span className="w-8 h-[2px] bg-primary-900" />
+                <span className="w-8 h-0.5 bg-primary-900" />
               </span>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">{overviewHeading}</h2>
             </div>
@@ -138,22 +138,22 @@ export default async function ProgrammesPage() {
                     }`}>
                       {/* Image */}
                       <div className="relative group">
-                        <div className="aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl">
+                        <div className="aspect-4/3 rounded-3xl overflow-hidden shadow-2xl">
                           <Image
                             src={pillar.image}
                             alt={pillar.title}
                             fill
                             className="object-cover group-hover:scale-110 transition-transform duration-700"
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-primary-950/70 via-primary-950/20 to-transparent" />
+                          <div className="absolute inset-0 bg-linear-to-t from-primary-950/70 via-primary-950/20 to-transparent" />
                           <div className={`absolute top-6 left-6 w-16 h-16 ${pillar.color} rounded-2xl flex items-center justify-center shadow-xl`}>
                             <Icon className="w-8 h-8 text-white" />
                           </div>
                         </div>
                         <div className={`absolute -z-10 w-full h-full rounded-3xl ${
                           index % 2 === 0
-                            ? '-bottom-5 -right-5 bg-gradient-to-br from-primary-200 to-primary-100'
-                            : '-bottom-5 -left-5 bg-gradient-to-br from-gray-200 to-gray-100'
+                            ? '-bottom-5 -right-5 bg-linear-to-br from-primary-200 to-primary-100'
+                            : '-bottom-5 -left-5 bg-linear-to-br from-gray-200 to-gray-100'
                         }`} />
                       </div>
 
@@ -179,7 +179,7 @@ export default async function ProgrammesPage() {
                           <ul className="space-y-3">
                             {pillar.objectives.map((obj: any, i: number) => (
                               <li key={i} className="flex items-start text-gray-600">
-                                <span className="w-2 h-2 bg-accent-gold rounded-full mt-2 mr-3 flex-shrink-0" />
+                                <span className="w-2 h-2 bg-accent-gold rounded-full mt-2 mr-3 shrink-0" />
                                 {obj.objective || obj}
                               </li>
                             ))}
@@ -224,13 +224,13 @@ export default async function ProgrammesPage() {
           className="py-24 relative overflow-hidden bg-fixed bg-cover bg-center"
           style={{ backgroundImage: 'url(/images/PXL_20251023_124331635.MP~2.jpg)' }}
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-primary-950/95 via-primary-900/90 to-primary-950/95" />
+          <div className="absolute inset-0 bg-linear-to-br from-primary-950/95 via-primary-900/90 to-primary-950/95" />
           <div className="container relative z-10">
             <div className="max-w-3xl mx-auto text-center" data-scroll="up">
               <span className="inline-flex items-center gap-3 justify-center text-accent-gold text-sm font-semibold uppercase tracking-widest mb-6">
-                <span className="w-8 h-[2px] bg-accent-gold" />
+                <span className="w-8 h-0.5 bg-accent-gold" />
                 Get Involved
-                <span className="w-8 h-[2px] bg-accent-gold" />
+                <span className="w-8 h-0.5 bg-accent-gold" />
               </span>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
                 {ctaHeading}

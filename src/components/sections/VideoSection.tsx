@@ -46,9 +46,9 @@ export function VideoSection({
         {/* Section Header */}
         <div className="text-center mb-14" data-scroll="up">
           <span className="inline-flex items-center justify-center gap-3 text-primary-900 text-sm font-semibold uppercase tracking-widest mb-4">
-            <span className="w-8 h-[2px] bg-primary-900" />
+            <span className="w-8 h-0.5 bg-primary-900" />
             {badge}
-            <span className="w-8 h-[2px] bg-primary-900" />
+            <span className="w-8 h-0.5 bg-primary-900" />
           </span>
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             {heading}
@@ -89,7 +89,7 @@ export function VideoSection({
                       <Play className="w-9 h-9 text-primary-950 ml-1" fill="currentColor" />
                     </div>
                   </button>
-                  <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+                  <div className="absolute bottom-0 left-0 right-0 p-6 bg-linear-to-t from-black/80 via-black/40 to-transparent">
                     <h3 className="text-white font-bold text-xl mb-1">{activeVideo.title}</h3>
                     <p className="text-gray-300 text-sm">{activeVideo.description || ''}</p>
                   </div>
@@ -126,7 +126,7 @@ export function VideoSection({
                     <Play className="w-5 h-5 text-primary-900 group-hover:text-primary-950 ml-0.5" fill="currentColor" />
                   </div>
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent">
+                <div className="absolute bottom-0 left-0 right-0 p-3 bg-linear-to-t from-black/70 to-transparent">
                   <h4 className="text-white font-medium text-sm line-clamp-1">{video.title}</h4>
                 </div>
               </div>

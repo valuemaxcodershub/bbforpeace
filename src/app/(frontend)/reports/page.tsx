@@ -67,7 +67,7 @@ export default async function AnnualReportsPage() {
       />
 
       {/* Annual Reports Section */}
-      <section className="py-20 lg:py-28 bg-gradient-to-b from-gray-50 to-white">
+      <section className="py-20 lg:py-28 bg-linear-to-b from-gray-50 to-white">
         <div className="container">
           <div className="max-w-5xl mx-auto">
             
@@ -99,8 +99,8 @@ export default async function AnnualReportsPage() {
                   <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-center">
                     
                     {/* Cover Image */}
-                    <div className="w-full lg:w-2/5 flex-shrink-0">
-                      <div className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl group-hover:shadow-3xl transition-shadow duration-500">
+                    <div className="w-full lg:w-2/5 shrink-0">
+                      <div className="relative aspect-3/4 rounded-2xl overflow-hidden shadow-2xl group-hover:shadow-3xl transition-shadow duration-500">
                         <Image
                           src={report.coverImage}
                           alt={`${report.title} Cover`}
@@ -108,7 +108,7 @@ export default async function AnnualReportsPage() {
                           className="object-cover"
                         />
                         {/* Gradient Overlay */}
-                        <div className={`absolute inset-0 bg-gradient-to-t ${style.gradient} opacity-20 group-hover:opacity-10 transition-opacity`} />
+                        <div className={`absolute inset-0 bg-linear-to-t ${style.gradient} opacity-20 group-hover:opacity-10 transition-opacity`} />
                         
                         {/* Year Badge */}
                         <div className="absolute top-4 right-4">

@@ -102,7 +102,7 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               {/* Status Filters */}
               <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
-                <Filter className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                <Filter className="w-5 h-5 text-gray-400 shrink-0" />
                 {filters.map((filter) => {
                   const isActive = filter === 'All' ? !activeFilter : activeFilter === filter
                   const href = filter === 'All' ? '/events' : `/events?filter=${encodeURIComponent(filter)}`
@@ -139,14 +139,14 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
               <div className="max-w-5xl mx-auto">
               <div className="grid lg:grid-cols-2 gap-12 items-center" data-scroll="up">
                 <div className="relative">
-                  <div className="aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl">
+                  <div className="aspect-4/3 rounded-3xl overflow-hidden shadow-2xl">
                     <Image 
                       src={featuredEvent.featuredImage} 
                       alt={featuredEvent.title} 
                       fill 
                       className="object-cover" 
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary-950/50 to-transparent" />
+                    <div className="absolute inset-0 bg-linear-to-t from-primary-950/50 to-transparent" />
                   </div>
                   <div className="absolute top-5 left-5">
                     <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold bg-accent-gold text-primary-950 shadow-lg">
@@ -165,7 +165,7 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
                       )}
                     </div>
                   </div>
-                  <div className="absolute -z-10 w-full h-full rounded-3xl -bottom-5 -right-5 bg-gradient-to-br from-primary-200 to-primary-100" />
+                  <div className="absolute -z-10 w-full h-full rounded-3xl -bottom-5 -right-5 bg-linear-to-br from-primary-200 to-primary-100" />
                 </div>
                 <div>
                   <span className="inline-block px-4 py-1.5 rounded-full text-xs font-bold bg-green-100 text-green-700 mb-5">
@@ -228,14 +228,14 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
                 {otherUpcoming.map((event, idx) => (
                   <Link key={event.id} href={`/events/${event.slug}`} className="group" data-scroll="scale" data-delay={idx * 100}>
                     <article className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all flex border border-gray-100">
-                      <div className="relative w-44 flex-shrink-0">
+                      <div className="relative w-44 shrink-0">
                         <Image 
                           src={event.featuredImage} 
                           alt={event.title} 
                           fill 
                           className="object-cover group-hover:scale-105 transition-transform duration-500" 
                         />
-                        <div className="absolute inset-0 bg-gradient-to-r from-primary-950/30 to-transparent" />
+                        <div className="absolute inset-0 bg-linear-to-r from-primary-950/30 to-transparent" />
                       </div>
                       <div className="p-6 flex-1">
                         <div className="flex items-center gap-3 mb-3">
@@ -269,9 +269,9 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
           <div className="container">
             <div className="text-center mb-14" data-scroll="up">
               <span className="inline-flex items-center gap-3 justify-center text-primary-900 text-sm font-semibold uppercase tracking-widest mb-4">
-                <span className="w-8 h-[2px] bg-primary-900" />
+                <span className="w-8 h-0.5 bg-primary-900" />
                 Archive
-                <span className="w-8 h-[2px] bg-primary-900" />
+                <span className="w-8 h-0.5 bg-primary-900" />
               </span>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900">{eps.pastHeading || 'Past Events'}</h2>
             </div>
@@ -330,13 +330,13 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
           className="py-24 relative overflow-hidden bg-fixed bg-cover bg-center"
           style={{ backgroundImage: 'url(/images/PXL_20251023_124331635.MP~2.jpg)' }}
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-primary-950/95 via-primary-900/90 to-primary-950/95" />
+          <div className="absolute inset-0 bg-linear-to-br from-primary-950/95 via-primary-900/90 to-primary-950/95" />
           <div className="container relative z-10">
             <div className="max-w-3xl mx-auto text-center" data-scroll="up">
               <span className="inline-flex items-center gap-3 justify-center text-accent-gold text-sm font-semibold uppercase tracking-widest mb-6">
-                <span className="w-8 h-[2px] bg-accent-gold" />
+                <span className="w-8 h-0.5 bg-accent-gold" />
                 Partner With Us
-                <span className="w-8 h-[2px] bg-accent-gold" />
+                <span className="w-8 h-0.5 bg-accent-gold" />
               </span>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
                 Want to Host an Event?

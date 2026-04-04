@@ -32,12 +32,12 @@ export function InitiativesSection({
     image: getMediaUrl(i.image, '/images/_VEE7927.jpg'),
   })) : defaultInitiatives
   return (
-    <section className="py-24 bg-gradient-to-br from-gray-50 via-white to-gray-50 overflow-hidden">
+    <section className="py-24 bg-linear-to-br from-gray-50 via-white to-gray-50 overflow-hidden">
       <div className="container">
         {/* Header */}
         <div className="max-w-3xl mb-16" data-scroll="up">
           <div className="flex items-center gap-3 mb-4">
-            <span className="w-10 h-[2px] bg-primary-900" />
+            <span className="w-10 h-0.5 bg-primary-900" />
             <span className="inline-flex items-center gap-2 text-primary-900 text-sm font-semibold uppercase tracking-widest">
               <Sparkles className="w-4 h-4 text-accent-gold" />
               {sectionBadge}
@@ -73,8 +73,8 @@ export function InitiativesSection({
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-700"
                   />
-                  <div className={`absolute inset-0 bg-gradient-to-br ${color} opacity-60 mix-blend-multiply`} />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <div className={`absolute inset-0 bg-linear-to-br ${color} opacity-60 mix-blend-multiply`} />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" />
                   
                   {/* Badge */}
                   <div className="absolute top-5 left-5">
@@ -85,7 +85,7 @@ export function InitiativesSection({
                   
                   {/* Icon */}
                   <div className="absolute bottom-5 right-5">
-                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform`}>
+                    <div className={`w-14 h-14 rounded-2xl bg-linear-to-br ${color} flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform`}>
                       <Icon className="w-7 h-7 text-white" />
                     </div>
                   </div>
@@ -106,7 +106,7 @@ export function InitiativesSection({
                 </div>
 
                 {/* Bottom Accent */}
-                <div className={`h-1.5 bg-gradient-to-r ${color} opacity-0 group-hover:opacity-100 transition-opacity`} />
+                <div className={`h-1.5 bg-linear-to-r ${color} opacity-0 group-hover:opacity-100 transition-opacity`} />
               </Link>
             )
           })}

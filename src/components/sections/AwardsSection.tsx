@@ -31,7 +31,7 @@ export function AwardsSection({
       style={{ backgroundImage: `url(${bgImage.replace(/ /g, '%20')})` }}
     >
       {/* Overlay with gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-950/95 via-primary-900/90 to-primary-950/95" />
+      <div className="absolute inset-0 bg-linear-to-br from-primary-950/95 via-primary-900/90 to-primary-950/95" />
       
       {/* Decorative elements */}
       <div className="absolute inset-0 overflow-hidden">
@@ -45,9 +45,9 @@ export function AwardsSection({
             <Trophy className="w-8 h-8 text-accent-gold" />
           </div>
           <span className="inline-flex items-center justify-center gap-3 text-accent-gold text-sm font-semibold uppercase tracking-widest mb-4">
-            <span className="w-8 h-[2px] bg-accent-gold" />
+            <span className="w-8 h-0.5 bg-accent-gold" />
             Recognition
-            <span className="w-8 h-[2px] bg-accent-gold" />
+            <span className="w-8 h-0.5 bg-accent-gold" />
           </span>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
             {heading}
@@ -75,7 +75,7 @@ export function AwardsSection({
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-700"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary-950 via-primary-950/50 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-primary-950 via-primary-950/50 to-transparent" />
                   
                   {/* Year Badge */}
                   <div className="absolute top-4 right-4 flex items-center gap-2 px-4 py-2 rounded-full bg-accent-gold text-primary-950 font-bold text-sm">
@@ -85,7 +85,7 @@ export function AwardsSection({
 
                   {/* Award Icon */}
                   <div className="absolute bottom-0 left-6 translate-y-1/2 z-10">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-gold to-yellow-500 flex items-center justify-center shadow-xl shadow-accent-gold/30">
+                    <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-accent-gold to-yellow-500 flex items-center justify-center shadow-xl shadow-accent-gold/30">
                       {idx === 0 ? (
                         <Award className="w-8 h-8 text-primary-950" />
                       ) : (

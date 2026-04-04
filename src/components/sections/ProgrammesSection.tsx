@@ -62,9 +62,9 @@ export function ProgrammesSection({
         {/* Header */}
         <div className="text-center mb-16" data-scroll="up">
           <span className="inline-flex items-center justify-center gap-3 text-accent-gold text-sm font-semibold uppercase tracking-widest mb-4">
-            <span className="w-8 h-[2px] bg-accent-gold" />
+            <span className="w-8 h-0.5 bg-accent-gold" />
             {badge}
-            <span className="w-8 h-[2px] bg-accent-gold" />
+            <span className="w-8 h-0.5 bg-accent-gold" />
           </span>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
             {heading}
@@ -83,7 +83,7 @@ export function ProgrammesSection({
               <Link
                 key={index}
                 href={programme.link || '/programmes'}
-                className={`group relative rounded-2xl p-6 lg:p-8 bg-gradient-to-br ${gradient} overflow-hidden shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300`}
+                className={`group relative rounded-2xl p-6 lg:p-8 bg-linear-to-br ${gradient} overflow-hidden shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300`}
                 data-scroll="scale"
                 data-delay={(index % 3) * 100}
               >

@@ -342,9 +342,9 @@ export default async function BlogPostPage({ params }: Props) {
           <div className="container">
             <div className="text-center mb-12">
               <span className="inline-flex items-center gap-3 justify-center text-primary-900 text-sm font-semibold uppercase tracking-widest mb-4">
-                <span className="w-8 h-[2px] bg-primary-900" />
+                <span className="w-8 h-0.5 bg-primary-900" />
                 More to Read
-                <span className="w-8 h-[2px] bg-primary-900" />
+                <span className="w-8 h-0.5 bg-primary-900" />
               </span>
               <h2 className="text-3xl font-bold text-gray-900">Related Articles</h2>
             </div>

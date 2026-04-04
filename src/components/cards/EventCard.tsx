@@ -44,14 +44,14 @@ export function EventCard({ event, index = 0 }: EventCardProps) {
         </div>
 
         {/* Image */}
-        <div className="relative aspect-video md:aspect-square md:w-56 flex-shrink-0 overflow-hidden">
+        <div className="relative aspect-video md:aspect-square md:w-56 shrink-0 overflow-hidden">
           <Image
             src={event.featuredImage}
             alt={event.title}
             fill
             className="object-cover group-hover:scale-110 transition-transform duration-500"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent" />
           
           {/* Date Badge (Mobile) */}
           <div 

@@ -63,9 +63,9 @@ export default async function PressPage() {
             <div className="max-w-5xl mx-auto">
             <div className="text-center mb-14" data-scroll="up">
               <span className="inline-flex items-center gap-3 justify-center text-primary-900 text-sm font-semibold uppercase tracking-widest mb-4">
-                <span className="w-8 h-[2px] bg-primary-900" />
+                <span className="w-8 h-0.5 bg-primary-900" />
                 Announcements
-                <span className="w-8 h-[2px] bg-primary-900" />
+                <span className="w-8 h-0.5 bg-primary-900" />
               </span>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Official Press Releases</h2>
             </div>
@@ -87,7 +87,7 @@ export default async function PressPage() {
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-700"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary-950/40 to-transparent" />
+                    <div className="absolute inset-0 bg-linear-to-t from-primary-950/40 to-transparent" />
                   </div>
 
                   {/* Content */}
@@ -122,12 +122,12 @@ export default async function PressPage() {
               style={{ backgroundImage: 'url(/images/PXL_20251023_124331635.MP~2.jpg)' }}
               data-scroll="up"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-primary-950/95 via-primary-900/90 to-primary-950/95" />
+              <div className="absolute inset-0 bg-linear-to-br from-primary-950/95 via-primary-900/90 to-primary-950/95" />
               <div className="relative z-10">
                 <span className="inline-flex items-center gap-3 justify-center text-accent-gold text-sm font-semibold uppercase tracking-widest mb-4">
-                  <span className="w-8 h-[2px] bg-accent-gold" />
+                  <span className="w-8 h-0.5 bg-accent-gold" />
                   Media Inquiries
-                  <span className="w-8 h-[2px] bg-accent-gold" />
+                  <span className="w-8 h-0.5 bg-accent-gold" />
                 </span>
                 <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">Press & Media Contact</h3>
                 <p className="text-gray-300 mb-8 max-w-xl mx-auto">For press inquiries, interview requests, or media partnerships, please contact our communications team.</p>

@@ -34,17 +34,17 @@ export function PublicationsSection({ publications: pubsProp }: PublicationsSect
     type: p.category || 'Report',
   })) : defaultPublications
   return (
-    <section className="py-24 bg-gradient-to-br from-gray-50 via-white to-gray-50">
+    <section className="py-24 bg-linear-to-br from-gray-50 via-white to-gray-50">
       <div className="container">
         {/* Header */}
         <div className="max-w-3xl mx-auto text-center mb-14\" data-scroll="up">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <span className="w-10 h-[2px] bg-primary-900" />
+            <span className="w-10 h-0.5 bg-primary-900" />
             <span className="inline-flex items-center gap-2 text-primary-900 text-sm font-semibold uppercase tracking-widest">
               <Sparkles className="w-4 h-4 text-accent-gold" />
               Resources
             </span>
-            <span className="w-10 h-[2px] bg-primary-900" />
+            <span className="w-10 h-0.5 bg-primary-900" />
           </div>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
             Recent Publications
@@ -64,7 +64,7 @@ export function PublicationsSection({ publications: pubsProp }: PublicationsSect
               data-delay={(index % 4) * 100}
             >
               {/* Cover Image */}
-              <div className="relative aspect-[3/4] bg-gray-100 overflow-hidden">
+              <div className="relative aspect-3/4 bg-gray-100 overflow-hidden">
                 <Image
                   src={pub.coverImage}
                   alt={pub.title}
