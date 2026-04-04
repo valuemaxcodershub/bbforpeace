@@ -36,7 +36,8 @@ export const Publications: CollectionConfig = {
           return data
         }
         return sanitizeAdminDocumentData(data as Record<string, unknown>, {
-          relationFields: ['coverImage', 'file'],
+          relationFields: ['coverImage'],
+          nullableRelationFields: ['file'],
           removeFields: ['downloadCount'],
           conditionalRemovals: [
             {
