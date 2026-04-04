@@ -41,7 +41,8 @@ const menuConfig: MenuItem[] = [
     icon: Settings,
     roles: ['super-admin', 'admin'],
     children: [
-      { label: 'Partners settings', href: '/admin/globals/partners-settings', icon: Circle },
+      { label: 'Partners (manage)', href: '/admin/collections/partners', icon: Circle },
+      { label: 'Partners section text', href: '/admin/globals/partners-settings', icon: Circle },
       { label: 'Award setting', href: '/admin/globals/award-settings', icon: Circle },
       { label: 'Footer setting', href: '/admin/globals/footer-settings', icon: Circle },
       { label: 'SEO', href: '/admin/globals/seo-settings', icon: Circle },

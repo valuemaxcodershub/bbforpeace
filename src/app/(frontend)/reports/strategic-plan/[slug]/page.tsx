@@ -13,6 +13,7 @@ import {
   ArrowLeft,
   Target,
 } from 'lucide-react'
+import { DownloadButton } from '@/components/ui/DownloadButton'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -231,18 +232,20 @@ export default async function StrategicPlanDetailPage({ params }: Props) {
                             <span>{plan.author}</span>
                           </div>
                         )}
+                        {(plan.downloadCount ?? 0) > 0 && (
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <Download className="w-4 h-4 text-gray-400" />
+                            <span>{plan.downloadCount.toLocaleString()} downloads</span>
+                          </div>
+                        )}
                       </div>
 
                       {fileUrl && fileUrl !== '#' && (
-                        <a
-                          href={fileUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <DownloadButton
+                          publicationId={plan.id}
+                          fileUrl={fileUrl}
                           className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-primary-900 text-white font-semibold hover:bg-primary-800 transition-colors"
-                        >
-                          <Download className="w-4 h-4" />
-                          Download PDF
-                        </a>
+                        />
                       )}
                     </div>
                   </div>

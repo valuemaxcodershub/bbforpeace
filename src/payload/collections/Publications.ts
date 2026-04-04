@@ -28,8 +28,13 @@ export const Publications: CollectionConfig = {
   hooks: {
     beforeValidate: [autoSlugHook],
     beforeChange: [
-      ({ data }) => {
+      ({ data, req }) => {
         if (!data || typeof data !== 'object') return data
+        // Skip sanitization for internal API updates (e.g. download count increment)
+        // These have overrideAccess and only update specific fields
+        if (req?.payloadAPI === 'local' && data.downloadCount !== undefined && Object.keys(data).length <= 2) {
+          return data
+        }
         return sanitizeAdminDocumentData(data as Record<string, unknown>, {
           relationFields: ['coverImage', 'file'],
           removeFields: ['downloadCount'],

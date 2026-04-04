@@ -72,6 +72,11 @@ export function getMediaUrl(media: unknown, fallback = '/images/_VEE7124%20(1).j
     const obj = media as Record<string, unknown>
     const url = typeof obj.url === 'string' ? obj.url : ''
 
+    // Prefer direct Blob URLs — they don't need the proxy route
+    if (url && url.includes('.blob.vercel-storage.com')) {
+      return url
+    }
+
     if (url.includes('/api/media/file/') || url.includes('/api/media/file%2F')) {
       return safeEncode(url)
     }

@@ -14,6 +14,7 @@ import {
   User,
   ArrowLeft,
 } from 'lucide-react'
+import { DownloadButton } from '@/components/ui/DownloadButton'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -262,16 +263,12 @@ export default async function PublicationDetailPage({ params }: Props) {
                       </div>
 
                       {/* Download Button */}
-                      {fileUrl && (
-                        <a
-                          href={fileUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                      {fileUrl && fileUrl !== '#' && (
+                        <DownloadButton
+                          publicationId={pub.id}
+                          fileUrl={fileUrl}
                           className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-primary-900 text-white font-semibold hover:bg-primary-800 transition-colors"
-                        >
-                          <Download className="w-4 h-4" />
-                          Download PDF
-                        </a>
+                        />
                       )}
                     </div>
                   </div>

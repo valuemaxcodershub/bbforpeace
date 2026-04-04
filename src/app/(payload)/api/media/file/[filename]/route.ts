@@ -54,8 +54,9 @@ async function handleMediaFileRequest(filename: string): Promise<Response> {
   const baseUrl = getBlobBaseUrl()
   const decodedFilename = safeDecode(filename)
 
-  // Look up the media record to get prefix (if any)
+  // Look up the media record to get its stored URL and prefix
   let prefix = ''
+  let storedUrl = ''
   try {
     const payload = await getPayload({ config })
     const mediaResult = await payload.find({
@@ -70,10 +71,30 @@ async function handleMediaFileRequest(filename: string): Promise<Response> {
         ],
       },
     })
-    const doc = mediaResult.docs[0] as { prefix?: string } | undefined
+    const doc = mediaResult.docs[0] as { prefix?: string; url?: string } | undefined
     prefix = typeof doc?.prefix === 'string' ? doc.prefix : ''
+    storedUrl = typeof doc?.url === 'string' ? doc.url : ''
   } catch {
     // If Payload lookup fails, continue with empty prefix
+  }
+
+  // 0. If the media record already has a full Blob URL, use it directly
+  //    (handles addRandomSuffix filenames that don't match the original)
+  if (storedUrl && storedUrl.includes('.blob.vercel-storage.com')) {
+    if (isDocument(decodedFilename)) {
+      const blobRes = await fetchBlob(storedUrl)
+      if (blobRes) {
+        return new Response(blobRes.body, {
+          headers: {
+            'Content-Type': blobRes.headers.get('Content-Type') || 'application/octet-stream',
+            'Content-Disposition': `inline; filename="${decodedFilename}"`,
+            'Cache-Control': 'public, max-age=86400',
+          },
+        })
+      }
+    } else {
+      return Response.redirect(storedUrl, 307)
+    }
   }
 
   // 1. Try Vercel Blob first
