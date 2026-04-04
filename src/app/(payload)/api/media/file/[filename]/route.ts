@@ -54,12 +54,17 @@ async function handleMediaFileRequest(filename: string): Promise<Response> {
   const baseUrl = getBlobBaseUrl()
   const decodedFilename = safeDecode(filename)
 
-  // Look up the media record to get its stored URL and prefix
+  // Look up the media record to get its stored URL and prefix.
+  // With addRandomSuffix, the URL filename has a hash suffix that may not
+  // match the DB filename, so we also try a `contains` lookup using the
+  // base name (before the Blob suffix).
   let prefix = ''
   let storedUrl = ''
   try {
     const payload = await getPayload({ config })
-    const mediaResult = await payload.find({
+
+    // 1st attempt: exact match
+    let mediaResult = await payload.find({
       collection: 'media',
       depth: 0,
       limit: 1,
@@ -71,6 +76,41 @@ async function handleMediaFileRequest(filename: string): Promise<Response> {
         ],
       },
     })
+
+    // 2nd attempt: the URL filename contains a Blob random suffix.
+    // Extract the base name (before the suffix hash) and search by contains.
+    if (!mediaResult.docs.length) {
+      const ext = decodedFilename.split('.').pop() || ''
+      const nameWithoutExt = decodedFilename.replace(`.${ext}`, '')
+      // Blob suffix pattern: original-name + hyphen + long random string
+      // Try matching on the first meaningful part of the filename
+      const baseName = nameWithoutExt.replace(/-[A-Za-z0-9_-]{20,}$/, '')
+      if (baseName && baseName !== nameWithoutExt) {
+        mediaResult = await payload.find({
+          collection: 'media',
+          depth: 0,
+          limit: 1,
+          pagination: false,
+          where: {
+            filename: { contains: baseName },
+          },
+        })
+      }
+    }
+
+    // 3rd attempt: search by URL field containing the filename
+    if (!mediaResult.docs.length) {
+      mediaResult = await payload.find({
+        collection: 'media',
+        depth: 0,
+        limit: 1,
+        pagination: false,
+        where: {
+          url: { contains: decodedFilename },
+        },
+      })
+    }
+
     const doc = mediaResult.docs[0] as { prefix?: string; url?: string } | undefined
     prefix = typeof doc?.prefix === 'string' ? doc.prefix : ''
     storedUrl = typeof doc?.url === 'string' ? doc.url : ''
@@ -97,44 +137,31 @@ async function handleMediaFileRequest(filename: string): Promise<Response> {
     }
   }
 
-  // 1. Try Vercel Blob first
+  // 1. Try Vercel Blob directly using the URL filename
+  //    Try with known prefixes: no prefix, then "media/"
   if (baseUrl) {
-    const fileKey = prefix
-      ? `${prefix}/${encodeURIComponent(decodedFilename)}`
-      : encodeURIComponent(decodedFilename)
-    const blobUrl = `${baseUrl}/${fileKey}`
+    const prefixesToTry = prefix
+      ? [prefix, '', 'media']
+      : ['', 'media']
 
-    const blobRes = await fetchBlob(blobUrl)
-    if (blobRes) {
-      // For documents (PDFs etc), proxy the content to avoid CORS preflight issues.
-      // For images, redirect is fine — browsers handle image redirects without CORS.
-      if (isDocument(decodedFilename)) {
-        return new Response(blobRes.body, {
-          headers: {
-            'Content-Type': blobRes.headers.get('Content-Type') || 'application/octet-stream',
-            'Content-Disposition': `inline; filename="${decodedFilename}"`,
-            'Cache-Control': 'public, max-age=86400',
-          },
-        })
-      }
-      return Response.redirect(blobUrl, 307)
-    }
+    for (const pfx of prefixesToTry) {
+      const fileKey = pfx
+        ? `${pfx}/${encodeURIComponent(decodedFilename)}`
+        : encodeURIComponent(decodedFilename)
+      const blobUrl = `${baseUrl}/${fileKey}`
 
-    // Also try without prefix (some files were uploaded without one)
-    if (prefix) {
-      const noPrefixUrl = `${baseUrl}/${encodeURIComponent(decodedFilename)}`
-      const noPrefixRes = await fetchBlob(noPrefixUrl)
-      if (noPrefixRes) {
+      const blobRes = await fetchBlob(blobUrl)
+      if (blobRes) {
         if (isDocument(decodedFilename)) {
-          return new Response(noPrefixRes.body, {
+          return new Response(blobRes.body, {
             headers: {
-              'Content-Type': noPrefixRes.headers.get('Content-Type') || 'application/octet-stream',
+              'Content-Type': blobRes.headers.get('Content-Type') || 'application/octet-stream',
               'Content-Disposition': `inline; filename="${decodedFilename}"`,
               'Cache-Control': 'public, max-age=86400',
             },
           })
         }
-        return Response.redirect(noPrefixUrl, 307)
+        return Response.redirect(blobUrl, 307)
       }
     }
   }
