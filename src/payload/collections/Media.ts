@@ -113,7 +113,7 @@ export const Media: CollectionConfig = {
     useAsTitle: 'alt',
     defaultColumns: ['filename', 'alt', 'mimeType', 'filesize', 'updatedAt'],
     group: 'Uploads',
-    description: 'All uploaded images, PDFs, and documents. Max file size: 2 MB. For larger files (reports, PDFs), upload to Google Drive and use the External File URL field on the publication.',
+    description: 'All uploaded images, PDFs, and documents. Documents (PDFs) have a 2 MB limit — for larger files, upload to Google Drive and use the External File URL field on the publication. Images have no size limit.',
   },
   access: {
     read: () => true, // Public can view media
@@ -140,17 +140,19 @@ export const Media: CollectionConfig = {
     ],
     beforeValidate: [
       ({ data, req }) => {
-        // Enforce 2 MB upload limit to conserve Vercel Blob storage.
-        // Files over 2 MB should use the External File URL field on Publications instead.
-        const MAX_SIZE = 2 * 1024 * 1024 // 2 MB
+        // Enforce 2 MB limit on non-image files (PDFs, documents) to conserve Vercel Blob storage.
+        // Images are exempt — they're needed in Blob for next/image optimization and are typically small.
+        const MAX_DOC_SIZE = 2 * 1024 * 1024 // 2 MB
         const file = req.file
-        if (file?.data?.length && file.data.length > MAX_SIZE) {
-          const sizeMb = (file.data.length / 1024 / 1024).toFixed(1)
-          throw new Error(
-            `File too large (${sizeMb} MB). Maximum upload size is 2 MB to conserve storage. ` +
-            `For larger files (PDFs, reports), upload them to Google Drive, then paste the share link ` +
-            `in the "External File URL" field on the publication instead.`
-          )
+        if (file?.data?.length && file.mimeType && !file.mimeType.startsWith('image/')) {
+          if (file.data.length > MAX_DOC_SIZE) {
+            const sizeMb = (file.data.length / 1024 / 1024).toFixed(1)
+            throw new Error(
+              `File too large (${sizeMb} MB). Maximum upload size for documents is 2 MB to conserve storage. ` +
+              `For larger files (PDFs, reports), upload them to Google Drive, then paste the share link ` +
+              `in the "External File URL" field on the publication instead.`
+            )
+          }
         }
         return data
       },
