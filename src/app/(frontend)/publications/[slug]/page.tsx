@@ -164,7 +164,7 @@ export default async function PublicationDetailPage({ params }: Props) {
   if (!pub) notFound()
 
   const coverImage = getMediaUrl(pub.coverImage)
-  const fileUrl = getMediaUrl(pub.file, '#')
+  const fileUrl = (pub as any).externalFileUrl || getMediaUrl(pub.file, '#')
   const categoryLabel = categoryLabels[pub.category] || pub.category
   const relatedPubs = await getRelatedPublications(pub.category, pub.id)
 

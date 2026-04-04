@@ -157,7 +157,7 @@ export default async function AnnualReportDetailPage({ params }: Props) {
   if (!report) notFound()
 
   const coverImage = getMediaUrl(report.coverImage)
-  const fileUrl = getMediaUrl(report.file, '#')
+  const fileUrl = (report as any).externalFileUrl || getMediaUrl(report.file, '#')
   const relatedReports = await getRelatedReports(report.id)
 
   return (

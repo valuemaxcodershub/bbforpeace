@@ -18,6 +18,7 @@ export interface PublicationsSectionProps {
     slug?: string | null
     coverImage?: { url?: string } | string | null
     file?: { url?: string } | string | null
+    externalFileUrl?: string | null
     year?: number | null
     category?: string | null
   }[]
@@ -29,7 +30,7 @@ export function PublicationsSection({ publications: pubsProp }: PublicationsSect
     title: p.title,
     slug: p.slug || p.id,
     coverImage: getMediaUrl(p.coverImage, '/images/PXL_20251023_124331635.MP~2.jpg'),
-    downloadUrl: getMediaUrl(p.file, '#'),
+    downloadUrl: p.externalFileUrl || getMediaUrl(p.file, '#'),
     year: p.year || new Date().getFullYear(),
     type: p.category || 'Report',
   })) : defaultPublications

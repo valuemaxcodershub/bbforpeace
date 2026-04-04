@@ -133,6 +133,7 @@ export default async function HomePage() {
           slug: p.slug,
           coverImage: p.coverImage,
           file: p.file,
+          externalFileUrl: p.externalFileUrl || null,
           year: p.year,
           category: p.category,
         })) : undefined}

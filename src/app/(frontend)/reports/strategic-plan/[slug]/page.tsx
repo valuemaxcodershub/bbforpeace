@@ -156,7 +156,7 @@ export default async function StrategicPlanDetailPage({ params }: Props) {
   if (!plan) notFound()
 
   const coverImage = getMediaUrl(plan.coverImage)
-  const fileUrl = getMediaUrl(plan.file, '#')
+  const fileUrl = (plan as any).externalFileUrl || getMediaUrl(plan.file, '#')
   const relatedPlans = await getRelatedPlans(plan.id)
 
   return (

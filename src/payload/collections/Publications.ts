@@ -74,8 +74,27 @@ export const Publications: CollectionConfig = {
       name: 'file',
       type: 'upload',
       relationTo: 'media',
-      required: true,
-      label: 'PDF File',
+      label: 'PDF File (upload)',
+      admin: {
+        description: 'Upload a file OR paste an external URL below. If both are provided, the external URL takes priority.',
+      },
+    },
+    {
+      name: 'externalFileUrl',
+      type: 'text',
+      label: 'External File URL',
+      admin: {
+        description: 'Paste a Google Drive, Dropbox, or any direct link to the document. This saves Vercel Blob storage. Leave empty to use the uploaded file above.',
+      },
+      validate: (value: string | null | undefined) => {
+        if (!value) return true
+        try {
+          new URL(value)
+          return true
+        } catch {
+          return 'Please enter a valid URL (must start with https://)'
+        }
+      },
     },
     {
       name: 'description',
