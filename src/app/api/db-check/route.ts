@@ -20,7 +20,11 @@ export async function GET() {
     'POSTGRES_URL',
     'POSTGRES_URL_NON_POOLING',
     'PAYLOAD_SECRET',
-    'BLOB_READ_WRITE_TOKEN',
+    'R2_BUCKET',
+    'R2_ACCESS_KEY_ID',
+    'R2_SECRET_ACCESS_KEY',
+    'R2_ENDPOINT',
+    'R2_PUBLIC_URL',
     'VERCEL',
   ] as const
 

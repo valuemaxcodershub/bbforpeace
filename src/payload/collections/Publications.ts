@@ -21,7 +21,6 @@ export const Publications: CollectionConfig = {
   },
   access: {
     read: () => true, // Public can read publications
-    create: isAdminOrAbove,
     update: isAdminOrAbove,
     delete: isAdminOrAbove,
   },

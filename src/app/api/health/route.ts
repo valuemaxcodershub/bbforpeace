@@ -13,7 +13,11 @@ export async function GET() {
       POSTGRES_URL: !!process.env.POSTGRES_URL,
       POSTGRES_URL_NON_POOLING: !!process.env.POSTGRES_URL_NON_POOLING,
       PAYLOAD_SECRET: !!process.env.PAYLOAD_SECRET,
-      BLOB_READ_WRITE_TOKEN: !!process.env.BLOB_READ_WRITE_TOKEN,
+      R2_BUCKET: !!process.env.R2_BUCKET,
+      R2_ACCESS_KEY_ID: !!process.env.R2_ACCESS_KEY_ID,
+      R2_SECRET_ACCESS_KEY: !!process.env.R2_SECRET_ACCESS_KEY,
+      R2_ENDPOINT: !!process.env.R2_ENDPOINT,
+      R2_PUBLIC_URL: !!process.env.R2_PUBLIC_URL,
       VERCEL: !!process.env.VERCEL,
       NODE_ENV: process.env.NODE_ENV,
     },
@@ -46,18 +50,11 @@ export async function GET() {
   checks.siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'NOT SET'
   checks.vercelUrl = process.env.VERCEL_URL || 'NOT SET'
 
-  // Blob storage check (no extra DB connections)
-  try {
-    const token = process.env.BLOB_READ_WRITE_TOKEN || ''
-    const storeMatch = token.match(/^vercel_blob_rw_([a-z\d]+)_[a-z\d]+$/i)
-    checks.blobStoreId = storeMatch ? storeMatch[1] : 'unparseable'
-
-    const { list } = await import('@vercel/blob')
-    const blobs = await list({ limit: 3, token })
-    checks.blobCount = blobs.blobs.length
-    checks.blobHasMore = blobs.hasMore
-  } catch (error: any) {
-    checks.blob = `error: ${error?.message || String(error)}`
+  // R2 storage diagnostics (config presence + endpoint shape)
+  checks.r2 = {
+    bucket: process.env.R2_BUCKET || 'NOT SET',
+    endpoint: process.env.R2_ENDPOINT || 'NOT SET',
+    publicUrl: process.env.R2_PUBLIC_URL || 'NOT SET',
   }
 
   return NextResponse.json(checks, { status: checks.status === 'ok' ? 200 : 500 })

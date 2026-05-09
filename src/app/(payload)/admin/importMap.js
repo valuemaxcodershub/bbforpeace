@@ -29,7 +29,7 @@ import { CustomDashboard as CustomDashboard_3a64ea8dcdfa35c0d9eb557c84ef02d0 } f
 import { HidePasswordField as HidePasswordField_a1b2c3d4e5f6 } from '../../../../src/components/admin/HidePasswordField'
 import { MobileNavOverlay as MobileNavOverlay_c7d8e9f0a1b2 } from '../../../../src/components/admin/MobileNavOverlay'
 import { PublicationsListHeader as PublicationsListHeader_d4e5f6a1b2c3 } from '../../../../src/components/admin/PublicationsListHeader'
-import { VercelBlobClientUploadHandler as VercelBlobClientUploadHandler_vercelblob } from '@payloadcms/storage-vercel-blob/client'
+import { S3ClientUploadHandler as S3ClientUploadHandler_s3 } from '@payloadcms/storage-s3/client'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 export const importMap = {
@@ -64,6 +64,6 @@ export const importMap = {
   "/src/components/admin/HidePasswordField#HidePasswordField": HidePasswordField_a1b2c3d4e5f6,
   "/src/components/admin/MobileNavOverlay#MobileNavOverlay": MobileNavOverlay_c7d8e9f0a1b2,
   "/src/components/admin/PublicationsListHeader#PublicationsListHeader": PublicationsListHeader_d4e5f6a1b2c3,
-  "@payloadcms/storage-vercel-blob/client#VercelBlobClientUploadHandler": VercelBlobClientUploadHandler_vercelblob,
+  "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_s3,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

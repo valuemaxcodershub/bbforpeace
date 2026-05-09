@@ -56,7 +56,7 @@ export function absoluteUrl(path: string): string {
  *   - null/undefined → fallback
  *   - string paths (e.g. '/images/photo.jpg') → encode if needed
  *   - Payload media objects resolved at depth >= 1
- *   - Payload API URLs (/api/media/file/...) backed by Blob storage
+ *   - Payload API URLs (/api/media/file/...) backed by cloud storage
  */
 export function getMediaUrl(media: unknown, fallback = '/images/_VEE7124%20(1).jpg'): string {
   if (!media) return fallback
@@ -72,8 +72,8 @@ export function getMediaUrl(media: unknown, fallback = '/images/_VEE7124%20(1).j
     const obj = media as Record<string, unknown>
     const url = typeof obj.url === 'string' ? obj.url : ''
 
-    // Prefer direct Blob URLs — they don't need the proxy route
-    if (url && url.includes('.blob.vercel-storage.com')) {
+    // Prefer direct absolute URLs (R2 public URL, CDN URL, etc.)
+    if (url && /^https?:\/\//i.test(url)) {
       return url
     }
 

@@ -126,7 +126,7 @@ export const Media: CollectionConfig = {
     beforeChange: [
       ({ data }) => {
         // Sanitize filename: replace spaces/special chars with hyphens to
-        // prevent Vercel Blob double-encoding issues (%20 → %2520)
+        // prevent storage URL encoding issues (%20 → %2520)
         if (data?.filename) {
           data.filename = data.filename
             .replace(/%20/g, '-')       // literal %20 → hyphen
@@ -138,25 +138,8 @@ export const Media: CollectionConfig = {
         return data
       },
     ],
-    beforeValidate: [
-      ({ data, req }) => {
-        // Enforce 2 MB limit on non-image files (PDFs, documents) to conserve Vercel Blob storage.
-        // Images are exempt — they're needed in Blob for next/image optimization and are typically small.
-        const MAX_DOC_SIZE = 2 * 1024 * 1024 // 2 MB
-        const file = req.file
-        if (file?.data?.length && file.mimetype && !file.mimetype.startsWith('image/')) {
-          if (file.data.length > MAX_DOC_SIZE) {
-            const sizeMb = (file.data.length / 1024 / 1024).toFixed(1)
-            throw new Error(
-              `File too large (${sizeMb} MB). Maximum upload size for documents is 2 MB to conserve storage. ` +
-              `For larger files (PDFs, reports), upload them to Google Drive, then paste the share link ` +
-              `in the "External File URL" field on the publication instead.`
-            )
-          }
-        }
-        return data
-      },
-    ],
+    // No size enforcement: allow all uploaded files (images, PDFs, videos, documents)
+    // — migration to Cloudflare R2 provides sufficient storage; large files are allowed.
   },
   upload: {
     staticDir: '../public/uploads',
@@ -172,7 +155,7 @@ export const Media: CollectionConfig = {
     ],
     // No imageSizes — the frontend uses next/image which handles responsive
     // resizing automatically. Generating sizes server-side would require sharp
-    // to download, resize ×3, and re-upload to Vercel Blob, causing timeouts.
+    // to download, resize, and re-upload, causing avoidable timeouts.
   },
   fields: [
     {

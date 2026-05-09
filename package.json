@@ -12,12 +12,12 @@
     "seed": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts tsx src/seed.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1045.0",
     "@payloadcms/db-postgres": "^3.79.0",
     "@payloadcms/next": "^3.79.0",
     "@payloadcms/plugin-cloud-storage": "^3.79.0",
     "@payloadcms/richtext-lexical": "^3.79.0",
     "@payloadcms/storage-s3": "^3.79.1",
-    "@payloadcms/storage-vercel-blob": "^3.79.0",
     "@payloadcms/ui": "^3.79.0",
     "@vercel/blob": "^2.3.1",
     "class-variance-authority": "^0.7.0",

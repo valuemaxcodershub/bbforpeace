@@ -1,15 +1,8 @@
 import { getPayload } from 'payload'
 import config from '@payload-config'
 
-function getBlobBaseUrl(): string | null {
-  const token = process.env.BLOB_READ_WRITE_TOKEN || ''
-  const storeMatch = token.match(/^vercel_blob_rw_([a-z\d]+)_[a-z\d]+$/i)
-
-  if (!storeMatch) {
-    return null
-  }
-
-  return `https://${storeMatch[1].toLowerCase()}.public.blob.vercel-storage.com`
+function getR2PublicBaseUrl(): string {
+  return (process.env.R2_PUBLIC_URL || '').replace(/\/+$/, '')
 }
 
 function safeDecode(value: string): string {
@@ -21,9 +14,9 @@ function safeDecode(value: string): string {
 }
 
 /**
- * Fetch a blob URL. Returns the response if it exists, null otherwise.
+ * Fetch a URL. Returns the response if it exists, null otherwise.
  */
-async function fetchBlob(url: string): Promise<Response | null> {
+async function fetchUrl(url: string): Promise<Response | null> {
   try {
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), 5000)
@@ -51,13 +44,10 @@ function redirectToPublicFile(filename: string): Response {
 }
 
 async function handleMediaFileRequest(filename: string): Promise<Response> {
-  const baseUrl = getBlobBaseUrl()
+  const r2BaseUrl = getR2PublicBaseUrl()
   const decodedFilename = safeDecode(filename)
 
-  // Look up the media record to get its stored URL and prefix.
-  // With addRandomSuffix, the URL filename has a hash suffix that may not
-  // match the DB filename, so we also try a `contains` lookup using the
-  // base name (before the Blob suffix).
+  // Look up media record URL/prefix to preserve existing key behavior.
   let prefix = ''
   let storedUrl = ''
   try {
@@ -77,13 +67,10 @@ async function handleMediaFileRequest(filename: string): Promise<Response> {
       },
     })
 
-    // 2nd attempt: the URL filename contains a Blob random suffix.
-    // Extract the base name (before the suffix hash) and search by contains.
+    // 2nd attempt: some stored filenames include generated suffixes.
     if (!mediaResult.docs.length) {
       const ext = decodedFilename.split('.').pop() || ''
       const nameWithoutExt = decodedFilename.replace(`.${ext}`, '')
-      // Blob suffix pattern: original-name + hyphen + long random string
-      // Try matching on the first meaningful part of the filename
       const baseName = nameWithoutExt.replace(/-[A-Za-z0-9_-]{20,}$/, '')
       if (baseName && baseName !== nameWithoutExt) {
         mediaResult = await payload.find({
@@ -98,7 +85,7 @@ async function handleMediaFileRequest(filename: string): Promise<Response> {
       }
     }
 
-    // 3rd attempt: search by URL field containing the filename
+    // 3rd attempt: search by URL field containing the filename.
     if (!mediaResult.docs.length) {
       mediaResult = await payload.find({
         collection: 'media',
@@ -115,18 +102,17 @@ async function handleMediaFileRequest(filename: string): Promise<Response> {
     prefix = typeof doc?.prefix === 'string' ? doc.prefix : ''
     storedUrl = typeof doc?.url === 'string' ? doc.url : ''
   } catch {
-    // If Payload lookup fails, continue with empty prefix
+    // If lookup fails, continue with fallback candidates.
   }
 
-  // 0. If the media record already has a full Blob URL, use it directly
-  //    (handles addRandomSuffix filenames that don't match the original)
-  if (storedUrl && storedUrl.includes('.blob.vercel-storage.com')) {
+  // 0. If the media record already has a public absolute URL, use it directly.
+  if (storedUrl && /^https?:\/\//i.test(storedUrl) && !storedUrl.includes('/api/media/file/')) {
     if (isDocument(decodedFilename)) {
-      const blobRes = await fetchBlob(storedUrl)
-      if (blobRes) {
-        return new Response(blobRes.body, {
+      const fileRes = await fetchUrl(storedUrl)
+      if (fileRes) {
+        return new Response(fileRes.body, {
           headers: {
-            'Content-Type': blobRes.headers.get('Content-Type') || 'application/octet-stream',
+            'Content-Type': fileRes.headers.get('Content-Type') || 'application/octet-stream',
             'Content-Disposition': `inline; filename="${decodedFilename}"`,
             'Cache-Control': 'public, max-age=86400',
           },
@@ -137,31 +123,29 @@ async function handleMediaFileRequest(filename: string): Promise<Response> {
     }
   }
 
-  // 1. Try Vercel Blob directly using the URL filename
-  //    Try with known prefixes: no prefix, then "media/"
-  if (baseUrl) {
+  // 1. Try Cloudflare R2 public URL using known prefixes.
+  if (r2BaseUrl) {
     const prefixesToTry = prefix
       ? [prefix, '', 'media']
       : ['', 'media']
 
     for (const pfx of prefixesToTry) {
-      const fileKey = pfx
-        ? `${pfx}/${encodeURIComponent(decodedFilename)}`
-        : encodeURIComponent(decodedFilename)
-      const blobUrl = `${baseUrl}/${fileKey}`
+      const keyPath = pfx ? `${pfx}/${decodedFilename}` : decodedFilename
+      const encodedKey = keyPath.split('/').map(seg => encodeURIComponent(seg)).join('/')
+      const r2Url = `${r2BaseUrl}/${encodedKey}`
 
-      const blobRes = await fetchBlob(blobUrl)
-      if (blobRes) {
+      const fileRes = await fetchUrl(r2Url)
+      if (fileRes) {
         if (isDocument(decodedFilename)) {
-          return new Response(blobRes.body, {
+          return new Response(fileRes.body, {
             headers: {
-              'Content-Type': blobRes.headers.get('Content-Type') || 'application/octet-stream',
+              'Content-Type': fileRes.headers.get('Content-Type') || 'application/octet-stream',
               'Content-Disposition': `inline; filename="${decodedFilename}"`,
               'Cache-Control': 'public, max-age=86400',
             },
           })
         }
-        return Response.redirect(blobUrl, 307)
+        return Response.redirect(r2Url, 307)
       }
     }
   }
