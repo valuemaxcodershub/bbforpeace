@@ -48,4 +48,10 @@ next-env.d.ts
 
 # database files
 /db/*.db
+
+# backups (CSVs, progress files, reports)
+/backups/*.csv
+/backups/*.json
+/backups/*.sql
+/backups/*.txt
 /db/*.db-journal
