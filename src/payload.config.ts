@@ -193,7 +193,8 @@ if (process.env.VERCEL_PROJECT_PRODUCTION_URL && !siteURL.includes(process.env.V
   allowedOrigins.push(`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`)
 }
 
-export default buildConfig({
+// Build the full Payload config in one call
+const cfg = buildConfig({
   serverURL: siteURL,
 
   // CORS: restrict API access to known origins
@@ -280,10 +281,7 @@ export default buildConfig({
     pool: {
       connectionString: getPreferredDatabaseUrl(),
       ssl: { rejectUnauthorized: false },
-      // Keep the application pool modest in serverless while leaving room for
-      // the adapter's monitoring client, active queries, and delete-hook checks.
       max: isProduction ? 5 : 10,
-      // Allow up to 15s for cold starts and initial TLS negotiation.
       connectionTimeoutMillis: isProduction ? 15000 : 5000,
       idleTimeoutMillis: 10000,
       allowExitOnIdle: true,
@@ -346,7 +344,7 @@ export default buildConfig({
         collection: 'users',
         limit: 1,
       })
-      
+
       if (existingUsers.docs.length === 0) {
         // Create super admin with env vars or defaults
         const superAdminEmail = process.env.SUPER_ADMIN_EMAIL || 'superadmin@bbforpeace.org'
@@ -362,7 +360,7 @@ export default buildConfig({
           console.error('❌ SUPER_ADMIN_PASSWORD must be at least 12 characters. Skipping auto-creation.')
           return
         }
-        
+
         await payload.create({
           collection: 'users',
           data: {
@@ -380,8 +378,6 @@ export default buildConfig({
         try {
           const currentGlobal = await payload.findGlobal({ slug: slug as any })
           const mergedData = mergeWithDefaults(currentGlobal, defaults) as Record<string, unknown>
-          // Only update fields present in our defaults to avoid validation errors
-          // on upload/relationship fields (e.g. heroSlides images) that aren't in defaults
           const safeData: Record<string, unknown> = {}
           for (const key of Object.keys(defaults)) {
             safeData[key] = mergedData[key]
@@ -398,4 +394,43 @@ export default buildConfig({
       console.error('Error auto-creating super admin:', error)
     }
   },
+}) as any
+
+// Remove client-side upload handler providers when R2 (S3) client uploads
+// are not enabled. The cloud-storage utility will add client handler
+// entries into `admin.components.providers` even when `clientUploads` is
+// disabled which can cause client components that call `useUploadHandlers`
+// to be mounted without the corresponding provider and throw at runtime.
+const shouldStripClientProviders = !(
+  process.env.R2_BUCKET &&
+  process.env.R2_ACCESS_KEY_ID &&
+  process.env.R2_SECRET_ACCESS_KEY &&
+  process.env.R2_ENDPOINT
+)
+
+const stripProviders = (built: any) => {
+  if (!shouldStripClientProviders) return
+  const providers = built?.admin?.components?.providers
+  if (!providers || !Array.isArray(providers)) return
+  built.admin.components.providers = providers.filter((prov: unknown) => {
+    const path = typeof prov === 'string' ? prov : (prov && (prov as any).path)
+    if (!path) return true
+    const pathStr = String(path)
+    if (pathStr.includes('@payloadcms/storage-s3/client') || pathStr.includes('@payloadcms/plugin-cloud-storage/client')) return false
+    return true
+  })
+}
+
+// Always export a Promise so the admin code can `await configPromise`.
+// Apply `stripProviders` after the config resolves to ensure client upload
+// providers are removed when R2 is not configured.
+const configPromise = Promise.resolve(cfg).then((built) => {
+  try {
+    stripProviders(built)
+  } catch (e) {
+    // Swallow any errors here to avoid breaking the admin build process.
+  }
+  return built
 })
+
+export default configPromise as any
