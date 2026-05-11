@@ -311,7 +311,7 @@ export default buildConfig({
               collections: {
                 media: true,
               },
-              clientUploads: true,
+              clientUploads: false, // Disable client uploads - use server-side only
               bucket: process.env.R2_BUCKET,
               acl: 'public-read',
               config: {
