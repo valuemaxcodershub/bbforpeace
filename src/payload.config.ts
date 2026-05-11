@@ -299,29 +299,34 @@ export default buildConfig({
   },
 
   plugins: [
-    s3Storage({
-      enabled: !!(
-        process.env.R2_BUCKET &&
-        process.env.R2_ACCESS_KEY_ID &&
-        process.env.R2_SECRET_ACCESS_KEY &&
-        process.env.R2_ENDPOINT
-      ),
-      collections: {
-        media: true,
-      },
-      clientUploads: true,
-      bucket: process.env.R2_BUCKET || '',
-      acl: 'public-read',
-      config: {
-        endpoint: process.env.R2_ENDPOINT,
-        region: process.env.R2_REGION || 'auto',
-        forcePathStyle: true,
-        credentials: {
-          accessKeyId: process.env.R2_ACCESS_KEY_ID || '',
-          secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || '',
-        },
-      },
-    }),
+    // Conditionally include S3Storage plugin only when all R2 credentials are present
+    // This prevents initialization errors when env vars are not set
+    ...(
+      process.env.R2_BUCKET &&
+      process.env.R2_ACCESS_KEY_ID &&
+      process.env.R2_SECRET_ACCESS_KEY &&
+      process.env.R2_ENDPOINT
+        ? [
+            s3Storage({
+              collections: {
+                media: true,
+              },
+              clientUploads: true,
+              bucket: process.env.R2_BUCKET,
+              acl: 'public-read',
+              config: {
+                endpoint: process.env.R2_ENDPOINT,
+                region: process.env.R2_REGION || 'auto',
+                forcePathStyle: true,
+                credentials: {
+                  accessKeyId: process.env.R2_ACCESS_KEY_ID,
+                  secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+                },
+              },
+            }),
+          ]
+        : []
+    ),
   ],
 
   upload: {
