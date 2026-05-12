@@ -396,17 +396,12 @@ const cfg = buildConfig({
   },
 }) as any
 
-// Remove client-side upload handler providers when R2 (S3) client uploads
-// are not enabled. The cloud-storage utility will add client handler
-// entries into `admin.components.providers` even when `clientUploads` is
-// disabled which can cause client components that call `useUploadHandlers`
-// to be mounted without the corresponding provider and throw at runtime.
-const shouldStripClientProviders = !(
-  process.env.R2_BUCKET &&
-  process.env.R2_ACCESS_KEY_ID &&
-  process.env.R2_SECRET_ACCESS_KEY &&
-  process.env.R2_ENDPOINT
-)
+// Remove client-side upload handler providers: `s3Storage` uses `clientUploads: false`,
+// but the plugin can still register `@payloadcms/storage-s3/client` providers.
+// Those must not be mounted unless `S3ClientUploadHandler` is in `importMap.js`.
+// After dropping that import from the map (server-only uploads), we always strip
+// these providers so admin resolves components correctly on Vercel with R2 configured.
+const shouldStripClientProviders = true
 
 const stripProviders = (built: any) => {
   if (!shouldStripClientProviders) return
@@ -427,7 +422,7 @@ const stripProviders = (built: any) => {
 const configPromise = Promise.resolve(cfg).then((built) => {
   try {
     stripProviders(built)
-  } catch (e) {
+  } catch {
     // Swallow any errors here to avoid breaking the admin build process.
   }
   return built
