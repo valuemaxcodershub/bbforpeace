@@ -9,7 +9,10 @@
     "lint": "eslint",
     "payload": "cross-env NODE_OPTIONS=--experimental-specifier-resolution=node PAYLOAD_CONFIG_PATH=src/payload.config.ts payload",
     "generate:types": "cross-env NODE_OPTIONS=--experimental-specifier-resolution=node PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:types",
-    "seed": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts tsx src/seed.ts"
+    "seed": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts tsx src/seed.ts",
+    "media:placeholders": "node scripts/assign-section-placeholders.js --report backups/admin-manual-reupload-report-2026-05-10.csv",
+    "media:push-placeholders-r2": "node scripts/push-placeholder-media-to-r2.js",
+    "media:migrate-legacy-to-r2": "node scripts/migrate-blob-to-r2.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1045.0",

@@ -94,6 +94,69 @@
    node scripts/cleanup-unused-media.js --output backups/unused-media.csv --delete
    ```
 
+### Section-aware placeholders (local `public/` assets)
+
+Use this when you want placeholders to mirror folders under `public/images/` instead of a single logo URL.
+
+| CMS usage | Local folder (under `public/images/`) |
+|-----------|----------------------------------------|
+| Partner logos (`partners.logo_id`) | `partners/` |
+| Team photos — Meet Our Team (`team.photo_id`, category ≠ board) | `ourteam/` |
+| Board of Trustees (`team.photo_id`, category = board) | `board/` |
+| Annual reports (`publications`, `sub_menu = annual-report`) | `reports/` for covers; PDF slots use `documents/project-report-placeholder-*.pdf` |
+| Everything else | Any image under `images/` **except** the four folders above |
+
+Commands (preview first):
+```powershell
+$env:DRY_RUN="1"; node scripts/assign-section-placeholders.js --report backups/admin-manual-reupload-report-2026-05-10.csv
+```
+Apply updates (requires `DATABASE_URL` in `.env`):
+```powershell
+node scripts/assign-section-placeholders.js --report backups/admin-manual-reupload-report-2026-05-10.csv
+```
+
+Outputs `backups/placeholder-mapping-sections-YYYYMMDD.csv` and `backups/placeholder-sql-sections-YYYYMMDD.sql`.
+
+Placeholder URLs use `NEXT_PUBLIC_SITE_URL` (default `https://www.bbforpeace.org`). Deploy or sync `public/` so those paths exist on production.
+
+**Classification** follows PostgreSQL FKs: only rows still referencing a missing `media.id` get the matching folder. If no team/board/annual-report rows appear in the summary, none of the missing IDs are linked that way in the database (IDs may only appear in posts, globals JSON, etc.).
+
+### Push placeholders into Cloudflare R2 (finish migration for missing-media batch)
+
+After placeholders point at `https://www.bbforpeace.org/...` static files (or you have a `placeholder-mapping-sections-*.csv`), upload those bytes to R2 and set `media.url` to the public R2 URL (same key shape as Payload: `media/<id>/<sanitized-filename>`).
+
+Requires `.env`: `DATABASE_URL`, `R2_BUCKET`, `R2_ENDPOINT`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_PUBLIC_URL`.
+
+```powershell
+# Preview
+$env:DRY_RUN="1"; node scripts/push-placeholder-media-to-r2.js --mapping backups/placeholder-mapping-sections-20260512.csv
+
+# Apply
+node scripts/push-placeholder-media-to-r2.js --mapping backups/placeholder-mapping-sections-20260512.csv
+```
+
+Uses **local files under `public/`** when paths match; otherwise fetches the placeholder URL.
+
+### Migrate any remaining legacy URLs to R2
+
+For media rows that still point at Vercel Blob or other non-R2 URLs (outside the placeholder batch), run:
+
+```bash
+node scripts/migrate-blob-to-r2.js
+```
+
+Optional: `node scripts/migrate-blob-to-r2.js --limit 50` for a smaller test. Rows whose `url` already starts with `R2_PUBLIC_URL` are skipped.
+
+### NPM shortcuts
+
+From the project root (with `.env` loaded — same shell as other scripts):
+
+```bash
+npm run media:placeholders          # section-aware placeholder URLs -> DB (after CSV report exists)
+npm run media:push-placeholders-r2 # placeholder CSV -> upload bytes to R2 -> DB urls (optional --mapping path)
+npm run media:migrate-legacy-to-r2 # remaining non-R2 media URLs -> fetch & upload to R2
+```
+
 ---
 
 ## Database Connection Notes
@@ -111,6 +174,8 @@
 |--------|---------|-------|
 | `migrate-blob-to-r2.js` | Move existing blob files to R2 | `node scripts/migrate-blob-to-r2.js` |
 | `assign-placeholders.js` | Replace missing media with placeholder URLs | `node scripts/assign-placeholders.js --report <csv>` |
+| `assign-section-placeholders.js` | Same as above, but picks URLs from `public/images/partners`, `ourteam`, `board`, `reports`, etc. by CMS usage | `node scripts/assign-section-placeholders.js --report <csv>` |
+| `push-placeholder-media-to-r2.js` | Upload placeholder assets to R2 and set `media.url` (from section mapping CSV) | `node scripts/push-placeholder-media-to-r2.js --mapping backups/placeholder-mapping-sections-*.csv` |
 | `apply-mapping.js` | Apply admin mapping to update DB | `node scripts/apply-mapping.js --mapping <csv>` |
 | `cleanup-unused-media.js` | Find and remove orphaned media | `node scripts/cleanup-unused-media.js --output <csv> --delete` |
 | `find-local-similar-*.js` | Scan for missing files in local storage | `node scripts/find-local-similar-all.js` |
