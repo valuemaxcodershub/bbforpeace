@@ -1,6 +1,16 @@
 import type { NextConfig } from "next";
 import { withPayload } from '@payloadcms/next/withPayload'
 
+const r2PublicHostname = process.env.R2_PUBLIC_URL
+  ? (() => {
+      try {
+        return new URL(process.env.R2_PUBLIC_URL).hostname
+      } catch {
+        return undefined
+      }
+    })()
+  : undefined
+
 const nextConfig: NextConfig = {
   // Disable X-Powered-By header to avoid revealing tech stack
   poweredByHeader: false,
@@ -48,6 +58,18 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: '*.public.blob.vercel-storage.com',
       },
+      {
+        protocol: 'https',
+        hostname: '**.r2.dev',
+      },
+      ...(r2PublicHostname
+        ? [
+            {
+              protocol: 'https' as const,
+              hostname: r2PublicHostname,
+            },
+          ]
+        : []),
     ],
   },
   async headers() {
