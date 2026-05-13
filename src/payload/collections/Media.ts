@@ -113,7 +113,7 @@ export const Media: CollectionConfig = {
     useAsTitle: 'alt',
     defaultColumns: ['filename', 'alt', 'mimeType', 'filesize', 'updatedAt'],
     group: 'Uploads',
-    description: 'All uploaded images, PDFs, and documents. Documents (PDFs) have a 2 MB limit — for larger files, upload to Google Drive and use the External File URL field on the publication. Images have no size limit.',
+    description: 'All uploaded images, PDFs, and documents are stored in Cloudflare R2. There is no Payload media size limit configured.',
   },
   access: {
     read: () => true, // Public can view media

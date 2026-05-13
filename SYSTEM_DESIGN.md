@@ -1,3 +1,230 @@
+# BB4Peace System Design
+
+## Executive Summary
+
+BB4Peace is implemented as a content-managed website for Building Blocks for Peace Foundation. The public website and Payload CMS admin are deployed on Vercel, CMS data is stored in Supabase PostgreSQL, and media is stored and delivered through Cloudflare R2.
+
+This document replaces the earlier cPanel/MySQL design and reflects the architecture currently implemented in the codebase.
+
+## Current Stack
+
+| Layer | Technology | Purpose |
+|---|---|---|
+| Frontend | Next.js 15 App Router | Public website, SSR/route rendering, SEO |
+| CMS | Payload CMS 3 | Admin dashboard at `/admin` |
+| Database | Supabase PostgreSQL | Payload collections, globals, users, media metadata |
+| Media Storage | Cloudflare R2 | S3-compatible object storage for uploaded media |
+| Media Delivery | Cloudflare R2 public URL | Public image/document delivery |
+| Deployment | Vercel | GitHub `main` branch auto-deploy |
+| Language | TypeScript | Type safety and maintainability |
+| Styling | Tailwind CSS | Frontend and admin styling |
+
+## Architecture
+
+```text
+Visitors / Admin Users
+        |
+        v
+Vercel / Next.js 15
+        |
+        |-- Public website routes: src/app/(frontend)
+        |-- Payload admin: /admin
+        |-- Payload API routes: /api
+        |
+        +--> Supabase PostgreSQL
+        |
+        +--> Cloudflare R2 via Payload S3 storage adapter
+                |
+                v
+          Public R2 media URLs
+```
+
+## Runtime Components
+
+### Public Website
+
+The public website is under `src/app/(frontend)` and includes:
+
+- Home
+- About
+- Programmes
+- Events
+- Blog and press
+- Gallery
+- Publications and reports
+- Contact
+
+Most public content is read from Payload collections and globals. Media values are normalized using `getMediaUrl()` from `src/lib/utils.ts`.
+
+### Payload Admin
+
+Payload admin runs at `/admin` from `src/app/(payload)`.
+
+Current admin customizations include:
+
+- Custom admin navigation
+- Custom dashboard cards
+- Custom logo/icon
+- Mobile admin navigation overlay
+- Role-aware admin field behavior
+
+Primary roles are:
+
+- `super-admin`
+- `admin`
+- `editor`
+
+Access control is defined in Payload collection configs.
+
+### Database
+
+Supabase PostgreSQL is the source of truth for CMS content.
+
+Important collections include:
+
+- `users`
+- `media`
+- `posts`
+- `publications`
+- `events`
+- `team`
+- `partners`
+- `programmes`
+- `gallery-items`
+- `testimonials`
+- `categories`
+- `tags`
+- `subscribers`
+
+Important globals include:
+
+- General settings
+- Home page settings
+- About page settings
+- Programme page settings
+- Event page settings
+- Media page settings
+- Contact settings
+- SEO/social/footer settings
+
+### Media Storage
+
+Cloudflare R2 is configured through `@payloadcms/storage-s3`.
+
+Required environment variables:
+
+```text
+R2_BUCKET
+R2_ACCESS_KEY_ID
+R2_SECRET_ACCESS_KEY
+R2_ENDPOINT
+R2_REGION=auto
+R2_PUBLIC_URL
+```
+
+Media uploads from Payload should go to R2. Vercel Blob has been removed from active dependencies.
+
+## Deployment
+
+### Vercel
+
+Vercel deploys from GitHub `main`.
+
+Required Vercel environment variables:
+
+```text
+DATABASE_URL or DATABASE_URI
+PAYLOAD_SECRET
+NEXT_PUBLIC_SITE_URL=https://www.bbforpeace.org
+R2_BUCKET
+R2_ACCESS_KEY_ID
+R2_SECRET_ACCESS_KEY
+R2_ENDPOINT
+R2_REGION=auto
+R2_PUBLIC_URL
+```
+
+Build command:
+
+```bash
+npm run build
+```
+
+### Supabase
+
+Supabase hosts the production PostgreSQL database. Use a stable database URL in Vercel and local `.env`. If the Supabase pooler causes connection resets during scripts or admin usage, use the direct database host where appropriate.
+
+### Cloudflare R2
+
+R2 stores and serves media. `next.config.ts` allowlists the R2 hostname so `next/image` can display R2-hosted images.
+
+## Security Baseline
+
+Implemented baseline:
+
+- `PAYLOAD_SECRET` is required in production.
+- Payload CORS and CSRF are restricted to configured site origins.
+- Security headers are set in `next.config.ts`.
+- Admin and API responses use no-cache headers in middleware.
+- Basic API/admin-login rate limiting is implemented in middleware.
+- Payload collection access controls enforce role-based writes.
+- Media deletion checks prevent deleting referenced media.
+- Vercel local filesystem uploads are disabled.
+- R2 and database credentials are environment-only.
+- Old scripts containing hardcoded credentials were removed.
+
+Recommended next hardening:
+
+- Move from in-memory rate limiting to durable rate limiting, e.g. Cloudflare rules or Redis/Upstash.
+- Add Cloudflare WAF managed rules.
+- Add Cloudflare rate limiting for `/admin/*`, `/api/*`, and auth endpoints.
+- Consider Cloudflare Access in front of `/admin/*`.
+- Rotate Supabase credentials that may have appeared in historical scripts or git history.
+- Add uptime and error monitoring.
+
+## Cloudflare Security Plan
+
+Cloudflare can improve security in front of Vercel and R2.
+
+Recommended technical setup:
+
+1. Manage DNS for `bbforpeace.org` in Cloudflare.
+2. Use SSL/TLS mode: Full Strict.
+3. Enable WAF managed rules.
+4. Add rate-limit rules for `/admin/*` and `/api/*`.
+5. Enable bot protection and consider Turnstile for public forms if spam appears.
+6. Consider Cloudflare Access for `/admin/*` to require an extra identity check before Payload login.
+7. Use a custom R2 media domain if desired.
+8. Cache static assets/media where safe.
+
+Financial notes:
+
+- Cloudflare Free is sufficient for DNS, SSL, CDN, and basic DDoS protection.
+- Cloudflare Pro adds stronger WAF controls and is often enough for a small organization.
+- Business/Enterprise is only needed for advanced compliance/SLA needs.
+- Cloudflare Zero Trust/Access may be free for small teams, with paid tiers depending on users/features.
+- R2 costs depend on storage and operations; it is typically cost-effective for media delivery.
+
+## Operational Scripts
+
+Active scripts are intentionally limited to:
+
+```text
+scripts/backup-db.js
+scripts/cleanup-unused-media.js
+scripts/test-db-conn.js
+```
+
+Old migration, diagnostic, repair, and Vercel Blob scripts were removed after the R2 migration and media cleanup.
+
+## Known Optional Enhancements
+
+- Full frontend visual/facial uplift.
+- Deeper admin dashboard redesign beyond current custom dashboard/navigation.
+- Durable rate limiting.
+- Cloudflare Access for admin.
+- Automated monitoring and alerting.
+- Formal penetration test before major public campaigns.
 # BB4Peace - System Design Document
 
 ## 1. Executive Summary

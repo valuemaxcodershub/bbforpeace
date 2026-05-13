@@ -54,4 +54,6 @@ next-env.d.ts
 /backups/*.json
 /backups/*.sql
 /backups/*.txt
+/backups/*.log
+/migration-failures.csv
 /db/*.db-journal

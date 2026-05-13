@@ -327,12 +327,6 @@ const cfg = buildConfig({
     ),
   ],
 
-  upload: {
-    limits: {
-      fileSize: 25000000, // 25MB max – allows large PDFs and report documents
-    },
-  },
-
   // Auto-create super admin on first run - ensures login form shows instead of registration
   onInit: async (payload) => {
     // Never run startup writes on production serverless cold starts.
