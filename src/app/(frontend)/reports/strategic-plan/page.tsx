@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { PageHero } from '@/components/layout'
 import { ArrowRight, Calendar, BookOpen, Sparkles, Target } from 'lucide-react'
 import { getPayloadClient } from '@/lib/payload-client'
-import { getMediaUrl, plainTextFromRichText } from '@/lib/utils'
+import { getMediaUrl, getPublicationFileUrl, plainTextFromRichText } from '@/lib/utils'
 import { DownloadButton } from '@/components/ui/DownloadButton'
 
 export const metadata: Metadata = {
@@ -31,7 +31,7 @@ export default async function StrategicPlanPage() {
       where: { subMenu: { equals: 'strategic-plan' } },
       sort: '-year',
       limit: 20,
-      depth: 1,
+      depth: 2,
     })
     plans = result.docs
   } catch (error) {
@@ -45,7 +45,7 @@ export default async function StrategicPlanPage() {
     excerpt: plainTextFromRichText(plan.excerpt || plan.description, 300),
     year: plan.year || new Date().getFullYear(),
     coverImage: getMediaUrl(plan.coverImage, '/images/reports/2025 annual report.PNG'),
-    fileUrl: plan.externalFileUrl || getMediaUrl(plan.file, ''),
+    fileUrl: getPublicationFileUrl(plan),
     downloadCount: plan.downloadCount ?? 0,
     isFeatured: Boolean(plan.isFeatured) || idx === 0,
   }))

@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import { Download } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { trackDownload } from '@/app/actions/download'
+import { formatDownloadCountLabel } from '@/lib/utils'
 
 interface DownloadButtonProps {
   publicationId: number | string
@@ -23,8 +23,12 @@ export function DownloadButton({
 }: DownloadButtonProps) {
   const [count, setCount] = useState(initialDownloadCount)
 
-  const handleClick = () => {
-    setCount((c) => c + 1)
+  useEffect(() => {
+    setCount(initialDownloadCount)
+  }, [initialDownloadCount, publicationId])
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
     trackDownload(publicationId)
       .then((result) => {
         if (result.success && typeof result.downloadCount === 'number') {
@@ -34,22 +38,18 @@ export function DownloadButton({
       .catch(() => {})
   }
 
-  const countLabel = showCount && count > 0 ? ` (${count.toLocaleString()})` : ''
+  const label = showCount ? formatDownloadCountLabel(count) : 'Download'
 
   return (
     <a
       href={fileUrl}
       target="_blank"
       rel="noopener noreferrer"
+      download={fileUrl.toLowerCase().includes('.pdf') ? '' : undefined}
       onClick={handleClick}
       className={className}
     >
-      {children || (
-        <>
-          <Download className="w-4 h-4" />
-          Download PDF{countLabel}
-        </>
-      )}
+      {children ?? label}
     </a>
   )
 }

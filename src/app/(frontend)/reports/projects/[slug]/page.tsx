@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getPayloadClient } from '@/lib/payload-client'
 import { PageHero } from '@/components/layout'
-import { getMediaUrl } from '@/lib/utils'
+import { getMediaUrl, getPublicationFileUrl } from '@/lib/utils'
 
 import {
   Download,
@@ -157,7 +157,7 @@ export default async function ProjectReportDetailPage({ params }: Props) {
   if (!report) notFound()
 
   const coverImage = getMediaUrl(report.coverImage)
-  const fileUrl = (report as any).externalFileUrl || getMediaUrl(report.file, '#')
+  const fileUrl = getPublicationFileUrl(report)
   const relatedReports = await getRelatedReports(report.id)
 
   return (
@@ -247,7 +247,7 @@ export default async function ProjectReportDetailPage({ params }: Props) {
                         )}
                       </div>
 
-                      {fileUrl && fileUrl !== '#' && (
+                      {fileUrl && (
                         <DownloadButton
                           publicationId={report.id}
                           fileUrl={fileUrl}

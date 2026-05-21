@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Download, Eye, BookOpen, Calendar, ArrowRight, FileText, Sparkles } from 'lucide-react'
 import { getPayloadClient } from '@/lib/payload-client'
-import { getMediaUrl, plainTextFromRichText } from '@/lib/utils'
+import { getMediaUrl, getPublicationFileUrl, plainTextFromRichText } from '@/lib/utils'
 import { DownloadButton } from '@/components/ui/DownloadButton'
 
 const reportStyles = [
@@ -36,7 +36,7 @@ export default async function AnnualReportsPage() {
       where: { subMenu: { equals: 'annual-report' } },
       sort: '-year',
       limit: 10,
-      depth: 1,
+      depth: 2,
     })
     reports = result.docs
   } catch (error) {
@@ -52,7 +52,7 @@ export default async function AnnualReportsPage() {
     title: r.title,
     slug: r.slug,
     excerpt: plainTextFromRichText(r.excerpt || r.description, 300),
-    fileUrl: r.externalFileUrl || getMediaUrl(r.file, ''),
+    fileUrl: getPublicationFileUrl(r),
     downloadCount: r.downloadCount ?? 0,
     coverImage: getMediaUrl(r.coverImage, '/images/reports/2025%20annual%20report.PNG'),
   }))

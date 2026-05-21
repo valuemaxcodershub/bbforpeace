@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Download, FileText, Calendar, ArrowRight, BookOpen, Sparkles, MapPin } from 'lucide-react'
 import type { Metadata } from 'next'
 import { getPayloadClient } from '@/lib/payload-client'
-import { getMediaUrl, plainTextFromRichText } from '@/lib/utils'
+import { getMediaUrl, getPublicationFileUrl, plainTextFromRichText } from '@/lib/utils'
 import { DownloadButton } from '@/components/ui/DownloadButton'
 
 export const metadata: Metadata = {
@@ -52,7 +52,7 @@ export default async function ProjectReportsPage() {
         where: { subMenu: { equals: 'project-report' } },
         sort: '-year',
         limit: 20,
-        depth: 1,
+        depth: 2,
       })
 
     projectReportsFromCms = result.docs.map((pub: any, idx: number) => {
@@ -61,7 +61,7 @@ export default async function ProjectReportsPage() {
         title: pub.title,
         slug: pub.slug,
         description: plainTextFromRichText(pub.excerpt || pub.description, 300),
-        fileUrl: pub.externalFileUrl || getMediaUrl(pub.file, ''),
+        fileUrl: getPublicationFileUrl(pub),
         downloadCount: pub.downloadCount ?? 0,
         year: pub.year || new Date().getFullYear(),
         category: pub.category || 'Program Report',

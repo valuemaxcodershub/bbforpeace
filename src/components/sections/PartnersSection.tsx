@@ -93,13 +93,13 @@ export function PartnersSection({
               className="shrink-0 mx-5 md:mx-10"
             >
               <div
-                className="group flex items-center justify-center w-48 h-32 sm:w-52 sm:h-36 md:w-60 md:h-40 lg:w-72 lg:h-44 rounded-2xl bg-white border border-gray-100 hover:border-primary-300 hover:shadow-xl transition-all duration-300 p-6 md:p-8"
+                className="group flex items-center justify-center w-48 h-32 sm:w-52 sm:h-36 md:w-60 md:h-40 lg:w-72 lg:h-44 rounded-2xl bg-white border border-gray-100 hover:border-primary-300 hover:shadow-xl transition-all duration-300 p-2 sm:p-2.5 md:p-3"
                 title={partner.name}
               >
                 <img
                   src={partner.logo}
                   alt={partner.name}
-                  className="max-w-[92%] max-h-[92%] w-auto h-auto object-contain group-hover:grayscale transition-all duration-300 opacity-100 group-hover:opacity-80"
+                  className="w-full h-full object-contain group-hover:grayscale transition-all duration-300 opacity-100 group-hover:opacity-80"
                 />
               </div>
             </div>

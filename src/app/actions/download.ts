@@ -9,6 +9,7 @@ export async function trackDownload(publicationId: number | string) {
       collection: 'publications',
       id: publicationId,
       depth: 0,
+      overrideAccess: true,
     })
 
     const downloadCount = (pub.downloadCount || 0) + 1
@@ -17,6 +18,10 @@ export async function trackDownload(publicationId: number | string) {
       collection: 'publications',
       id: publicationId,
       data: { downloadCount },
+      overrideAccess: true,
+      context: {
+        payloadAPI: 'local',
+      },
     })
 
     return { success: true, downloadCount }

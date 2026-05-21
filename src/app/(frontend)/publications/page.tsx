@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Download, FileText, Calendar, ArrowRight, BookOpen, Eye, Sparkles, ExternalLink } from 'lucide-react'
 import { getPayloadClient } from '@/lib/payload-client'
-import { getMediaUrl, plainTextFromRichText } from '@/lib/utils'
+import { getMediaUrl, getPublicationFileUrl, plainTextFromRichText } from '@/lib/utils'
 import { DownloadButton } from '@/components/ui/DownloadButton'
 
 const getCategoryStyle = (category: string) => {
@@ -51,7 +51,7 @@ export default async function PublicationsPage() {
         where: { subMenu: { equals: 'publication' } },
         sort: '-year',
         limit: 20,
-        depth: 1,
+        depth: 2,
       }),
     ])
     publications = result.docs
@@ -65,7 +65,7 @@ export default async function PublicationsPage() {
     slug: p.slug,
     excerpt: plainTextFromRichText(p.excerpt || p.description, 300),
     coverImage: getMediaUrl(p.coverImage),
-    fileUrl: p.externalFileUrl || getMediaUrl(p.file, ''),
+    fileUrl: getPublicationFileUrl(p),
     downloadCount: p.downloadCount ?? 0,
     category: p.category || 'research',
     year: p.year,

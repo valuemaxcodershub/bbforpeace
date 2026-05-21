@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getPayloadClient } from '@/lib/payload-client'
 import { PageHero } from '@/components/layout'
-import { getMediaUrl, plainTextFromRichText } from '@/lib/utils'
+import { getMediaUrl, getPublicationFileUrl, plainTextFromRichText } from '@/lib/utils'
 
 import {
   Calendar,
@@ -155,7 +155,7 @@ export default async function StrategicPlanDetailPage({ params }: Props) {
   if (!plan) notFound()
 
   const coverImage = getMediaUrl(plan.coverImage)
-  const fileUrl = (plan as any).externalFileUrl || getMediaUrl(plan.file, '#')
+  const fileUrl = getPublicationFileUrl(plan)
   const relatedPlans = await getRelatedPlans(plan.id)
 
   return (
@@ -233,7 +233,7 @@ export default async function StrategicPlanDetailPage({ params }: Props) {
                         )}
                       </div>
 
-                      {fileUrl && fileUrl !== '#' && (
+                      {fileUrl && (
                         <DownloadButton
                           publicationId={plan.id}
                           fileUrl={fileUrl}

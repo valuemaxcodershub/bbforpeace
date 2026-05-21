@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation'
 import { getPayloadClient } from '@/lib/payload-client'
 import { PageHero } from '@/components/layout'
 import { PublicationCard } from '@/components/cards'
-import { getMediaUrl } from '@/lib/utils'
+import { getMediaUrl, getPublicationFileUrl } from '@/lib/utils'
 
 import {
   Download,
@@ -164,7 +164,7 @@ export default async function PublicationDetailPage({ params }: Props) {
   if (!pub) notFound()
 
   const coverImage = getMediaUrl(pub.coverImage)
-  const fileUrl = (pub as any).externalFileUrl || getMediaUrl(pub.file, '#')
+  const fileUrl = getPublicationFileUrl(pub)
   const categoryLabel = categoryLabels[pub.category] || pub.category
   const relatedPubs = await getRelatedPublications(pub.category, pub.id)
 
@@ -174,7 +174,7 @@ export default async function PublicationDetailPage({ params }: Props) {
     excerpt: p.excerpt || '',
     slug: p.slug,
     coverImage: getMediaUrl(p.coverImage),
-    fileUrl: p.externalFileUrl || getMediaUrl(p.file, ''),
+    fileUrl: getPublicationFileUrl(p),
     category: p.category,
     year: p.year,
     downloadCount: p.downloadCount || 0,
@@ -258,7 +258,7 @@ export default async function PublicationDetailPage({ params }: Props) {
                       </div>
 
                       {/* Download Button */}
-                      {fileUrl && fileUrl !== '#' && (
+                      {fileUrl && (
                         <DownloadButton
                           publicationId={pub.id}
                           fileUrl={fileUrl}

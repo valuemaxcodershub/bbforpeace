@@ -117,6 +117,44 @@ export function getMediaUrl(media: unknown, fallback = '/images/_VEE7124%20(1).j
   return fallback
 }
 
+/** Direct document URL for a publication (external link or uploaded PDF). No image fallback. */
+export function getPublicationFileUrl(pub: {
+  externalFileUrl?: string | null
+  file?: unknown
+}): string {
+  const external =
+    typeof pub.externalFileUrl === 'string' ? pub.externalFileUrl.trim() : ''
+  if (external) {
+    try {
+      new URL(external)
+      return external
+    } catch {
+      /* invalid external URL */
+    }
+  }
+
+  if (!pub.file) return ''
+
+  if (typeof pub.file === 'string' || typeof pub.file === 'number') {
+    return ''
+  }
+
+  if (typeof pub.file === 'object' && pub.file !== null) {
+    const obj = pub.file as Record<string, unknown>
+    const url = typeof obj.url === 'string' ? obj.url : ''
+    if (url && /^https?:\/\//i.test(url)) return url
+    if (url.includes('/api/media/file/')) return safeEncode(url)
+    if (url) return url.startsWith('http') ? url : absoluteUrl(url)
+  }
+
+  return ''
+}
+
+export function formatDownloadCountLabel(count: number): string {
+  const n = Math.max(0, count).toLocaleString('en-US')
+  return count === 1 ? `download ${n} time` : `download ${n} times`
+}
+
 function safeEncode(url: string): string {
   if (!url) return url
   // Don't double-encode: if it already has %20 or %28, it's already encoded
