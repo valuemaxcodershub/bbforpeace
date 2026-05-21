@@ -4,7 +4,8 @@ import Link from 'next/link'
 import { Download, FileText, Calendar, ArrowRight, BookOpen, Sparkles, MapPin } from 'lucide-react'
 import type { Metadata } from 'next'
 import { getPayloadClient } from '@/lib/payload-client'
-import { getMediaUrl } from '@/lib/utils'
+import { getMediaUrl, plainTextFromRichText } from '@/lib/utils'
+import { DownloadButton } from '@/components/ui/DownloadButton'
 
 export const metadata: Metadata = {
   title: 'Project Reports | BBFORPEACE',
@@ -59,7 +60,9 @@ export default async function ProjectReportsPage() {
         id: pub.id,
         title: pub.title,
         slug: pub.slug,
-        description: pub.excerpt || pub.description || '',
+        description: plainTextFromRichText(pub.excerpt || pub.description, 300),
+        fileUrl: pub.externalFileUrl || getMediaUrl(pub.file, ''),
+        downloadCount: pub.downloadCount ?? 0,
         year: pub.year || new Date().getFullYear(),
         category: pub.category || 'Program Report',
         region: pub.region || 'Nigeria',
@@ -162,6 +165,14 @@ export default async function ProjectReportsPage() {
                         <BookOpen className="w-5 h-5" />
                         Read More
                       </Link>
+                      {featuredReport.fileUrl && (
+                        <DownloadButton
+                          publicationId={featuredReport.id}
+                          fileUrl={featuredReport.fileUrl}
+                          initialDownloadCount={featuredReport.downloadCount}
+                          className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold border-2 border-white/30 text-white hover:bg-white/10 transition-all"
+                        />
+                      )}
                     </div>
                   </div>
 
@@ -239,14 +250,24 @@ export default async function ProjectReportsPage() {
                           {report.description}
                         </p>
 
-                        <Link
-                          href={`/reports/projects/${report.slug}`}
-                          className="inline-flex items-center gap-2 text-primary-700 font-semibold text-sm hover:text-primary-900 transition-colors group/link"
-                        >
-                          <BookOpen className="w-4 h-4" />
-                          Read More
-                          <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
-                        </Link>
+                        <div className="flex flex-wrap items-center gap-3">
+                          <Link
+                            href={`/reports/projects/${report.slug}`}
+                            className="inline-flex items-center gap-2 text-primary-700 font-semibold text-sm hover:text-primary-900 transition-colors group/link"
+                          >
+                            <BookOpen className="w-4 h-4" />
+                            Read More
+                            <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
+                          </Link>
+                          {report.fileUrl && (
+                            <DownloadButton
+                              publicationId={report.id}
+                              fileUrl={report.fileUrl}
+                              initialDownloadCount={report.downloadCount}
+                              className="inline-flex items-center gap-2 text-sm font-semibold text-primary-800 hover:text-primary-950 transition-colors"
+                            />
+                          )}
+                        </div>
                       </div>
                     </div>
                   </article>

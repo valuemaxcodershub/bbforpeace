@@ -1,6 +1,9 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
-import { Download, FileText } from 'lucide-react'
+import { FileText } from 'lucide-react'
+import { DownloadButton } from '@/components/ui/DownloadButton'
 
 const gradients = [
   'linear-gradient(135deg, #e5243b, #ff6b6b)',
@@ -19,6 +22,7 @@ interface PublicationCardProps {
     category?: string
     year: number
     downloadCount?: number
+    fileUrl?: string
   }
   index?: number
 }
@@ -40,15 +44,20 @@ export function PublicationCard({ publication, index = 0 }: PublicationCardProps
             fill
             className="object-cover group-hover:scale-110 transition-transform duration-500"
           />
-          <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-8">
-            <span 
-              className="inline-flex items-center px-5 py-2.5 rounded-full text-white font-semibold shadow-lg"
-              style={{ background: gradient }}
+          {publication.fileUrl && (
+            <div
+              className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-8"
+              onClick={(e) => e.stopPropagation()}
             >
-              <Download className="w-4 h-4 mr-2" />
-              Download PDF
-            </span>
-          </div>
+              <DownloadButton
+                publicationId={publication.id}
+                fileUrl={publication.fileUrl}
+                initialDownloadCount={publication.downloadCount ?? 0}
+                className="inline-flex items-center px-5 py-2.5 rounded-full text-white font-semibold shadow-lg"
+                showCount
+              />
+            </div>
+          )}
         </div>
       </Link>
 
@@ -78,11 +87,15 @@ export function PublicationCard({ publication, index = 0 }: PublicationCardProps
             {publication.excerpt}
           </p>
         )}
-        {publication.downloadCount !== undefined && (
-          <p className="text-xs text-gray-400 mt-3 flex items-center gap-1">
-            <Download className="w-3 h-3" />
-            {publication.downloadCount.toLocaleString()} downloads
-          </p>
+        {publication.fileUrl && (
+          <div className="mt-4" onClick={(e) => e.preventDefault()}>
+            <DownloadButton
+              publicationId={publication.id}
+              fileUrl={publication.fileUrl}
+              initialDownloadCount={publication.downloadCount ?? 0}
+              className="inline-flex items-center gap-2 text-sm font-semibold text-primary-800 hover:text-primary-950 transition-colors"
+            />
+          </div>
         )}
       </div>
     </article>

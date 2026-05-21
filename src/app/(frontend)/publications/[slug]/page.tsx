@@ -174,6 +174,7 @@ export default async function PublicationDetailPage({ params }: Props) {
     excerpt: p.excerpt || '',
     slug: p.slug,
     coverImage: getMediaUrl(p.coverImage),
+    fileUrl: p.externalFileUrl || getMediaUrl(p.file, ''),
     category: p.category,
     year: p.year,
     downloadCount: p.downloadCount || 0,
@@ -254,12 +255,6 @@ export default async function PublicationDetailPage({ params }: Props) {
                             <span>{pub.author}</span>
                           </div>
                         )}
-                        {(pub.downloadCount ?? 0) > 0 && (
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <Download className="w-4 h-4 text-gray-400" />
-                            <span>{pub.downloadCount!.toLocaleString()} downloads</span>
-                          </div>
-                        )}
                       </div>
 
                       {/* Download Button */}
@@ -267,6 +262,7 @@ export default async function PublicationDetailPage({ params }: Props) {
                         <DownloadButton
                           publicationId={pub.id}
                           fileUrl={fileUrl}
+                          initialDownloadCount={pub.downloadCount ?? 0}
                           className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-primary-900 text-white font-semibold hover:bg-primary-800 transition-colors"
                         />
                       )}

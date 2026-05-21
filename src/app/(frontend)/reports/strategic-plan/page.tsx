@@ -4,7 +4,8 @@ import Link from 'next/link'
 import { PageHero } from '@/components/layout'
 import { ArrowRight, Calendar, BookOpen, Sparkles, Target } from 'lucide-react'
 import { getPayloadClient } from '@/lib/payload-client'
-import { getMediaUrl } from '@/lib/utils'
+import { getMediaUrl, plainTextFromRichText } from '@/lib/utils'
+import { DownloadButton } from '@/components/ui/DownloadButton'
 
 export const metadata: Metadata = {
   title: 'Strategic Plan 2026-2030 | BBFORPEACE',
@@ -41,9 +42,11 @@ export default async function StrategicPlanPage() {
     id: plan.id,
     title: plan.title,
     slug: plan.slug,
-    excerpt: plan.excerpt || plan.description || '',
+    excerpt: plainTextFromRichText(plan.excerpt || plan.description, 300),
     year: plan.year || new Date().getFullYear(),
     coverImage: getMediaUrl(plan.coverImage, '/images/reports/2025 annual report.PNG'),
+    fileUrl: plan.externalFileUrl || getMediaUrl(plan.file, ''),
+    downloadCount: plan.downloadCount ?? 0,
     isFeatured: Boolean(plan.isFeatured) || idx === 0,
   }))
 
@@ -113,6 +116,14 @@ export default async function StrategicPlanPage() {
                         <BookOpen className="w-5 h-5" />
                         Read More
                       </Link>
+                      {featuredPlan.fileUrl && (
+                        <DownloadButton
+                          publicationId={featuredPlan.id}
+                          fileUrl={featuredPlan.fileUrl}
+                          initialDownloadCount={featuredPlan.downloadCount}
+                          className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold border-2 border-white/30 text-white hover:bg-white/10 transition-all"
+                        />
+                      )}
                     </div>
                   </div>
 
@@ -174,14 +185,24 @@ export default async function StrategicPlanPage() {
                             {plan.excerpt}
                           </p>
 
-                          <Link
-                            href={`/reports/strategic-plan/${plan.slug}`}
-                            className="inline-flex items-center gap-2 text-primary-700 font-semibold text-sm hover:text-primary-900 transition-colors group/link"
-                          >
-                            <BookOpen className="w-4 h-4" />
-                            Read More
-                            <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
-                          </Link>
+                          <div className="flex flex-wrap items-center gap-3">
+                            <Link
+                              href={`/reports/strategic-plan/${plan.slug}`}
+                              className="inline-flex items-center gap-2 text-primary-700 font-semibold text-sm hover:text-primary-900 transition-colors group/link"
+                            >
+                              <BookOpen className="w-4 h-4" />
+                              Read More
+                              <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
+                            </Link>
+                            {plan.fileUrl && (
+                              <DownloadButton
+                                publicationId={plan.id}
+                                fileUrl={plan.fileUrl}
+                                initialDownloadCount={plan.downloadCount}
+                                className="inline-flex items-center gap-2 text-sm font-semibold text-primary-800 hover:text-primary-950 transition-colors"
+                              />
+                            )}
+                          </div>
                         </div>
                       </div>
                     </article>

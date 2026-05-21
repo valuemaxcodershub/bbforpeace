@@ -3,7 +3,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Download, Eye, BookOpen, Calendar, ArrowRight, FileText, Sparkles } from 'lucide-react'
 import { getPayloadClient } from '@/lib/payload-client'
-import { getMediaUrl } from '@/lib/utils'
+import { getMediaUrl, plainTextFromRichText } from '@/lib/utils'
+import { DownloadButton } from '@/components/ui/DownloadButton'
 
 const reportStyles = [
   { gradient: 'from-violet-600 to-indigo-700', badgeClass: 'bg-violet-600', textClass: 'text-violet-600', btnClass: 'bg-violet-600 hover:bg-violet-700' },
@@ -50,7 +51,9 @@ export default async function AnnualReportsPage() {
     year: r.year,
     title: r.title,
     slug: r.slug,
-    excerpt: r.excerpt || '',
+    excerpt: plainTextFromRichText(r.excerpt || r.description, 300),
+    fileUrl: r.externalFileUrl || getMediaUrl(r.file, ''),
+    downloadCount: r.downloadCount ?? 0,
     coverImage: getMediaUrl(r.coverImage, '/images/reports/2025%20annual%20report.PNG'),
   }))
   return (
@@ -154,6 +157,14 @@ export default async function AnnualReportsPage() {
                           <BookOpen className="w-5 h-5" />
                           Read More
                         </Link>
+                        {report.fileUrl && (
+                          <DownloadButton
+                            publicationId={report.id}
+                            fileUrl={report.fileUrl}
+                            initialDownloadCount={report.downloadCount}
+                            className={`inline-flex items-center gap-3 px-8 py-4 rounded-xl border-2 border-gray-200 text-gray-900 font-bold hover:bg-gray-50 transition-all`}
+                          />
+                        )}
                       </div>
                     </div>
                   </div>

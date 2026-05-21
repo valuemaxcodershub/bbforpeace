@@ -11,15 +11,15 @@ export async function trackDownload(publicationId: number | string) {
       depth: 0,
     })
 
+    const downloadCount = (pub.downloadCount || 0) + 1
+
     await payload.update({
       collection: 'publications',
       id: publicationId,
-      data: {
-        downloadCount: (pub.downloadCount || 0) + 1,
-      },
+      data: { downloadCount },
     })
 
-    return { success: true }
+    return { success: true, downloadCount }
   } catch (error) {
     console.error('Failed to track download:', error)
     return { success: false }

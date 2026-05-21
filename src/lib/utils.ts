@@ -36,6 +36,29 @@ export function truncate(text: string, length: number): string {
   return text.slice(0, length).trim() + '...'
 }
 
+/** Plain text from Payload Lexical JSON, HTML string, or textarea. */
+export function plainTextFromRichText(content: unknown, maxLength?: number): string {
+  if (!content) return ''
+  if (typeof content === 'string') {
+    const stripped = content.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+    return maxLength ? truncate(stripped, maxLength) : stripped
+  }
+  if (typeof content === 'object' && content !== null) {
+    const root = (content as { root?: unknown }).root ?? content
+    const text = extractLexicalText(root).replace(/\s+/g, ' ').trim()
+    return maxLength ? truncate(text, maxLength) : text
+  }
+  return ''
+}
+
+function extractLexicalText(node: unknown): string {
+  if (!node || typeof node !== 'object') return ''
+  const n = node as { type?: string; text?: string; children?: unknown[] }
+  if (n.type === 'text' && typeof n.text === 'string') return n.text
+  if (!Array.isArray(n.children)) return ''
+  return n.children.map(extractLexicalText).join(' ')
+}
+
 export function getInitials(name: string): string {
   return name
     .split(' ')

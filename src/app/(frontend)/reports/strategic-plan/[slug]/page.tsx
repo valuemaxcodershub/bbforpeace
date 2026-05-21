@@ -4,10 +4,9 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getPayloadClient } from '@/lib/payload-client'
 import { PageHero } from '@/components/layout'
-import { getMediaUrl } from '@/lib/utils'
+import { getMediaUrl, plainTextFromRichText } from '@/lib/utils'
 
 import {
-  Download,
   Calendar,
   User,
   ArrowLeft,
@@ -64,10 +63,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: plan.seo?.metaTitle || `${plan.title} | BB4Peace`,
-    description: plan.seo?.metaDescription || plan.excerpt || plan.title,
+    description: plan.seo?.metaDescription || plainTextFromRichText(plan.excerpt) || plan.title,
     openGraph: {
       title: plan.title,
-      description: plan.excerpt || plan.title,
+      description: plainTextFromRichText(plan.excerpt) || plan.title,
       type: 'article',
       images: plan.coverImage && typeof plan.coverImage === 'object'
         ? [{ url: plan.coverImage.url! }]
@@ -180,10 +179,10 @@ export default async function StrategicPlanDetailPage({ params }: Props) {
               {/* Main Content */}
               <div className="lg:col-span-2 order-2 lg:order-1">
                 {/* Excerpt Intro */}
-                {plan.excerpt && (
+                {plainTextFromRichText(plan.excerpt) && (
                   <div className="mb-10 p-6 bg-primary-50 border-l-4 border-primary-700 rounded-r-xl">
                     <p className="text-gray-800 text-lg leading-relaxed italic">
-                      {plan.excerpt}
+                      {plainTextFromRichText(plan.excerpt)}
                     </p>
                   </div>
                 )}
@@ -232,18 +231,13 @@ export default async function StrategicPlanDetailPage({ params }: Props) {
                             <span>{plan.author}</span>
                           </div>
                         )}
-                        {(plan.downloadCount ?? 0) > 0 && (
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <Download className="w-4 h-4 text-gray-400" />
-                            <span>{(plan.downloadCount ?? 0).toLocaleString()} downloads</span>
-                          </div>
-                        )}
                       </div>
 
                       {fileUrl && fileUrl !== '#' && (
                         <DownloadButton
                           publicationId={plan.id}
                           fileUrl={fileUrl}
+                          initialDownloadCount={plan.downloadCount ?? 0}
                           className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-primary-900 text-white font-semibold hover:bg-primary-800 transition-colors"
                         />
                       )}

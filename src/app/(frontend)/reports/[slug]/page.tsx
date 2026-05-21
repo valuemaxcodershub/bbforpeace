@@ -232,18 +232,13 @@ export default async function AnnualReportDetailPage({ params }: Props) {
                             <span>{report.author}</span>
                           </div>
                         )}
-                        {(report.downloadCount ?? 0) > 0 && (
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <Download className="w-4 h-4 text-gray-400" />
-                            <span>{(report.downloadCount ?? 0).toLocaleString()} downloads</span>
-                          </div>
-                        )}
                       </div>
 
                       {fileUrl && fileUrl !== '#' && (
                         <DownloadButton
                           publicationId={report.id}
                           fileUrl={fileUrl}
+                          initialDownloadCount={report.downloadCount ?? 0}
                           className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-primary-900 text-white font-semibold hover:bg-primary-800 transition-colors"
                         />
                       )}

@@ -3,7 +3,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Download, FileText, Calendar, ArrowRight, BookOpen, Eye, Sparkles, ExternalLink } from 'lucide-react'
 import { getPayloadClient } from '@/lib/payload-client'
-import { getMediaUrl } from '@/lib/utils'
+import { getMediaUrl, plainTextFromRichText } from '@/lib/utils'
+import { DownloadButton } from '@/components/ui/DownloadButton'
 
 const getCategoryStyle = (category: string) => {
   switch (category) {
@@ -62,8 +63,10 @@ export default async function PublicationsPage() {
     id: p.id,
     title: p.title,
     slug: p.slug,
-    excerpt: p.excerpt || '',
+    excerpt: plainTextFromRichText(p.excerpt || p.description, 300),
     coverImage: getMediaUrl(p.coverImage),
+    fileUrl: p.externalFileUrl || getMediaUrl(p.file, ''),
+    downloadCount: p.downloadCount ?? 0,
     category: p.category || 'research',
     year: p.year,
     isFeatured: p.isFeatured || false,
@@ -134,6 +137,14 @@ export default async function PublicationsPage() {
                         <BookOpen className="w-5 h-5" />
                         Read More
                       </Link>
+                      {featuredPublication.fileUrl && (
+                        <DownloadButton
+                          publicationId={featuredPublication.id}
+                          fileUrl={featuredPublication.fileUrl}
+                          initialDownloadCount={featuredPublication.downloadCount}
+                          className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold border-2 border-white/30 text-white hover:bg-white/10 transition-all"
+                        />
+                      )}
                     </div>
                   </div>
 
@@ -213,15 +224,24 @@ export default async function PublicationsPage() {
                           {pub.excerpt}
                         </p>
 
-                        {/* Read More */}
-                        <Link
-                          href={`/publications/${pub.slug}`}
-                          className="inline-flex items-center gap-2 text-primary-700 font-semibold text-sm hover:text-primary-900 transition-colors group/link"
-                        >
-                          <BookOpen className="w-4 h-4" />
-                          Read More
-                          <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
-                        </Link>
+                        <div className="flex flex-wrap items-center gap-3">
+                          <Link
+                            href={`/publications/${pub.slug}`}
+                            className="inline-flex items-center gap-2 text-primary-700 font-semibold text-sm hover:text-primary-900 transition-colors group/link"
+                          >
+                            <BookOpen className="w-4 h-4" />
+                            Read More
+                            <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
+                          </Link>
+                          {pub.fileUrl && (
+                            <DownloadButton
+                              publicationId={pub.id}
+                              fileUrl={pub.fileUrl}
+                              initialDownloadCount={pub.downloadCount}
+                              className="inline-flex items-center gap-2 text-sm font-semibold text-primary-800 hover:text-primary-950 transition-colors"
+                            />
+                          )}
+                        </div>
                       </div>
                     </div>
                   </article>

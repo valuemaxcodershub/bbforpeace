@@ -51,7 +51,7 @@ export function PartnersSection({
 
   return (
     <section 
-      className="py-20 relative overflow-hidden bg-fixed bg-cover bg-center"
+      className="py-24 lg:py-28 relative overflow-hidden bg-fixed bg-cover bg-center"
       style={{ backgroundImage: 'url(/images/PXL_20251008_095815014~2.jpg)' }}
     >
       {/* Overlay */}
@@ -90,16 +90,16 @@ export function PartnersSection({
           {doubledPartners.map((partner, index) => (
             <div
               key={`${partner.id}-${index}`}
-              className="shrink-0 mx-4 md:mx-8"
+              className="shrink-0 mx-5 md:mx-10"
             >
               <div
-                className="group flex items-center justify-center w-36 h-24 md:w-44 md:h-28 rounded-2xl bg-white border border-gray-100 hover:border-primary-300 hover:shadow-lg transition-all duration-300 p-5"
+                className="group flex items-center justify-center w-48 h-32 sm:w-52 sm:h-36 md:w-60 md:h-40 lg:w-72 lg:h-44 rounded-2xl bg-white border border-gray-100 hover:border-primary-300 hover:shadow-xl transition-all duration-300 p-6 md:p-8"
                 title={partner.name}
               >
                 <img
                   src={partner.logo}
                   alt={partner.name}
-                  className="max-w-full max-h-full object-contain group-hover:grayscale transition-all duration-300 opacity-100 group-hover:opacity-70"
+                  className="max-w-[92%] max-h-[92%] w-auto h-auto object-contain group-hover:grayscale transition-all duration-300 opacity-100 group-hover:opacity-80"
                 />
               </div>
             </div>
