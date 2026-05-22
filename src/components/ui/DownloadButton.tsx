@@ -30,14 +30,18 @@ export function DownloadButton({
 
   const persistDownload = async () => {
     try {
-      const res = await fetch(`/api/publications/${publicationId}/download`, { method: 'POST' })
+      const res = await fetch(`/api/publications/${publicationId}/download`, {
+        method: 'POST',
+        cache: 'no-store',
+      })
       const result = await res.json()
-      if (result.success && typeof result.downloadCount === 'number') {
+      if (res.ok && result.success && typeof result.downloadCount === 'number') {
         setCount(result.downloadCount)
         return
       }
-    } catch {
-      /* try server action fallback */
+      console.error('Download track API failed:', res.status, result)
+    } catch (err) {
+      console.error('Download track API error:', err)
     }
     const fallback = await trackDownload(publicationId)
     if (fallback.success && typeof fallback.downloadCount === 'number') {

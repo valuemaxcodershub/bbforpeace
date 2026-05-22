@@ -16,6 +16,8 @@ import {
 } from 'lucide-react'
 import { DownloadButton } from '@/components/ui/DownloadButton'
 
+export const dynamic = 'force-dynamic'
+
 interface Props {
   params: Promise<{ slug: string }>
 }

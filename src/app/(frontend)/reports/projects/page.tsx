@@ -5,7 +5,9 @@ import { Download, FileText, Calendar, ArrowRight, BookOpen, Sparkles, MapPin } 
 import type { Metadata } from 'next'
 import { getPayloadClient } from '@/lib/payload-client'
 import { getMediaUrl, getPublicationFileUrl, plainTextFromRichText } from '@/lib/utils'
-import { DownloadButton } from '@/components/ui/DownloadButton'
+import { DownloadCountLabel } from '@/components/ui/DownloadCountLabel'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Project Reports | BBFORPEACE',
@@ -165,14 +167,10 @@ export default async function ProjectReportsPage() {
                         <BookOpen className="w-5 h-5" />
                         Read More
                       </Link>
-                      {featuredReport.fileUrl && (
-                        <DownloadButton
-                          publicationId={featuredReport.id}
-                          fileUrl={featuredReport.fileUrl}
-                          initialDownloadCount={featuredReport.downloadCount}
-                          className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold border-2 border-white/30 text-white hover:bg-white/10 transition-all"
-                        />
-                      )}
+                      <DownloadCountLabel
+                        count={featuredReport.downloadCount}
+                        className="text-white/70 text-sm"
+                      />
                     </div>
                   </div>
 
@@ -259,14 +257,10 @@ export default async function ProjectReportsPage() {
                             Read More
                             <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
                           </Link>
-                          {report.fileUrl && (
-                            <DownloadButton
-                              publicationId={report.id}
-                              fileUrl={report.fileUrl}
-                              initialDownloadCount={report.downloadCount}
-                              className="inline-flex items-center gap-2 text-sm font-semibold text-primary-800 hover:text-primary-950 transition-colors"
-                            />
-                          )}
+                          <DownloadCountLabel
+                            count={report.downloadCount}
+                            className="text-sm text-gray-500"
+                          />
                         </div>
                       </div>
                     </div>

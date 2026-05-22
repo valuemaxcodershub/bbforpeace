@@ -1,33 +1,21 @@
 import { NextResponse } from 'next/server'
-import { getPayloadClient } from '@/lib/payload-client'
+import { incrementPublicationDownloadCount } from '@/lib/increment-download-count'
+
+/** Track downloads for any CMS document with a file (publications, annual/project reports, strategic plans). */
 
 export async function POST(
   _request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  try {
-    const { id } = await params
-    const payload = await getPayloadClient()
+  const { id } = await params
+  const result = await incrementPublicationDownloadCount(id)
 
-    const pub = await payload.findByID({
-      collection: 'publications',
-      id,
-      depth: 0,
-      overrideAccess: true,
-    })
-
-    const downloadCount = (pub.downloadCount || 0) + 1
-
-    await payload.update({
-      collection: 'publications',
-      id,
-      data: { downloadCount },
-      overrideAccess: true,
-    })
-
-    return NextResponse.json({ success: true, downloadCount })
-  } catch (error) {
-    console.error('Failed to track download:', error)
-    return NextResponse.json({ success: false }, { status: 500 })
+  if (!result.success) {
+    return NextResponse.json(
+      { success: false, error: result.error ?? 'Failed to track download' },
+      { status: 500 },
+    )
   }
+
+  return NextResponse.json({ success: true, downloadCount: result.downloadCount })
 }

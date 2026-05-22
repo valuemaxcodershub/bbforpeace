@@ -25,11 +25,23 @@ export const Publications: CollectionConfig = {
     delete: isAdminOrAbove,
   },
   hooks: {
-    beforeValidate: [autoSlugHook],
+    beforeValidate: [
+      ({ data, req }) => {
+        const ctx = req?.context as { trackDownload?: boolean } | undefined
+        if (ctx?.trackDownload === true) return data
+        return autoSlugHook({ data })
+      },
+    ],
     beforeChange: [
       ({ data, req }) => {
         if (!data || typeof data !== 'object') return data
-        // Skip sanitization when only incrementing download count (public track-download)
+
+        const ctx = req?.context as { trackDownload?: boolean } | undefined
+        if (ctx?.trackDownload === true && typeof data.downloadCount === 'number') {
+          return { downloadCount: data.downloadCount }
+        }
+
+        // Skip sanitization when only incrementing download count (legacy path)
         const updateKeys = Object.keys(data).filter(
           (key) => !['id', 'collection', 'createdAt', 'updatedAt', 'deletedAt', '_status'].includes(key),
         )

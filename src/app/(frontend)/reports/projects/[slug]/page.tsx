@@ -16,6 +16,8 @@ import {
 } from 'lucide-react'
 import { DownloadButton } from '@/components/ui/DownloadButton'
 
+export const dynamic = 'force-dynamic'
+
 interface Props {
   params: Promise<{ slug: string }>
 }
@@ -252,6 +254,7 @@ export default async function ProjectReportDetailPage({ params }: Props) {
                           publicationId={report.id}
                           fileUrl={fileUrl}
                           initialDownloadCount={report.downloadCount ?? 0}
+                          showCount={false}
                           className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-primary-900 text-white font-semibold hover:bg-primary-800 transition-colors"
                         />
                       )}

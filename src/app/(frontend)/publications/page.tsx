@@ -28,6 +28,8 @@ const categoryLabels: Record<string, string> = {
   'other': 'Other',
 }
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
   title: 'Publications | BBFORPEACE',
   description: 'Access research papers, policy briefs, reports, and educational resources on peacebuilding and conflict resolution from BBFORPEACE.',

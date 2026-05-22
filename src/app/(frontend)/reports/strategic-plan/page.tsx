@@ -5,7 +5,9 @@ import { PageHero } from '@/components/layout'
 import { ArrowRight, Calendar, BookOpen, Sparkles, Target } from 'lucide-react'
 import { getPayloadClient } from '@/lib/payload-client'
 import { getMediaUrl, getPublicationFileUrl, plainTextFromRichText } from '@/lib/utils'
-import { DownloadButton } from '@/components/ui/DownloadButton'
+import { DownloadCountLabel } from '@/components/ui/DownloadCountLabel'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Strategic Plan 2026-2030 | BBFORPEACE',
@@ -116,14 +118,10 @@ export default async function StrategicPlanPage() {
                         <BookOpen className="w-5 h-5" />
                         Read More
                       </Link>
-                      {featuredPlan.fileUrl && (
-                        <DownloadButton
-                          publicationId={featuredPlan.id}
-                          fileUrl={featuredPlan.fileUrl}
-                          initialDownloadCount={featuredPlan.downloadCount}
-                          className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold border-2 border-white/30 text-white hover:bg-white/10 transition-all"
-                        />
-                      )}
+                      <DownloadCountLabel
+                        count={featuredPlan.downloadCount}
+                        className="text-white/70 text-sm"
+                      />
                     </div>
                   </div>
 
@@ -194,14 +192,10 @@ export default async function StrategicPlanPage() {
                               Read More
                               <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
                             </Link>
-                            {plan.fileUrl && (
-                              <DownloadButton
-                                publicationId={plan.id}
-                                fileUrl={plan.fileUrl}
-                                initialDownloadCount={plan.downloadCount}
-                                className="inline-flex items-center gap-2 text-sm font-semibold text-primary-800 hover:text-primary-950 transition-colors"
-                              />
-                            )}
+                            <DownloadCountLabel
+                              count={plan.downloadCount}
+                              className="text-sm text-gray-500"
+                            />
                           </div>
                         </div>
                       </div>
