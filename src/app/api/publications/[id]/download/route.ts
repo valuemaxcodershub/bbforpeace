@@ -1,13 +1,17 @@
-'use server'
-
+import { NextResponse } from 'next/server'
 import { getPayloadClient } from '@/lib/payload-client'
 
-export async function trackDownload(publicationId: number | string) {
+export async function POST(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
   try {
+    const { id } = await params
     const payload = await getPayloadClient()
+
     const pub = await payload.findByID({
       collection: 'publications',
-      id: publicationId,
+      id,
       depth: 0,
       overrideAccess: true,
     })
@@ -16,14 +20,14 @@ export async function trackDownload(publicationId: number | string) {
 
     await payload.update({
       collection: 'publications',
-      id: publicationId,
+      id,
       data: { downloadCount },
       overrideAccess: true,
     })
 
-    return { success: true, downloadCount }
+    return NextResponse.json({ success: true, downloadCount })
   } catch (error) {
     console.error('Failed to track download:', error)
-    return { success: false }
+    return NextResponse.json({ success: false }, { status: 500 })
   }
 }

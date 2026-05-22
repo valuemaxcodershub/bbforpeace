@@ -29,9 +29,11 @@ export const Publications: CollectionConfig = {
     beforeChange: [
       ({ data, req }) => {
         if (!data || typeof data !== 'object') return data
-        // Skip sanitization for internal API updates (e.g. download count increment)
-        // These have overrideAccess and only update specific fields
-        if (req?.payloadAPI === 'local' && data.downloadCount !== undefined && Object.keys(data).length <= 2) {
+        // Skip sanitization when only incrementing download count (public track-download)
+        const updateKeys = Object.keys(data).filter(
+          (key) => !['id', 'collection', 'createdAt', 'updatedAt', 'deletedAt', '_status'].includes(key),
+        )
+        if (updateKeys.length === 1 && updateKeys[0] === 'downloadCount') {
           return data
         }
         return sanitizeAdminDocumentData(data as Record<string, unknown>, {

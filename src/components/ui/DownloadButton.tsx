@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { Download } from 'lucide-react'
 import { trackDownload } from '@/app/actions/download'
 import { formatDownloadCountLabel } from '@/lib/utils'
 
@@ -27,15 +28,26 @@ export function DownloadButton({
     setCount(initialDownloadCount)
   }, [initialDownloadCount, publicationId])
 
+  const persistDownload = async () => {
+    try {
+      const res = await fetch(`/api/publications/${publicationId}/download`, { method: 'POST' })
+      const result = await res.json()
+      if (result.success && typeof result.downloadCount === 'number') {
+        setCount(result.downloadCount)
+        return
+      }
+    } catch {
+      /* try server action fallback */
+    }
+    const fallback = await trackDownload(publicationId)
+    if (fallback.success && typeof fallback.downloadCount === 'number') {
+      setCount(fallback.downloadCount)
+    }
+  }
+
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation()
-    trackDownload(publicationId)
-      .then((result) => {
-        if (result.success && typeof result.downloadCount === 'number') {
-          setCount(result.downloadCount)
-        }
-      })
-      .catch(() => {})
+    persistDownload()
   }
 
   const label = showCount ? formatDownloadCountLabel(count) : 'Download'
@@ -49,7 +61,12 @@ export function DownloadButton({
       onClick={handleClick}
       className={className}
     >
-      {children ?? label}
+      {children ?? (
+        <>
+          {!showCount && <Download className="w-4 h-4" />}
+          {label}
+        </>
+      )}
     </a>
   )
 }

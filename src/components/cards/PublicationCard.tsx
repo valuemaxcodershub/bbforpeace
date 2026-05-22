@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { FileText } from 'lucide-react'
 import { DownloadButton } from '@/components/ui/DownloadButton'
+import { DownloadCountLabel } from '@/components/ui/DownloadCountLabel'
 
 const gradients = [
   'linear-gradient(135deg, #e5243b, #ff6b6b)',
@@ -53,8 +54,8 @@ export function PublicationCard({ publication, index = 0 }: PublicationCardProps
                 publicationId={publication.id}
                 fileUrl={publication.fileUrl}
                 initialDownloadCount={publication.downloadCount ?? 0}
+                showCount={false}
                 className="inline-flex items-center px-5 py-2.5 rounded-full text-white font-semibold shadow-lg"
-                showCount
               />
             </div>
           )}
@@ -87,16 +88,10 @@ export function PublicationCard({ publication, index = 0 }: PublicationCardProps
             {publication.excerpt}
           </p>
         )}
-        {publication.fileUrl && (
-          <div className="mt-4" onClick={(e) => e.preventDefault()}>
-            <DownloadButton
-              publicationId={publication.id}
-              fileUrl={publication.fileUrl}
-              initialDownloadCount={publication.downloadCount ?? 0}
-              className="inline-flex items-center gap-2 text-sm font-semibold text-primary-800 hover:text-primary-950 transition-colors"
-            />
-          </div>
-        )}
+        <DownloadCountLabel
+          count={publication.downloadCount ?? 0}
+          className="text-xs text-gray-500 mt-3 block"
+        />
       </div>
     </article>
   )

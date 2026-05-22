@@ -263,6 +263,7 @@ export default async function PublicationDetailPage({ params }: Props) {
                           publicationId={pub.id}
                           fileUrl={fileUrl}
                           initialDownloadCount={pub.downloadCount ?? 0}
+                          showCount={false}
                           className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-primary-900 text-white font-semibold hover:bg-primary-800 transition-colors"
                         />
                       )}
