@@ -75,9 +75,6 @@ body {
     min-height: auto;
     max-height: calc(100vh - 1.5rem);
     overflow: visible;
-    width: var(--nav-width, 275px);
-    max-width: var(--nav-width, 275px);
-    flex-shrink: 0;
   }
 
   .template-default .gutter--left .nav {
@@ -942,13 +939,7 @@ img[src*="gravatar.com"] {
 
 /* Increase base gutter for the entire admin layout */
 .template-default {
-  --gutter-h: 48px;
-}
-
-@media (min-width: 1440px) {
-  .template-default {
-    --gutter-h: 56px;
-  }
+  --gutter-h: 80px;
 }
 
 /* Main content area — comfortable inner padding */
@@ -958,70 +949,11 @@ img[src*="gravatar.com"] {
   padding-bottom: 2rem;
   padding-left: var(--gutter-h);
   padding-right: var(--gutter-h);
-  min-width: 0;
-  overflow-x: hidden;
-}
-
-/* Document edit: main column + sidebar — prevent overlap on desktop */
-@media (min-width: 769px) {
-  .template-default .collection-edit,
-  .template-default .global-edit {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-  }
-
-  .template-default .document-fields {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
-    gap: 1.25rem 1.5rem;
-    align-items: start;
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-  }
-
-  .template-default .document-fields__main {
-    min-width: 0 !important;
-    max-width: 100%;
-    width: 100%;
-    overflow-x: auto;
-  }
-
-  .template-default .document-fields__sidebar {
-    min-width: 0;
-    max-width: 300px;
-    width: 100%;
-    position: sticky !important;
-    top: calc(var(--app-header-height, 56px) + 0.75rem);
-    align-self: start;
-    right: auto !important;
-    left: auto !important;
-  }
-
-  .template-default .document-fields__main .rich-text-lexical,
-  .template-default .document-fields__main .lexical-richtext,
-  .template-default .document-fields__main .field-type,
-  .template-default .document-fields__main .render-fields {
-    max-width: 100%;
-  }
-}
-
-/* Medium laptops: stack sidebar under main fields to avoid crowding */
-@media (min-width: 769px) and (max-width: 1180px) {
-  .template-default .document-fields {
-    grid-template-columns: minmax(0, 1fr) !important;
-  }
-
-  .template-default .document-fields__sidebar {
-    position: static !important;
-    max-width: 100%;
-  }
 }
 
 /* Document form fields wrapper */
 .template-default .document-fields__main {
-  padding: 1rem 1.25rem 1.75rem;
+  padding: 1.5rem 1.75rem 2rem;
 }
 
 /* Collection list view */

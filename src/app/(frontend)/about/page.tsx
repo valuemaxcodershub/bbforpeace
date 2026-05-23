@@ -3,6 +3,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { PageHero } from '@/components/layout'
 import { BoardMemberCard } from '@/components/cards/BoardMemberCard'
+import { PartnersSection } from '@/components/sections/PartnersSection'
 import { 
   Target, Eye, CheckCircle, Shield, Users, Lightbulb, 
   Handshake, Heart, UserCheck, Award, Calendar, MapPin,
@@ -137,32 +138,6 @@ export default async function AboutPage() {
   const regionOfficeAddress = as.regionOfficeAddress || '35, Edward Ujege Street, High Level'
   const regionOfficeCity = as.regionOfficeCity || 'Makurdi, Benue State'
   const regionOfficeEmail = as.regionOfficeEmail || 'info@bbforpeace.org'
-
-  // Name-based fallback so DB partners without uploaded logos still get the right image
-  const partnerLogoFallback: Record<string, string> = {
-    'GPPAC': '/images/partners/gppac.jfif',
-    'GPPAC Foundation': '/images/partners/gppac.jfif',
-    'WANEP': '/images/partners/wanep.png',
-    'West Africa Network for Peacebuilding': '/images/partners/wanep.png',
-    'British Council': '/images/partners/British_Council_logo.svg.png',
-    'MacArthur Foundation': '/images/partners/maaurthor.jfif',
-    'Open Society Foundations': '/images/partners/open%20society%20foundation.png',
-    'Ford Foundation': '/images/partners/ford.png',
-  }
-
-  // Partners - prefer collection data, fallback to hardcoded
-  const partners = partnersDocs.length ? partnersDocs.map((p: any) => ({
-    name: p.name,
-    description: p.description || '',
-    logo: getMediaUrl(p.logo, partnerLogoFallback[p.name] || '/images/partners/gppac.jfif'),
-  })) : [
-    { name: 'GPPAC', description: 'Global Partnership for Prevention of Armed Conflict', logo: '/images/partners/gppac.jfif' },
-    { name: 'WANEP', description: 'West Africa Network for Peacebuilding', logo: '/images/partners/wanep.png' },
-    { name: 'British Council', description: 'Education & Cultural Relations', logo: '/images/partners/British_Council_logo.svg.png' },
-    { name: 'MacArthur Foundation', description: 'Funding Partner', logo: '/images/partners/maaurthor.jfif' },
-    { name: 'Open Society Foundations', description: 'Civic Space Protection', logo: '/images/partners/open%20society%20foundation.png' },
-    { name: 'Ford Foundation', description: 'Social Justice Funding', logo: '/images/partners/ford.png' },
-  ]
 
   // Fallback team data when collection is empty
   const defaultTeam = [
@@ -513,71 +488,19 @@ export default async function AboutPage() {
           </div>
         </section>
 
-        {/* Partners Section - Infinite Scroll Carousel */}
-        <section 
-          id="partners" 
-          className="py-20 relative overflow-hidden bg-fixed bg-cover bg-center"
-          style={{ backgroundImage: 'url(/images/PXL_20251008_095815014~2.jpg)' }}
-        >
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-primary-950/85" />
-          
-          <div className="container relative z-10">
-            <div className="text-center mb-12" data-scroll="up">
-              <span className="inline-flex items-center gap-2 justify-center text-accent-gold text-sm font-semibold uppercase tracking-widest mb-4">
-                <span className="w-8 h-0.5 bg-accent-gold" />
-                Our Partners
-                <span className="w-8 h-0.5 bg-accent-gold" />
-              </span>
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                Working <span className="text-accent-gold">Together</span> for Peace
-              </h2>
-              <p className="text-gray-300 max-w-xl mx-auto">
-                We collaborate with international organizations, foundations, and networks to amplify our impact across communities.
-              </p>
-            </div>
-          </div>
-
-          {/* Infinite Scroll Carousel */}
-          <div className="relative group/carousel z-10">
-            {/* Gradient Overlays */}
-            <div className="absolute left-0 top-0 bottom-0 w-24 md:w-40 bg-linear-to-r from-primary-950/90 via-primary-950/50 to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-24 md:w-40 bg-linear-to-l from-primary-950/90 via-primary-950/50 to-transparent z-10 pointer-events-none" />
-
-            {/* Scrolling Track */}
-            <div className="flex animate-scroll-infinite group-hover/carousel:[animation-play-state:paused]">
-              {[...partners, ...partners].map((partner, index) => (
-                <div
-                  key={`${partner.name}-${index}`}
-                  className="shrink-0 mx-4 md:mx-8"
-                >
-                  <div
-                    className="group flex items-center justify-center w-36 h-24 md:w-44 md:h-28 rounded-2xl bg-white border border-gray-100 hover:border-primary-300 hover:shadow-lg transition-all duration-300 p-5"
-                    title={partner.name}
-                  >
-                    <img
-                      src={partner.logo}
-                      alt={partner.name}
-                      className="max-w-full max-h-full object-contain group-hover:grayscale transition-all duration-300 opacity-100 group-hover:opacity-70"
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Partner CTA */}
-          <div className="container relative z-10 mt-12 text-center" data-scroll="up">
-            <p className="text-gray-400 text-sm mb-4">Want to partner with us?</p>
-            <a
-              href="/contact"
-              className="inline-flex items-center gap-2 text-accent-gold font-semibold hover:text-yellow-400 transition-colors"
-            >
-              Become a Partner
-              <ArrowRight className="w-4 h-4" />
-            </a>
-          </div>
-        </section>
+        <PartnersSection
+          sectionId="partners"
+          heading={(partnersData as any)?.heading}
+          subheading={(partnersData as any)?.subheading}
+          description={(partnersData as any)?.description}
+          ctaText={(partnersData as any)?.ctaText}
+          ctaLinkLabel={(partnersData as any)?.ctaLinkLabel}
+          partners={
+            partnersDocs.length
+              ? partnersDocs.map((p: any) => ({ name: p.name, logo: p.logo }))
+              : undefined
+          }
+        />
 
         {/* Awards */}
         <section className="py-24 relative overflow-hidden bg-linear-to-br from-violet-100 via-fuchsia-100 to-pink-100">

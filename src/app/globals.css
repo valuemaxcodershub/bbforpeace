@@ -405,15 +405,15 @@
   /* Infinite scroll animation for partner logos */
   @keyframes scroll-infinite {
     0% {
-      transform: translateX(0);
+      transform: translate3d(0, 0, 0);
     }
     100% {
-      transform: translateX(-50%);
+      transform: translate3d(-50%, 0, 0);
     }
   }
 
   .animate-scroll-infinite {
-    animation: scroll-infinite 25s linear infinite;
+    animation: scroll-infinite 35s linear infinite;
   }
 
   .animate-scroll-infinite:hover {
